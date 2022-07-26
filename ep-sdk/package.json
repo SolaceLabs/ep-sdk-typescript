@@ -1,6 +1,6 @@
 {
   "name": "@solace-iot-team/ep-sdk",
-  "version": "0.1.1-alpha",
+  "version": "0.1.2-alpha",
   "description": "Solace Event Portal SDK",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -34,7 +34,8 @@
     "test": ". ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
   },
   "files": [
-    "dist/",
+    "**/*.js",
+    "**/*.d.ts",
     "package.json",
     "README.md",
     "LICENSE"

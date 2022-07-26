@@ -46,30 +46,6 @@ const devBuild = () => {
   console.log(`${logName}: success.`);
 }
 
-// const copyAssets = () => {
-//   const funcName = 'copyAssets';
-//   const logName = `${scriptDir}/${scriptName}.${funcName}()`;
-
-//   const copySrcs = (srcDir: string, outDir: string) => {
-//     console.log(`${logName}: copy ${srcDir}`);
-//     if(s.rm('-rf', `${outDir}`).code !== 0) process.exit(1);
-//     if(s.mkdir('-p', outDir).code !== 0) process.exit(1);
-//     if(s.cp('-r', `${srcDir}/*`, `${outDir}`).code !== 0) process.exit(1);  
-//   }
-
-//   const SrcDirBrowser: string = `${CONSTANTS.WorkingApimServerDir}/src/@solace-iot-team/apim-server-openapi-browser`;
-//   const OutDirBrowser: string = `${CONSTANTS.ReleaseDirBrowser}/src`;
-//   const SrcDirNode: string = `${CONSTANTS.WorkingApimServerDir}/src/@solace-iot-team/apim-server-openapi-node`;
-//   const OutDirNode: string = `${CONSTANTS.ReleaseDirNode}/src`;
-
-//   console.log(`${logName}: starting ...`);
-
-//   copySrcs(SrcDirBrowser, OutDirBrowser);
-//   copySrcs(SrcDirNode, OutDirNode);
-
-//   console.log(`${logName}: success.`);
-// }
-
 const compileSrcs = () => {
   const funcName = 'compileSrcs';
   const logName = `${scriptDir}/${scriptName}.${funcName}()`;
@@ -77,6 +53,19 @@ const compileSrcs = () => {
   s.cd(`${CONSTANTS.WorkingEpSdkDir}`);
   if(s.rm('-rf', `./dist`).code !== 0) process.exit(1);
   if(s.exec('npx tsc').code !== 0) process.exit(1);
+
+  console.log(`${logName}: success.`);
+}
+
+const copyAssets2Dist = () => {
+  const funcName = 'copyAssets2Dist';
+  const logName = `${scriptDir}/${scriptName}.${funcName}()`;
+
+  console.log(`${logName}: starting ...`);
+
+  if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/package.json`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
+  if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/README.md`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
+  if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/LICENSE`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
 
   console.log(`${logName}: success.`);
 }
@@ -90,8 +79,8 @@ const main = () => {
   prepare();
   copySourcesToWorkingDir();
   devBuild();
-  // copyAssets();
   compileSrcs();
+  copyAssets2Dist();
 
   console.log(`${logName}: success.`);
 }
