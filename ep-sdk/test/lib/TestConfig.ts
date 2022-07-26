@@ -1,3 +1,4 @@
+import { EEpSdkLogLevel, EpSdkLogger } from "../../src/EpSdkLogger";
 
 enum EEnvVars {
   EP_SDK_TEST_SOLACE_CLOUD_TOKEN = 'EP_SDK_TEST_SOLACE_CLOUD_TOKEN',
@@ -36,7 +37,12 @@ class TestConfig {
 
     this.testConfig = {
       epBaseUrl: this.getOptionalEnvVarValueAsUrlWithDefault(EEnvVars.EP_SDK_TEST_EP_API_BASE_URL, this.DEFAULT_EP_SDK_TEST_EP_API_BASE_URL),
-    }
+    };
+
+    EpSdkLogger.initialize({ 
+      appId: this.appId,
+      level: EEpSdkLogLevel.Trace,
+    });
   }
 
   public getAppId = (): string => { 

@@ -30,7 +30,7 @@ describe(`${scriptName}`, () => {
         ApplicationDomainId = applicationDomainResponse.data.id;
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMesssage(e.message)).to.be.true;
-        expect(false, TestLogger.createTestFailMessage('failed')).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       }
     });
 
@@ -41,7 +41,7 @@ describe(`${scriptName}`, () => {
         });
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createNotApiErrorMesssage(e.message)).to.be.true;
-        expect(false, TestLogger.createTestFailMessage('failed')).to.be.true;
+        expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       }
     });
 

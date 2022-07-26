@@ -3,11 +3,11 @@ import {
 } from './sep-openapi-node';
 
 
-export class EPClient {
+export class EpSdkClient {
 
   private static DEFAULT_EP_API_BASE_URL = "https://api.solace.cloud";
 
-  public static initialize = ({ token, baseUrl=EPClient.DEFAULT_EP_API_BASE_URL }:{
+  public static initialize = ({ token, baseUrl=EpSdkClient.DEFAULT_EP_API_BASE_URL }:{
     token: string;
     baseUrl?: string;
   }): OpenAPIConfig => {

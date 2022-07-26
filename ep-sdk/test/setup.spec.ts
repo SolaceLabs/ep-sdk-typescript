@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { TestLogger } from "./lib/TestLogger";
 import TestConfig from "./lib/TestConfig";
 import { TestContext } from "./lib/TestContext";
-import { EPClient } from "../src/EPClient";
+import { EpSdkClient } from "../src/EpSdkClient";
 
 // load test stub
 const x = require('./lib/TestStub');
@@ -48,7 +48,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should initialize EP client`, async () => {
       try {
-        EPClient.initialize({
+        EpSdkClient.initialize({
           token: TestConfig.getSolaceCloudToken(),
           baseUrl: TestConfig.getConfig().epBaseUrl,
         });
