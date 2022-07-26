@@ -1,6 +1,6 @@
 {
   "name": "@solace-iot-team/ep-sdk",
-  "version": "0.1.4-alpha",
+  "version": "0.1.5-alpha",
   "description": "Solace Event Portal SDK",
   "type": "commonjs",
   "main": "dist/index.js",
