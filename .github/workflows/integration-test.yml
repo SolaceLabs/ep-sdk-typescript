@@ -98,8 +98,8 @@ jobs:
         if: ${{ (failure() && !cancelled()) || (always() && (github.event_name=='workflow_dispatch' || env.DEBUG_FLAG=='true') ) }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.IMPORTER_CLI_TEST_LOGS_OUTPUT_NAME }}
-          path: ${{ github.workspace }}/${{ env.IMPORTER_CLI_TEST_LOGS_DIR }}
+          name: ${{ env.EP_SDK_TEST_LOGS_OUTPUT_NAME }}
+          path: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}
           if-no-files-found: error
 
 ###
