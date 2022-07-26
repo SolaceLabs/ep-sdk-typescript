@@ -14,7 +14,7 @@ scriptName=$(basename $(test -L "$0" && readlink "$0" || echo "$0"));
 ############################################################################################################################
 # Run
 
-  runScript="npm run test:pretty"
+  runScript="npm test"
   # runScript="npm run test:devel:pretty"
   # runScript="npm run test:devel:t"
   echo "starting: $runScript ..."
