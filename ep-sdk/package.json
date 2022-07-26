@@ -36,7 +36,6 @@
   "files": [
     "**/*.js",
     "**/*.d.ts",
-    "package.json",
     "README.md",
     "LICENSE"
   ],
