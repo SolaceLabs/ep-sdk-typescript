@@ -5,8 +5,8 @@
 
 name: docs-test
 on:
-  # testing
-  workflow_dispatch:
+  # # testing
+  # workflow_dispatch:
   # production
   pull_request:
     branches:

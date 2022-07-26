@@ -26,6 +26,7 @@
   },
   "scripts": {
     "compile": "tsc",
+    "build": "tsc",
     "dev:build": "ts-node dev-build-open-apis.ts",
     "test": ". ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
   },
