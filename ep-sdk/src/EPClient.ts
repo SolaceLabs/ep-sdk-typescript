@@ -5,12 +5,12 @@ import {
 
 export class EPClient {
 
-  public static initialize = ({ token, baseUrl }:{
+  private static DEFAULT_EP_API_BASE_URL = "https://api.solace.cloud";
+
+  public static initialize = ({ token, baseUrl=EPClient.DEFAULT_EP_API_BASE_URL }:{
     token: string;
-    baseUrl: string;
+    baseUrl?: string;
   }): OpenAPIConfig => {
-    const funcName = 'initialize';
-    const logName = `${EPClient.name}.${funcName}()`;
 
     const base: URL = new URL(baseUrl);
     OpenAPI.BASE = baseUrl;
