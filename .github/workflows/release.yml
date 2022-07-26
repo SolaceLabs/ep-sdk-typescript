@@ -1,8 +1,8 @@
 
 name: release
 on:
-  # for testing
-  workflow_dispatch:
+  # # for testing
+  # workflow_dispatch:
 
   # for production
   release:
