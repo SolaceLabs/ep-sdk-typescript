@@ -1,5 +1,6 @@
 import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';
+import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
 import { 
   ApplicationDomain,
   ApplicationDomainResponse,
@@ -19,7 +20,7 @@ class EpSdkApplicationDomainsService extends EpSdkService {
     const applicationDomainsResponse: ApplicationDomainsResponse = await ApplicationDomainsService.getApplicationDomains({
       name: applicationDomainName
     });
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: 'SERVICE', details: {
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, details: {
       applicationDomainsResponse: applicationDomainsResponse
     }}));
 

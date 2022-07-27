@@ -1,71 +1,93 @@
+import { EpSdkLoggerNotInitializedError } from "./EpSdkErrors";
 
-// level: 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'
-
-export type TEpSdkLogDetails = {
+export interface IEpSdkLogDetails {
   code: string;
   message?: string, 
   details?: any
 }
 
-export type TEpSdkLogEntry = {
+export interface IEpSdkLogEntry extends IEpSdkLogDetails {
+  logger: string;
   appId: string;
   logName: string;
-} & TEpSdkLogDetails;
+  timestamp: string;
+};
 
 export enum EEpSdkLogLevel {
-  Error = 0,
-  Warn = 1,
-  Info = 2,
-  Debug = 3,
-  Trace = 4
+  Silent = 0,
+  Error = 1,
+  Warn = 2,
+  Info = 3,
+  Debug = 4,
+  Trace = 5,
 }
+
+export interface IEpSdkLoggerInstance {
+  appId: string;
+  epSdkLogLevel: EEpSdkLogLevel;
+
+  createLogEntry: (logName: string, details: IEpSdkLogDetails) => IEpSdkLogEntry;
+
+  fatal: (logEntry: IEpSdkLogEntry) => void;
+
+  error: (logEntry: IEpSdkLogEntry) => void;
+
+  warn: (logEntry: IEpSdkLogEntry) => void;
+  
+  info: (logEntry: IEpSdkLogEntry) => void;
+
+  debug: (logEntry: IEpSdkLogEntry) => void;
+
+  trace: (logEntry: IEpSdkLogEntry) => void;
+
+}
+
 
 /**
  * Logger wrapper.
- * TODO: initialize with logger class ...
  */
 export class EpSdkLogger {
-  private static appId: string;
-  private static level: EEpSdkLogLevel;
+  private static epSdkLoggerInstance: IEpSdkLoggerInstance | undefined = undefined;
 
-  public static initialize = ({ appId, level }:{
-    appId: string;
-    level: EEpSdkLogLevel;
+  public static initialize = ({ epSdkLoggerInstance }:{
+    epSdkLoggerInstance: IEpSdkLoggerInstance;
   }): void => {
-    EpSdkLogger.appId = appId;
-    EpSdkLogger.level = level;
+    EpSdkLogger.epSdkLoggerInstance = epSdkLoggerInstance;
   }
 
-  public static createLogEntry = (logName: string, details: TEpSdkLogDetails): TEpSdkLogEntry => {
-    return {
-      appId: EpSdkLogger.appId,
-      logName: logName,
-      ...details
-    };
+  public static createLogEntry = (logName: string, details: IEpSdkLogDetails): IEpSdkLogEntry => {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    return EpSdkLogger.epSdkLoggerInstance.createLogEntry(logName, details);
   }
 
-  public static fatal = (logEntry: TEpSdkLogEntry): void => {
-    console.error(JSON.stringify(logEntry, null, 2));
+  public static fatal = (logEntry: IEpSdkLogEntry): void => {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    EpSdkLogger.epSdkLoggerInstance.fatal(logEntry);
   }
 
-  public static error = (logEntry: TEpSdkLogEntry): void => {
-    console.error(JSON.stringify(logEntry, null, 2));
+  public static error = (logEntry: IEpSdkLogEntry): void => {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    EpSdkLogger.epSdkLoggerInstance.error(logEntry);
   }
 
-  public static warn = (logEntry: TEpSdkLogEntry): void => {
-    if(EpSdkLogger.level >= EEpSdkLogLevel.Warn) console.warn(JSON.stringify(logEntry, null, 2));
+  public static warn = (logEntry: IEpSdkLogEntry): void => {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    EpSdkLogger.epSdkLoggerInstance.warn(logEntry);
   }
 
-  public static info = (logEntry: TEpSdkLogEntry): void => {
-    if(EpSdkLogger.level >= EEpSdkLogLevel.Info) console.info(JSON.stringify(logEntry, null, 2));
+  public static info = (logEntry: IEpSdkLogEntry): void => {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    EpSdkLogger.epSdkLoggerInstance.info(logEntry);
   }
 
-  public static debug = (logEntry: TEpSdkLogEntry): void => {
-    if(EpSdkLogger.level >= EEpSdkLogLevel.Debug) console.debug(JSON.stringify(logEntry, null, 2));
+  public static debug = (logEntry: IEpSdkLogEntry): void => {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    EpSdkLogger.epSdkLoggerInstance.debug(logEntry);
   }
 
-  public static trace = (logEntry: TEpSdkLogEntry): void => {
-    if(EpSdkLogger.level >= EEpSdkLogLevel.Trace) console.log(JSON.stringify(logEntry, null, 2));
+  public static trace = (logEntry: IEpSdkLogEntry): void => {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    EpSdkLogger.epSdkLoggerInstance.trace(logEntry);
   }
 
 }

@@ -39,10 +39,6 @@ class TestConfig {
       epBaseUrl: this.getOptionalEnvVarValueAsUrlWithDefault(EEnvVars.EP_SDK_TEST_EP_API_BASE_URL, this.DEFAULT_EP_SDK_TEST_EP_API_BASE_URL),
     };
 
-    EpSdkLogger.initialize({ 
-      appId: this.appId,
-      level: EEpSdkLogLevel.Trace,
-    });
   }
 
   public getAppId = (): string => { 

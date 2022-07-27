@@ -5,6 +5,8 @@ import { TestLogger } from "./lib/TestLogger";
 import TestConfig from "./lib/TestConfig";
 import { TestContext } from "./lib/TestContext";
 import { EpSdkClient } from "../src/EpSdkClient";
+import { EpSdkConsoleLogger } from "../src/EpSdkConsoleLogger";
+import { EEpSdkLogLevel, EpSdkLogger } from "../src/EpSdkLogger";
 
 // load test stub
 const x = require('./lib/TestStub');
@@ -38,9 +40,11 @@ describe(`${scriptName}`, () => {
       TestContext.newItId();
     });
 
-    it(`${scriptName}: should initialize test config`, async () => {
+    it(`${scriptName}: should initialize test config & logger`, async () => {
       try {
         TestConfig.initialize();
+        const epSdkConsoleLogger: EpSdkConsoleLogger = new EpSdkConsoleLogger(TestConfig.getAppId(), EEpSdkLogLevel.Trace);
+        EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkConsoleLogger });
       } catch (e) {
         expect(false, TestLogger.createTestFailMessageForError('intitializing test config failed', e)).to.be.true;
       }

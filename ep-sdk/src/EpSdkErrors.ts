@@ -100,6 +100,13 @@ export class EpSdkApiContentError extends EpSdkError {
   }
 }
 
+export class EpSdkLoggerNotInitializedError extends EpSdkError {
+  protected static DefaultDescription = 'EP SDK Logger not initialized';
+  constructor(internalLogName: string, message: string = EpSdkLoggerNotInitializedError.DefaultDescription) {
+    super(internalLogName, message);
+  }
+}
+
 // export class CliAsyncApiSpecNotSupportedError extends CliError {
 //   protected static defaultDescription = 'Async API Spec - Feature not supported';
 //   private error: any;
