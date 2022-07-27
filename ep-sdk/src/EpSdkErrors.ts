@@ -54,14 +54,14 @@ export class EpSdkError extends Error {
 }
 
 export class EPSdkErrorFromError extends EpSdkError {
-  protected static defaultDescription = 'EPSdkError From Error';
+  protected static DefaultDescription = 'EPSdkError From Error';
   private originalError: {
     name: string,
     errors: any,
     status: number
   }
-  constructor(originalError: any, internalLogName: string) {
-    super(internalLogName, originalError.message);
+  constructor(internalLogName: string, originalError: any) {
+    super(internalLogName, `${EPSdkErrorFromError}: ${originalError.message}`);
     this.originalError = {
       name: originalError.name,
       errors: originalError.errors || [{ message: originalError.message }],
@@ -107,37 +107,34 @@ export class EpSdkLoggerNotInitializedError extends EpSdkError {
   }
 }
 
-// export class CliAsyncApiSpecNotSupportedError extends CliError {
-//   protected static defaultDescription = 'Async API Spec - Feature not supported';
-//   private error: any;
-//   private featureDescription: any;
-//   constructor(internalLogName: string, internalMessage: string = CliAsyncApiSpecNotSupportedError.defaultDescription, error: any, featureDescription: any, ) {
-//     super(internalLogName, internalMessage);
-//     this.error = error;
-//     this.featureDescription = featureDescription;
-//   }
+export class EpSdkAbstractMethodError extends EpSdkError {
+  protected static DefaultDescription = 'EP SDK abstract method call';
+  private className: string;
+  private methodName: string;
+  constructor(internalLogName: string, className: string, methodName: string) {
+    super(internalLogName, EpSdkAbstractMethodError.DefaultDescription);
+    this.className = className;
+    this.methodName = methodName;
+  }
+}
 
-// }
+export class EpSdkInternalTaskError extends EpSdkError {
+  protected static DefaultDescription = 'EP SDK Internal Task Error';
+  private cause: any;
+  constructor(internalLogName: string, cause: any) {
+    super(internalLogName, EpSdkInternalTaskError.DefaultDescription);
+    this.cause = cause;
+  }
+}
 
-// export class CliAbstractMethodError extends CliError {
-//   private className: string;
-//   private methodName: string;
-//   constructor(internalLogName: string, className: string, methodName: string) {
-//     super(internalLogName, "abstract method called");
-//     this.className = className;
-//     this.methodName = methodName;
-//   }
-// }
-
-
-// export class EPApiResponseApiError extends CliError {
-//   protected static apiDefaultDescription = 'EP Api Error';
-//   private apiError: ApiError;
-//   constructor(apiError: ApiError, internalLogName: string, internalMessage: string) {
-//     super(internalLogName, internalMessage);
-//     this.apiError = apiError;
-//   }
-// }
+export class EpSdkEpApiError extends EpSdkError {
+  protected static DefaultDescription = 'EP Api Error';
+  private apiError: ApiError;
+  constructor(internalLogName: string, apiError: ApiError) {
+    super(internalLogName, EpSdkEpApiError.DefaultDescription);
+    this.apiError = apiError;
+  }
+}
 
 /**
  * Use when an error occurred using a service.
