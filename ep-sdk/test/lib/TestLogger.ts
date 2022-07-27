@@ -1,4 +1,5 @@
 
+import { EpSdkError } from "../../src/EpSdkErrors";
 import { ApiError } from "../../src/sep-openapi-node";
 import { ApiRequestOptions } from "../../src/sep-openapi-node/core/ApiRequestOptions";
 import { ApiResult } from "../../src/sep-openapi-node/core/ApiResult";
@@ -77,11 +78,20 @@ export class TestLogger {
       return `[${TestContext.getItId()}]: ${message}\nerror=${err}`;
     }
     public static createTestFailMessage = (message: string): string => {
+      return `[${TestContext.getItId()}]: ${message}`;
+    }
+    public static createApiTestFailMessage = (message: string): string => {
       return `[${TestContext.getItId()}]: ${message}\napiRequestOptions=${TestLogger.getLoggingApiRequestOptions(TestContext.getApiRequestOptions())}\napiResult=${TestLogger.getLoggingApiResult(TestContext.getApiResult())}\napiError=${JSON.stringify(TestContext.getApiError(), null, 2)}\n`;
     }
     public static createNotApiErrorMesssage = (message: string): string => {
-        return `[${TestContext.getItId()}]: error is not an instance of ApiError, error=${message}`;
+      return `[${TestContext.getItId()}]: error is not an instance of ApiError, error=${message}`;
     }
-  
+    public static createNotEpSdkErrorMesssage = (e: Error): string => {
+      return `[${TestContext.getItId()}]: error is not an instance of EpSdkError, name=${e.name}, message=${e.message}`;
+    }
+    public static createEpSdkTestFailMessage = (message: string, epSdkError: EpSdkError): string => {
+      return `[${TestContext.getItId()}]: message=${message}, epSdkError=${epSdkError}`;
+    }
+
 }
 
