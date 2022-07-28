@@ -13,7 +13,7 @@ const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
 
 
-const ApplicationDomainName = `${TestConfig.getAppId()}/${TestUtils.getUUID()}`;
+const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestUtils.getUUID()}`;
 let ApplicationDomainId: string | undefined;
 
 describe(`${scriptName}`, () => {

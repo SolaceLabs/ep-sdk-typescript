@@ -21,28 +21,34 @@ export class EpSdkConsoleLogger implements IEpSdkLoggerInstance {
     };
   }
 
+  private createOutput(logEntry: IEpSdkLogEntry): any {
+    return JSON.stringify({
+      epSdkLogLevel: this.epSdkLogLevel,
+      ...logEntry
+    }, null, 2);
+  }
   public fatal = (logEntry: IEpSdkLogEntry): void => {
-    console.error(JSON.stringify(logEntry, null, 2));
+    console.error(this.createOutput(logEntry));
   }
 
   public error = (logEntry: IEpSdkLogEntry): void => {
-    console.error(JSON.stringify(logEntry, null, 2));
+    console.error(this.createOutput(logEntry));
   }
 
   public warn = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Warn) console.warn(JSON.stringify(logEntry, null, 2));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Warn) console.warn(this.createOutput(logEntry));
   }
 
   public info = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Info) console.info(JSON.stringify(logEntry, null, 2));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Info) console.info(this.createOutput(logEntry));
   }
 
   public debug = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Debug) console.debug(JSON.stringify(logEntry, null, 2));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Debug) console.debug(this.createOutput(logEntry));
   }
 
   public trace = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Trace) console.log(JSON.stringify(logEntry, null, 2));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Trace) console.log(this.createOutput(logEntry));
   }
 
 }
