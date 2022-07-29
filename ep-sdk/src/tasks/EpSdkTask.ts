@@ -129,6 +129,8 @@ export abstract class EpSdkTask {
 
   protected abstract getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys;
 
+  protected abstract getEpObjectKeys(epObject: any): IEpSdkTask_EpObjectKeys;
+
   protected abstract getTaskKeys(): IEpSdkTask_Keys;
 
   protected async getFunc(epSdkTask_Keys: IEpSdkTask_Keys): Promise<IEpSdkTask_GetFuncReturn> {
@@ -323,7 +325,8 @@ export abstract class EpSdkTask {
       if(epSdkTask_ExecuteReturn === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkTask_ExecuteReturn === undefined');
 
       EpSdkLogger.info(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE, module: this.constructor.name, details: {
-        epSdkTask_Config: this.epSdkTask_Config
+        epSdkTask_Config: this.epSdkTask_Config,
+        epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData()
       }}));
       return epSdkTask_ExecuteReturn;
       

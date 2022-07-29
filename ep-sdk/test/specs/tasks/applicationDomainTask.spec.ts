@@ -12,7 +12,6 @@ import { EpSdkError } from '../../../src/EpSdkErrors';
 import { EpSdkApplicationDomainTask, IEpSdkApplicationDomainTask_ExecuteReturn } from '../../../src/tasks/EpSdkApplicationDomainTask';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EEpSdkLogLevel, EpSdkLogger } from '../../../src/EpSdkLogger';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
