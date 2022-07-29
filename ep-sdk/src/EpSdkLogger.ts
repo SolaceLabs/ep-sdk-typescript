@@ -16,16 +16,19 @@ export interface IEpSdkLogEntry extends IEpSdkLogDetails {
 
 export enum EEpSdkLogLevel {
   Silent = 0,
-  Error = 1,
-  Warn = 2,
-  Info = 3,
-  Debug = 4,
-  Trace = 5,
+  FatalError = 1,
+  Error = 2,
+  Warn = 3,
+  Info = 4,
+  Debug = 5,
+  Trace = 6,
 }
 
 export interface IEpSdkLoggerInstance {
   appId: string;
   epSdkLogLevel: EEpSdkLogLevel;
+
+  setLogLevel: (epSdkLogLevel: EEpSdkLogLevel) => void;
 
   createLogEntry: (logName: string, details: IEpSdkLogDetails) => IEpSdkLogEntry;
 
@@ -54,6 +57,11 @@ export class EpSdkLogger {
     epSdkLoggerInstance: IEpSdkLoggerInstance;
   }): void => {
     EpSdkLogger.epSdkLoggerInstance = epSdkLoggerInstance;
+  }
+
+  public static getLoggerInstance(): IEpSdkLoggerInstance {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
+    return EpSdkLogger.epSdkLoggerInstance;
   }
 
   public static createLogEntry = (logName: string, details: IEpSdkLogDetails): IEpSdkLogEntry => {

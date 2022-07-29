@@ -11,7 +11,6 @@ import {
 import EpSdkApplicationDomainsService from '../services/EpSdkApplicationDomainsService';
 import { 
   EpSdkTask,
-  IEpSdkTaskDeepCompareResult,
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
   IEpSdkTask_DeleteFuncReturn, 
@@ -26,8 +25,7 @@ type TEpSdkApplicationDomainTask_Settings = Partial<Pick<ApplicationDomain, "top
 type TEpSdkApplicationDomainTask_CompareObject = TEpSdkApplicationDomainTask_Settings;
 export interface IEpSdkApplicationDomainTask_Config extends IEpSdkTask_Config {
   applicationDomainName: string;
-  // TODO: make optional, not needed for absent
-  applicationDomainSettings: TEpSdkApplicationDomainTask_Settings;
+  applicationDomainSettings?: TEpSdkApplicationDomainTask_Settings;
 }
 export interface IEpSdkApplicationDomainTask_Keys extends IEpSdkTask_Keys {
   applicationDomainName: string;
@@ -126,16 +124,12 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     }
     const requestedCompareObject: TEpSdkApplicationDomainTask_CompareObject = this.createApplicationDomainSettings();
 
-    const epSdkTaskDeepCompareResult: IEpSdkTaskDeepCompareResult = this.deepCompareObjects({ existingObject: existingCompareObject, requestedObject: requestedCompareObject });
-
-    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = {
-      isUpdateRequired: !epSdkTaskDeepCompareResult.isEqual,
-      existingCompareObject: this.prepareCompareObject4Output(existingCompareObject),
-      requestedCompareObject: this.prepareCompareObject4Output(requestedCompareObject),
-      difference: epSdkTaskDeepCompareResult.difference
-    }
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 
+      existingObject: existingCompareObject, 
+      requestedObject: requestedCompareObject, 
+    });
     // // DEBUG:
-    // if(!epSdkTaskDeepCompareResult.isEqual) {
+    // if(epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired) {
     //   EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_IS_UPDATE_REQUIRED, module: this.constructor.name, details: {
     //     epSdkTask_Config: this.epSdkTask_Config,
     //     epSdkTask_IsUpdateRequiredFuncReturn: epSdkTask_IsUpdateRequiredFuncReturn
@@ -160,10 +154,17 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       create: create,
     }}));
 
+    if(this.isCheckmode()) {
+      return {
+        epSdkTask_Action: this.getCreateFuncAction(),
+        epObject: create,
+      };
+    }
+
     const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
       requestBody: create
     });
-
+  
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       create: create,
@@ -202,6 +203,17 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       update: update,
     }}));
 
+    if(this.isCheckmode()) {
+      const wouldBe_EpObject: ApplicationDomain = {
+        ...epSdkApplicationDomainTask_GetFuncReturn.epObject,
+        ...update
+      };
+      return {
+        epSdkTask_Action: this.getUpdateFuncAction(),
+        epObject: wouldBe_EpObject,
+      };
+    }
+
     const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.updateApplicationDomain({
       id: epSdkApplicationDomainTask_GetFuncReturn.epObject.id,
       requestBody: update
@@ -233,6 +245,13 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     if(epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined', {
       epObject: epSdkApplicationDomainTask_GetFuncReturn.epObject
     });
+
+    if(this.isCheckmode()) {
+      return {
+        epSdkTask_Action: this.getDeleteFuncAction(),
+        epObject: epSdkApplicationDomainTask_GetFuncReturn.epObject,
+      };
+    }
 
     const applicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.deleteById({
       applicationDomainId: epSdkApplicationDomainTask_GetFuncReturn.epObject.id,

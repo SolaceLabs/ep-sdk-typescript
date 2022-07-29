@@ -71,8 +71,10 @@ export class TestLogger {
         if(!TestLogger.do_log) return;
         console.log(`[${id}]: ApiError=\n${JSON.stringify(apiError, null, 2)}\n`);
     }
-    public static createLogMessage = (message: string) : string => {
-      return `[${TestContext.getItId()}]: ${message}`;
+    public static createLogMessage = (message: string, obj?: any) : string => {
+      let msg = `[${TestContext.getItId()}]: ${message}`;
+      if(obj !== undefined) msg += `, obj=\n${JSON.stringify(obj, null, 2)}`;
+      return msg;
     }
     public static createTestFailMessageForError = (message: string, err: Error): string => {
       return `[${TestContext.getItId()}]: ${message}\nerror=${err}`;

@@ -10,6 +10,10 @@ export class EpSdkConsoleLogger implements IEpSdkLoggerInstance {
     this.epSdkLogLevel = epSdkLogLevel;
   }
 
+  public setLogLevel(epSdkLogLevel: EEpSdkLogLevel) {
+    this.epSdkLogLevel = epSdkLogLevel;
+  }
+
   public createLogEntry = (logName: string, details: IEpSdkLogDetails): IEpSdkLogEntry => {
     const d = new Date();
     return {
@@ -21,34 +25,35 @@ export class EpSdkConsoleLogger implements IEpSdkLoggerInstance {
     };
   }
 
-  private createOutput(logEntry: IEpSdkLogEntry): any {
+  private createOutput(logEntry: IEpSdkLogEntry, epSdkLogLevel: EEpSdkLogLevel): any {
     return JSON.stringify({
-      epSdkLogLevel: this.epSdkLogLevel,
+      epSdkLogLevel: epSdkLogLevel,
       ...logEntry
     }, null, 2);
   }
+
   public fatal = (logEntry: IEpSdkLogEntry): void => {
-    console.error(this.createOutput(logEntry));
+    console.error(this.createOutput(logEntry, EEpSdkLogLevel.FatalError));
   }
 
   public error = (logEntry: IEpSdkLogEntry): void => {
-    console.error(this.createOutput(logEntry));
+    console.error(this.createOutput(logEntry, EEpSdkLogLevel.Error));
   }
 
   public warn = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Warn) console.warn(this.createOutput(logEntry));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Warn) console.warn(this.createOutput(logEntry, EEpSdkLogLevel.Warn));
   }
 
   public info = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Info) console.info(this.createOutput(logEntry));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Info) console.info(this.createOutput(logEntry, EEpSdkLogLevel.Info));
   }
 
   public debug = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Debug) console.debug(this.createOutput(logEntry));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Debug) console.debug(this.createOutput(logEntry, EEpSdkLogLevel.Debug));
   }
 
   public trace = (logEntry: IEpSdkLogEntry): void => {
-    if(this.epSdkLogLevel >= EEpSdkLogLevel.Trace) console.log(this.createOutput(logEntry));
+    if(this.epSdkLogLevel >= EEpSdkLogLevel.Trace) console.log(this.createOutput(logEntry, EEpSdkLogLevel.Trace));
   }
 
 }

@@ -12,23 +12,27 @@ export enum EEpSdkTask_TargetState {
 }
 export enum EEpSdkTask_Action {
   CREATE = "CREATE",
+  WOULD_CREATE = "WOULD_CREATE",
   CREATE_FIRST_VERSION = "CREATE_FIRST_VERSION",
+  WOULD_CREATE_FIRST_VERSION = "WOULD_CREATE_FIRST_VERSION",
   CREATE_NEW_VERSION = "CREATE_NEW_VERSION",
+  WOULD_CREATE_NEW_VERSION = "WOULD_CREATE_NEW_VERSION",
   UPDATE = "UPDATE",
+  WOULD_UPDATE = "WOULD_UPDATE",
   DELETE = "DELETE",
+  WOULD_DELETE = "WOULD_DELETE",
   DELETE_VERSION = "DELETE_VERSION",
-  NO_ACTION = "NO_ACTION",
+  WOULD_DELETE_VERSION = "WOULD_DELETE_VERSION",
+  UNDEFINED = "UNDEFINED"
 }
 export interface IEpSdkTask_TransactionConfig {
   groupTransactionId?: string;
-  parentTransactionId?: string;
+  parentTransactionId: string;
 }
 export interface IEpSdkTask_Config {
   epSdkTask_TargetState: EEpSdkTask_TargetState;
   checkmode?: boolean;
-
-  // TODO: make optional, not needed for absent
-  epSdkTask_TransactionConfig: IEpSdkTask_TransactionConfig;
+  epSdkTask_TransactionConfig?: IEpSdkTask_TransactionConfig;
 }
 export interface IEpSdkTask_Keys {}
 export interface IEpSdkTask_GetFuncReturn {
@@ -90,27 +94,22 @@ export abstract class EpSdkTask {
     });
   }
 
-  // TODO: PARKED
-  // protected create_ICliTaskIsUpdateRequiredReturn({ existingObject, requestedObject }:{
-  //   existingObject: any;
-  //   requestedObject: any;
-  // }): ICliTaskIsUpdateRequiredReturn {
-  //   const funcName = 'create_ICliTaskIsUpdateRequiredReturn';
-  //   const logName = `${CliTask.name}.${funcName}()`;
+  protected create_IEpSdkTask_IsUpdateRequiredFuncReturn({ existingObject, requestedObject }:{
+    existingObject: any;
+    requestedObject: any;
+  }): IEpSdkTask_IsUpdateRequiredFuncReturn {
+    const funcName = 'create_IEpSdkTask_IsUpdateRequiredFuncReturn';
+    const logName = `${EpSdkTask.name}.${funcName}()`;
 
-  //   const cliTaskDeepCompareResult: ICliTaskDeepCompareResult = this.deepCompareObjects({ existingObject: existingObject, requestedObject: requestedObject });
-  //   const cliTaskIsUpdateRequiredReturn: ICliTaskIsUpdateRequiredReturn = {
-  //     isUpdateRequired: !cliTaskDeepCompareResult.isEqual,
-  //     existingCompareObject: this.prepareCompareObject4Output(existingObject),
-  //     requestedCompareObject: this.prepareCompareObject4Output(requestedObject),
-  //     difference: cliTaskDeepCompareResult.difference
-  //   };
-  //   CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.EXECUTING_TASK_IS_UPDATE_REQUIRED, details: {
-  //     ...cliTaskIsUpdateRequiredReturn
-  //   }}));
-
-  //   return cliTaskIsUpdateRequiredReturn;
-  // }
+    const epSdkTaskDeepCompareResult: IEpSdkTaskDeepCompareResult = this.deepCompareObjects({ existingObject: existingObject, requestedObject: requestedObject });
+    const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = {
+      isUpdateRequired: !epSdkTaskDeepCompareResult.isEqual,
+      existingCompareObject: this.prepareCompareObject4Output(existingObject),
+      requestedCompareObject: this.prepareCompareObject4Output(requestedObject),
+      difference: epSdkTaskDeepCompareResult.difference
+    };
+    return epSdkTask_IsUpdateRequiredFuncReturn;
+  }
 
   constructor(epSdkTask_Config: IEpSdkTask_Config) {
     this.epSdkTask_Config = epSdkTask_Config;
@@ -153,18 +152,13 @@ export abstract class EpSdkTask {
     throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
   }
   protected getCreateFuncAction(): EEpSdkTask_Action {
+    if(this.isCheckmode()) return EEpSdkTask_Action.WOULD_CREATE;
     return EEpSdkTask_Action.CREATE;
   }
-  private async createFuncCall(): Promise<IEpSdkTask_CreateFuncReturn> {    
-    if(!this.isCheckmode()) {
-      const epSdkTask_CreateFuncReturn: IEpSdkTask_CreateFuncReturn = await this.createFunc();
-      this.epSdkTask_TransactionLog.add_CreateFuncReturn(epSdkTask_CreateFuncReturn);
-      return epSdkTask_CreateFuncReturn;
-    }
-    return {
-      epObject: {},
-      epSdkTask_Action: this.getCreateFuncAction(),
-    };
+  private async createFuncCall(): Promise<IEpSdkTask_CreateFuncReturn> {
+    const epSdkTask_CreateFuncReturn: IEpSdkTask_CreateFuncReturn = await this.createFunc();
+    this.epSdkTask_TransactionLog.add_CreateFuncReturn(epSdkTask_CreateFuncReturn);
+    return epSdkTask_CreateFuncReturn;
   }
 
   protected async updateFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_UpdateFuncReturn> {
@@ -174,18 +168,13 @@ export abstract class EpSdkTask {
     throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
   }
   protected getUpdateFuncAction(): EEpSdkTask_Action {
+    if(this.isCheckmode()) return EEpSdkTask_Action.WOULD_UPDATE;
     return EEpSdkTask_Action.UPDATE;
   }
   private async updateFuncCall(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_UpdateFuncReturn> {
-    if(!this.isCheckmode()) {
-      const epSdkTask_UpdateFuncReturn: IEpSdkTask_UpdateFuncReturn =  await this.updateFunc(epSdkTask_GetFuncReturn);
-      this.epSdkTask_TransactionLog.add_UpdateFuncReturn(epSdkTask_UpdateFuncReturn);
-      return epSdkTask_UpdateFuncReturn;
-    }
-    return {
-      epSdkTask_Action: this.getUpdateFuncAction(),
-      epObject: {},
-    };
+    const epSdkTask_UpdateFuncReturn: IEpSdkTask_UpdateFuncReturn =  await this.updateFunc(epSdkTask_GetFuncReturn);
+    this.epSdkTask_TransactionLog.add_UpdateFuncReturn(epSdkTask_UpdateFuncReturn);
+    return epSdkTask_UpdateFuncReturn;
   }
 
   protected async deleteFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_DeleteFuncReturn> {
@@ -195,18 +184,13 @@ export abstract class EpSdkTask {
     throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
   }
   protected getDeleteFuncAction(): EEpSdkTask_Action {
+    if(this.isCheckmode()) return EEpSdkTask_Action.WOULD_DELETE;
     return EEpSdkTask_Action.DELETE;
   }
   private async deleteFuncCall(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_DeleteFuncReturn> {
-    if(!this.isCheckmode()) {
-      const epSdkTask_DeleteFuncReturn: IEpSdkTask_DeleteFuncReturn = await this.deleteFunc(epSdkTask_GetFuncReturn);
-      this.epSdkTask_TransactionLog.add_DeleteFuncReturn(epSdkTask_DeleteFuncReturn);
-      return epSdkTask_DeleteFuncReturn;
-    }
-    return {
-      epSdkTask_Action: this.getDeleteFuncAction(),
-      epObject: {},
-    }
+    const epSdkTask_DeleteFuncReturn: IEpSdkTask_DeleteFuncReturn = await this.deleteFunc(epSdkTask_GetFuncReturn);
+    this.epSdkTask_TransactionLog.add_DeleteFuncReturn(epSdkTask_DeleteFuncReturn);
+    return epSdkTask_DeleteFuncReturn;
   }
 
   private async executePresent(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_ExecuteReturn> {
@@ -289,12 +273,11 @@ export abstract class EpSdkTask {
     const logName = `${EpSdkTask.name}.${funcName}()`;
 
     try {
-      EpSdkLogger.info(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START, module: this.constructor.name }));
-      EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START, module: this.constructor.name, details: {
+      EpSdkLogger.info(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START, module: this.constructor.name, details: {
         epSdkTask_Config: this.epSdkTask_Config
       }}));
 
-      // is this required?
+      // PARKED
       // const xvoid: void = await this.initializeTask();
 
       const epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn = await this.getFuncCall(this.getTaskKeys());
@@ -323,7 +306,9 @@ export abstract class EpSdkTask {
 
       if(epSdkTask_ExecuteReturn === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkTask_ExecuteReturn === undefined');
 
-      EpSdkLogger.info(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE, module: this.constructor.name }));
+      EpSdkLogger.info(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE, module: this.constructor.name, details: {
+        epSdkTask_Config: this.epSdkTask_Config
+      }}));
       return epSdkTask_ExecuteReturn;
       
     } catch(e: any) {
