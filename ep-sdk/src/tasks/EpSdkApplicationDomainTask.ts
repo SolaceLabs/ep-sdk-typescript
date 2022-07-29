@@ -10,10 +10,12 @@ import {
 } from '../sep-openapi-node';
 import EpSdkApplicationDomainsService from '../services/EpSdkApplicationDomainsService';
 import { 
+  EEpSdkTask_EpObjectType,
   EpSdkTask,
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
   IEpSdkTask_DeleteFuncReturn, 
+  IEpSdkTask_EpObjectKeys, 
   IEpSdkTask_ExecuteReturn, 
   IEpSdkTask_GetFuncReturn, 
   IEpSdkTask_IsUpdateRequiredFuncReturn, 
@@ -50,8 +52,9 @@ export interface IEpSdkApplicationDomainTask_ExecuteReturn extends IEpSdkTask_Ex
 export class EpSdkApplicationDomainTask extends EpSdkTask {
 
   private readonly Empty_IEpSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn = {
+    epObjectKeys: this.getDefaultEpObjectKeys(),
     epObject: undefined,
-    documentExists: false  
+    epObjectExists: false  
   };
   private readonly Default_TEpSdkApplicationDomainTask_Settings: TEpSdkApplicationDomainTask_Settings = {
     topicDomainEnforcementEnabled: false,
@@ -70,6 +73,27 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
 
   constructor(taskConfig: IEpSdkApplicationDomainTask_Config) {
     super(taskConfig);
+  }
+
+  protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
+    return {
+      epObjectId: 'undefined',
+      epObjectType: EEpSdkTask_EpObjectType.APPLICATION_DOMAIN,
+    };
+  };
+
+  protected getEpObjectKeys(epObject: ApplicationDomain | undefined): IEpSdkTask_EpObjectKeys {
+    const funcName = 'getEpObjectKeys';
+    const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
+    
+    if(epObject === undefined) return this.getDefaultEpObjectKeys();
+    if(epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObject.id === undefined', {
+      epObject: epObject
+    });
+    return {
+      ...this.getDefaultEpObjectKeys(),
+      epObjectId: epObject.id
+    }
   }
 
   protected getTaskKeys(): IEpSdkApplicationDomainTask_Keys {
@@ -100,8 +124,9 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     }
 
     const epSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn = {
+      epObjectKeys: this.getEpObjectKeys(applicationDomain),
       epObject: applicationDomain,
-      documentExists: true,
+      epObjectExists: true,
     };
     return epSdkApplicationDomainTask_GetFuncReturn;
   };
@@ -158,6 +183,10 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       return {
         epSdkTask_Action: this.getCreateFuncAction(),
         epObject: create,
+        epObjectKeys: this.getEpObjectKeys({
+          ...create,
+          id: 'undefined'
+        }),
       };
     }
 
@@ -179,6 +208,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
       epObject: applicationDomainResponse.data,
+      epObjectKeys: this.getEpObjectKeys(applicationDomainResponse.data)
     };
   }
 
@@ -211,6 +241,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       return {
         epSdkTask_Action: this.getUpdateFuncAction(),
         epObject: wouldBe_EpObject,
+        epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject)
       };
     }
 
@@ -231,6 +262,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     const epSdkApplicationDomainTask_UpdateFuncReturn: IEpSdkApplicationDomainTask_UpdateFuncReturn = {
       epSdkTask_Action: this.getUpdateFuncAction(),
       epObject: applicationDomainResponse.data,
+      epObjectKeys: this.getEpObjectKeys(applicationDomainResponse.data)
     };
     return epSdkApplicationDomainTask_UpdateFuncReturn;
   }
@@ -250,6 +282,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       return {
         epSdkTask_Action: this.getDeleteFuncAction(),
         epObject: epSdkApplicationDomainTask_GetFuncReturn.epObject,
+        epObjectKeys: this.getEpObjectKeys(epSdkApplicationDomainTask_GetFuncReturn.epObject)
       };
     }
 
@@ -260,6 +293,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     const epSdkApplicationDomainTask_DeleteFuncReturn: IEpSdkApplicationDomainTask_DeleteFuncReturn = {
       epSdkTask_Action: this.getDeleteFuncAction(),
       epObject: applicationDomain,
+      epObjectKeys: this.getEpObjectKeys(applicationDomain)
     };
     return epSdkApplicationDomainTask_DeleteFuncReturn;
 

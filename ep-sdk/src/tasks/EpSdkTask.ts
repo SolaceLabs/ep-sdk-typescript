@@ -6,6 +6,15 @@ import { EpSdkUtils, IEpSdkDeepCompareResult, TEpSdkDeepDiffFromTo } from "../Ep
 import { ApiError } from "../sep-openapi-node";
 import { EpSdkTask_TransactionLog, IEpSdkTask_TransactionLogData } from "./EpSdkTask_TransactionLog";
 
+export enum EEpSdkTask_EpObjectType {
+  UNDEFINED = "undefined",
+  APPLICATION_DOMAIN = "applicationDomain"
+}
+export interface IEpSdkTask_EpObjectKeys {
+  epObjectType: EEpSdkTask_EpObjectType; 
+  epObjectId: string; 
+  epVersionObjectId?: string;
+}
 export enum EEpSdkTask_TargetState {
   PRESENT = "PRESENT",
   ABSENT = "ABSENT"
@@ -36,12 +45,14 @@ export interface IEpSdkTask_Config {
 }
 export interface IEpSdkTask_Keys {}
 export interface IEpSdkTask_GetFuncReturn {
-  documentExists: boolean;
+  epObjectExists: boolean;
   epObject: any;
+  epObjectKeys: IEpSdkTask_EpObjectKeys;
 }
 export interface IEpSdkTask_CreateFuncReturn {
   epSdkTask_Action: EEpSdkTask_Action;
   epObject: any;
+  epObjectKeys: IEpSdkTask_EpObjectKeys;
 }
 export interface IEpSdkTask_IsUpdateRequiredFuncReturn {
   isUpdateRequired: boolean;
@@ -52,19 +63,17 @@ export interface IEpSdkTask_IsUpdateRequiredFuncReturn {
 export interface IEpSdkTask_UpdateFuncReturn {
   epSdkTask_Action: EEpSdkTask_Action;
   epObject: any;
+  epObjectKeys: IEpSdkTask_EpObjectKeys;
 }
 export interface IEpSdkTask_DeleteFuncReturn {
   epSdkTask_Action: EEpSdkTask_Action;
   epObject: any;
-}
-export interface IEpSdkTask_EpObjectId {
-  epObjectType: string; 
-  epObjectId: string; 
-  epVersionObjectId?: string;
+  epObjectKeys: IEpSdkTask_EpObjectKeys;
 }
 export interface IEpSdkTask_ExecuteReturn {
   epSdkTask_TransactionLogData: IEpSdkTask_TransactionLogData;
   epObject: any;
+  epObjectKeys: IEpSdkTask_EpObjectKeys;
 }
 export interface IEpSdkTaskDeepCompareResult extends IEpSdkDeepCompareResult  {  
 }
@@ -115,8 +124,10 @@ export abstract class EpSdkTask {
     this.epSdkTask_Config = epSdkTask_Config;
     this.epSdkTask_Config.checkmode = this.isCheckmode();
     this.taskTransactionId = EpSdkUtils.getUUID();
-    this.epSdkTask_TransactionLog = new EpSdkTask_TransactionLog(this.taskTransactionId, this.epSdkTask_Config);
+    this.epSdkTask_TransactionLog = new EpSdkTask_TransactionLog(this.taskTransactionId, this.epSdkTask_Config, this.getDefaultEpObjectKeys());
   }
+
+  protected abstract getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys;
 
   protected abstract getTaskKeys(): IEpSdkTask_Keys;
 
@@ -199,7 +210,7 @@ export abstract class EpSdkTask {
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_PRESENT_START, module: this.constructor.name }));
 
-    if(!epSdkTask_GetFuncReturn.documentExists) {
+    if(!epSdkTask_GetFuncReturn.epObjectExists) {
       const epSdkTask_CreateFuncReturn: IEpSdkTask_CreateFuncReturn = await this.createFuncCall();
       EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_CREATE, module: this.constructor.name, details: {
         epSdkTask_Config: this.epSdkTask_Config,
@@ -208,6 +219,7 @@ export abstract class EpSdkTask {
       return {
         epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
         epObject: epSdkTask_CreateFuncReturn.epObject,
+        epObjectKeys: epSdkTask_CreateFuncReturn.epObjectKeys
       };
     } 
     // check if update required
@@ -229,12 +241,14 @@ export abstract class EpSdkTask {
       return {
         epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
         epObject: epSdkTask_UpdateFuncReturn.epObject,
+        epObjectKeys: epSdkTask_UpdateFuncReturn.epObjectKeys
       };
     }
     // nothing to do
     return {
       epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
       epObject: epSdkTask_GetFuncReturn.epObject,
+      epObjectKeys: epSdkTask_GetFuncReturn.epObjectKeys
     };
   }
 
@@ -244,7 +258,7 @@ export abstract class EpSdkTask {
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_ABSENT_START, module: this.constructor.name }));
 
-    if(epSdkTask_GetFuncReturn.documentExists) {
+    if(epSdkTask_GetFuncReturn.epObjectExists) {
       const epSdkTask_DeleteFuncReturn: IEpSdkTask_DeleteFuncReturn = await this.deleteFuncCall(epSdkTask_GetFuncReturn);
       EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_DELETE, module: this.constructor.name, details: {
         epSdkTask_Config: this.epSdkTask_Config,
@@ -254,12 +268,14 @@ export abstract class EpSdkTask {
       return {
         epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
         epObject: epSdkTask_DeleteFuncReturn.epObject,
+        epObjectKeys: epSdkTask_DeleteFuncReturn.epObjectKeys
       };
     }
     // nothing to do
     return {
       epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
       epObject: epSdkTask_GetFuncReturn.epObject,
+      epObjectKeys: epSdkTask_GetFuncReturn.epObjectKeys
     };
   }
 
