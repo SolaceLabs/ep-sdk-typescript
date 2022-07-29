@@ -27,8 +27,18 @@ scriptName=$(basename $(test -L "$0" && readlink "$0" || echo "$0"));
 # Check for errors
 
 filePattern="$LOG_DIR"
+epSdkErrors=$(grep -n -r -e "EpSdkError" $filePattern )
 errors=$(grep -n -r -e " ERROR " $filePattern )
 test_failing=$(grep -n -r -e "failing" $filePattern )
+if [ ! -z "$epSdkErrors" ]; then
+  FAILED=1
+  echo "   found ${#epSdkErrors[@]} EpSdkError(s)"
+  while IFS= read line; do
+    echo $line >> "$LOG_DIR/$scriptName.ERROR.out"
+  done < <(printf '%s\n' "$epSdkErrors")
+else
+  echo "   no EpSdkError found"
+fi
 if [ ! -z "$errors" ]; then
   FAILED=1
   echo "   found ${#errors[@]} ERROR(s)"

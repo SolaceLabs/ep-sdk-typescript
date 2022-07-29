@@ -1,6 +1,7 @@
 import { EpSdkLoggerNotInitializedError } from "./EpSdkErrors";
 
 export interface IEpSdkLogDetails {
+  module: string;
   code: string;
   message?: string, 
   details?: any
@@ -15,16 +16,19 @@ export interface IEpSdkLogEntry extends IEpSdkLogDetails {
 
 export enum EEpSdkLogLevel {
   Silent = 0,
-  Error = 1,
-  Warn = 2,
-  Info = 3,
-  Debug = 4,
-  Trace = 5,
+  FatalError = 1,
+  Error = 2,
+  Warn = 3,
+  Info = 4,
+  Debug = 5,
+  Trace = 6,
 }
 
 export interface IEpSdkLoggerInstance {
   appId: string;
   epSdkLogLevel: EEpSdkLogLevel;
+
+  setLogLevel: (epSdkLogLevel: EEpSdkLogLevel) => void;
 
   createLogEntry: (logName: string, details: IEpSdkLogDetails) => IEpSdkLogEntry;
 
@@ -55,38 +59,43 @@ export class EpSdkLogger {
     EpSdkLogger.epSdkLoggerInstance = epSdkLoggerInstance;
   }
 
+  public static getLoggerInstance(): IEpSdkLoggerInstance {
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
+    return EpSdkLogger.epSdkLoggerInstance;
+  }
+
   public static createLogEntry = (logName: string, details: IEpSdkLogDetails): IEpSdkLogEntry => {
-    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
     return EpSdkLogger.epSdkLoggerInstance.createLogEntry(logName, details);
   }
 
   public static fatal = (logEntry: IEpSdkLogEntry): void => {
-    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
     EpSdkLogger.epSdkLoggerInstance.fatal(logEntry);
   }
 
   public static error = (logEntry: IEpSdkLogEntry): void => {
-    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
     EpSdkLogger.epSdkLoggerInstance.error(logEntry);
   }
 
   public static warn = (logEntry: IEpSdkLogEntry): void => {
-    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
     EpSdkLogger.epSdkLoggerInstance.warn(logEntry);
   }
 
   public static info = (logEntry: IEpSdkLogEntry): void => {
-    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
     EpSdkLogger.epSdkLoggerInstance.info(logEntry);
   }
 
   public static debug = (logEntry: IEpSdkLogEntry): void => {
-    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
     EpSdkLogger.epSdkLoggerInstance.debug(logEntry);
   }
 
   public static trace = (logEntry: IEpSdkLogEntry): void => {
-    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name);
+    if(EpSdkLogger.epSdkLoggerInstance === undefined) throw new EpSdkLoggerNotInitializedError(EpSdkLogger.name, this.constructor.name);
     EpSdkLogger.epSdkLoggerInstance.trace(logEntry);
   }
 

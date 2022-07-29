@@ -16,7 +16,7 @@ const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
 
 
-const ApplicationDomainName = `${TestConfig.getAppId()}/${TestUtils.getUUID()}`;
+const ApplicationDomainName = `${TestConfig.getAppId()}/misc/${TestUtils.getUUID()}`;
 let ApplicationDomainId: string | undefined;
 
 describe(`${scriptName}`, () => {
@@ -29,7 +29,7 @@ describe(`${scriptName}`, () => {
       try {
         const epSdkPinoLogger: EpSdkPinoLogger = new EpSdkPinoLogger(TestConfig.getAppId(), EEpSdkLogLevel.Trace);
         EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkPinoLogger });
-        EpSdkLogger.info(EpSdkLogger.createLogEntry(scriptName, { code: 'TEST_INFO', details: {
+        EpSdkLogger.info(EpSdkLogger.createLogEntry(scriptName, { code: 'TEST_INFO', module: scriptName, details: {
           hello: 'world'
         }}));
         // expect(false, TestLogger.createLogMessage('check logging')).to.be.true;

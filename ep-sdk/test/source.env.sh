@@ -13,6 +13,16 @@ unset_source_env() {
 }
 
 export EP_SDK_TEST_EP_API_BASE_URL="https://ian-dev-api.mymaas.net"
+# export enum EEpSdkLogLevel {
+#   Silent = 0,
+#   FatalError = 1,
+#   Error = 2,
+#   Warn = 3,
+#   Info = 4,
+#   Debug = 5,
+#   Trace = 6,
+# }
+export EP_SDK_TEST_LOG_LEVEL=6
 
 ######################################################
 

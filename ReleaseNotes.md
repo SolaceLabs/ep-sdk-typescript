@@ -2,6 +2,18 @@
 
 Solace Event Portal SDK.
 
+## Version 0.2.1-alpha
+  * [Solace Event Portal OpenAPI](https://github.com/solace-iot-team/ep-sdk/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
+
+**New Features:**
+- **Tasks**
+  - added: **EpSdkApplicationDomainTask**
+
+**Core:**
+- **Task Framework**
+  - added task framework to sdk
+
+
 ## Version 0.2.0-alpha
   * [Solace Event Portal OpenAPI](https://github.com/solace-iot-team/ep-sdk/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 

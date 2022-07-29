@@ -35,6 +35,10 @@ export class EpSdkPinoLogger implements IEpSdkLoggerInstance {
     });
   }
 
+  public setLogLevel(epSdkLogLevel: EEpSdkLogLevel) {
+    EpSdkPinoLogger.L.level = EpSdkPinoLogger.getPinoLevel(epSdkLogLevel);
+  }
+
   public createLogEntry = (logName: string, details: IEpSdkLogDetails): IEpSdkLogEntry => {
     const d = new Date();
     return {

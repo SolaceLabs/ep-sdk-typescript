@@ -20,12 +20,12 @@ class EpSdkApplicationDomainsService extends EpSdkService {
     const applicationDomainsResponse: ApplicationDomainsResponse = await ApplicationDomainsService.getApplicationDomains({
       name: applicationDomainName
     });
-    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, details: {
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
       applicationDomainsResponse: applicationDomainsResponse
     }}));
 
     if(applicationDomainsResponse.data === undefined || applicationDomainsResponse.data.length === 0) return undefined;
-    if(applicationDomainsResponse.data.length > 1) throw new EpSdkApiContentError(logName, 'applicationDomainsResponse.data.length > 1', {
+    if(applicationDomainsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name,'applicationDomainsResponse.data.length > 1', {
       applicationDomainsResponse: applicationDomainsResponse
     });
     const applicationDomain: ApplicationDomain = applicationDomainsResponse.data[0];
@@ -42,7 +42,7 @@ class EpSdkApplicationDomainsService extends EpSdkService {
       id: applicationDomainId,
     });
     if(applicationDomainResponse.data === undefined) {
-      throw new EpSdkApiContentError(logName, "applicationDomainResponse.data === undefined", {
+      throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomainResponse.data === undefined", {
         applicationDomainId: applicationDomainId
       });
     }
@@ -73,10 +73,10 @@ class EpSdkApplicationDomainsService extends EpSdkService {
     const logName = `${EpSdkApplicationDomainsService.name}.${funcName}()`;
     
     const applicationDomain: ApplicationDomain | undefined = await this.getByName({ applicationDomainName: applicationDomainName });
-    if(applicationDomain === undefined) throw new EpSdkServiceError(logName, "applicationDomain === undefined", {
+    if(applicationDomain === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "applicationDomain === undefined", {
       applicationDomainName: applicationDomainName
     });
-    if(applicationDomain.id === undefined) throw new EpSdkApiContentError(logName, 'applicationDomain.id === undefined', {
+    if(applicationDomain.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationDomain.id === undefined', {
       applicationDomain: applicationDomain,
     });
     const applicationDomainDeleted: ApplicationDomain = await this.deleteById({ applicationDomainId: applicationDomain.id });
