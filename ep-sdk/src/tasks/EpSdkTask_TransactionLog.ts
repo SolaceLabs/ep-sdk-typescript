@@ -20,7 +20,7 @@ export class EpSdkTask_TransactionLog {
     this.epSdkTask_TransactionLogData = {
       taskTransactionId: taskTransactionId,
       epSdkTask_Config: epSdkTask_Config,
-      epSdkTask_Action: EEpSdkTask_Action.UNDEFINED,
+      epSdkTask_Action: EEpSdkTask_Action.NO_ACTION,
     };
   }
 

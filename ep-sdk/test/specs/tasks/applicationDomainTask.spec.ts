@@ -95,6 +95,34 @@ describe(`${scriptName}`, () => {
       }
     });
 
+    it(`${scriptName}: application domain present: create: nothing to do`, async () => {
+      try {
+
+        const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
+          epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+          applicationDomainName: ApplicationDomainName,
+          applicationDomainSettings: {
+            // description: 
+          },
+          epSdkTask_TransactionConfig: {
+            parentTransactionId: 'parentTransactionId',
+            groupTransactionId: 'groupTransactionId'
+          }
+        });
+
+        const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTask.execute();
+
+        const message = TestLogger.createLogMessage('epSdkApplicationDomainTask_ExecuteReturn', epSdkApplicationDomainTask_ExecuteReturn);
+        expect(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+        expect(epSdkApplicationDomainTask_ExecuteReturn.epObject.id, message).to.eq(ApplicationDomainId);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
     it(`${scriptName}: application domain present: checkmode update`, async () => {
       try {
 
@@ -116,7 +144,6 @@ describe(`${scriptName}`, () => {
         const message = TestLogger.createLogMessage('epSdkApplicationDomainTask_ExecuteReturn', epSdkApplicationDomainTask_ExecuteReturn);
         expect(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_UPDATE);
         expect(epSdkApplicationDomainTask_ExecuteReturn.epObject.id, message).to.eq(ApplicationDomainId);
-
 
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -153,7 +180,36 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: application domain absent: checkmode`, async () => {
+    it(`${scriptName}: application domain present: no action`, async () => {
+      try {
+
+        const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
+          epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+          applicationDomainName: ApplicationDomainName,
+          applicationDomainSettings: {
+            description: 'updated description'
+          },
+          epSdkTask_TransactionConfig: {
+            parentTransactionId: 'parentTransactionId',
+            groupTransactionId: 'groupTransactionId'
+          }
+        });
+
+        const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTask.execute();
+        
+        const message = TestLogger.createLogMessage('epSdkApplicationDomainTask_ExecuteReturn', epSdkApplicationDomainTask_ExecuteReturn);
+        expect(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+        expect(epSdkApplicationDomainTask_ExecuteReturn.epObject.id, message).to.eq(ApplicationDomainId);
+        // expect(false, message).to.be.true;
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: application domain absent: checkmode with existing`, async () => {
       try {
 
         const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
@@ -188,6 +244,27 @@ describe(`${scriptName}`, () => {
         const message = TestLogger.createLogMessage('epSdkApplicationDomainTask_ExecuteReturn', epSdkApplicationDomainTask_ExecuteReturn);
         expect(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.DELETE);
         expect(epSdkApplicationDomainTask_ExecuteReturn.epObject.id, message).to.eq(ApplicationDomainId);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: application domain absent: checkmode with non-existing`, async () => {
+      try {
+
+        const epSdkApplicationDomainTask = new EpSdkApplicationDomainTask({
+          epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
+          applicationDomainName: ApplicationDomainName,
+          checkmode: true
+        });
+
+        const epSdkApplicationDomainTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await epSdkApplicationDomainTask.execute();
+
+        const message = TestLogger.createLogMessage('epSdkApplicationDomainTask_ExecuteReturn', epSdkApplicationDomainTask_ExecuteReturn);
+        expect(epSdkApplicationDomainTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
 
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;

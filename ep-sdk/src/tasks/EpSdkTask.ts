@@ -23,7 +23,7 @@ export enum EEpSdkTask_Action {
   WOULD_DELETE = "WOULD_DELETE",
   DELETE_VERSION = "DELETE_VERSION",
   WOULD_DELETE_VERSION = "WOULD_DELETE_VERSION",
-  UNDEFINED = "UNDEFINED"
+  NO_ACTION = "NO_ACTION",
 }
 export interface IEpSdkTask_TransactionConfig {
   groupTransactionId?: string;
