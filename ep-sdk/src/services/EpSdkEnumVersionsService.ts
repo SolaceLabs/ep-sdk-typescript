@@ -1,17 +1,17 @@
 import { EpSdkApiContentError } from "../EpSdkErrors";
 import EpSdkSemVerUtils from "../EpSdkSemVerUtils";
-import { 
+import {
   Enum,
-  EnumsService, 
-  EnumVersion, 
-  EnumVersionsResponse 
+  EnumsService,
+  EnumVersion,
+  EnumVersionsResponse
 } from "../sep-openapi-node";
 import EpSdkEnumsService from "./EpSdkEnumsService";
 
 
 class EpSdkEnumVersionsService {
 
-  private getLatestVersionFromList = ({ enumVersionList }:{
+  private getLatestVersionFromList = ({ enumVersionList }: {
     enumVersionList: Array<EnumVersion>;
   }): EnumVersion | undefined => {
     const funcName = 'getLatestVersionFromList';
@@ -19,12 +19,12 @@ class EpSdkEnumVersionsService {
 
     let latestEnumVersion: EnumVersion | undefined = undefined;
     let latestVersionString: string = '0.0.0';
-    for(const enumVersion of enumVersionList) {
-      if(enumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'enumVersion.version === undefined', {    
+    for (const enumVersion of enumVersionList) {
+      if (enumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersion.version === undefined', {
         enumVersion: enumVersion
       });
       const newVersionString: string = enumVersion.version;
-      if(EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
+      if (EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
         newVersionString: newVersionString,
         oldVersionString: latestVersionString,
       })) {
@@ -35,7 +35,7 @@ class EpSdkEnumVersionsService {
     return latestEnumVersion;
   }
 
-  public getVersionByVersion = async({ enumId, enumVersionString }:{
+  public getVersionByVersion = async ({ enumId, enumVersionString }: {
     enumId: string;
     enumVersionString: string;
   }): Promise<EnumVersion | undefined> => {
@@ -46,14 +46,14 @@ class EpSdkEnumVersionsService {
       enumId: enumId,
       versions: [enumVersionString]
     });
-    if(enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return undefined;
-    if(enumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionsResponse.data.length > 1', {
+    if (enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return undefined;
+    if (enumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionsResponse.data.length > 1', {
       enumVersionsResponse: enumVersionsResponse
     });
     return enumVersionsResponse.data[0];
   }
 
-  public getVersionsForEnumId = async({ enumId }:{
+  public getVersionsForEnumId = async ({ enumId }: {
     enumId: string;
   }): Promise<Array<EnumVersion>> => {
     const funcName = 'getVersionsForEnumId';
@@ -64,16 +64,16 @@ class EpSdkEnumVersionsService {
     //   ids: [enumId]
     // });
     const enumVersionsResponse: EnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
-      enumId: enumId,      
+      enumId: enumId,
     });
     // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
     //   enumVersionsResponse: enumVersionsResponse
     // }}));
-    if(enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return [];
+    if (enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return [];
     return enumVersionsResponse.data;
   }
 
-  public getVersionsForEnumName = async({ enumName, applicationDomainId }:{
+  public getVersionsForEnumName = async ({ enumName, applicationDomainId }: {
     applicationDomainId: string;
     enumName: string;
   }): Promise<Array<EnumVersion>> => {
@@ -84,15 +84,15 @@ class EpSdkEnumVersionsService {
       applicationDomainId: applicationDomainId,
       enumName: enumName
     });
-    if(enumObject === undefined) return [];
-    if(enumObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumObject.id === undefined', {
+    if (enumObject === undefined) return [];
+    if (enumObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumObject.id === undefined', {
       enumObject: enumObject
     });
     const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumId({ enumId: enumObject.id });
     return enumVersionList;
   }
 
-  public getLastestVersionString = async({ enumId }:{
+  public getLastestVersionString = async ({ enumId }: {
     enumId: string;
   }): Promise<string | undefined> => {
     const funcName = 'getLastestVersionString';
@@ -103,14 +103,14 @@ class EpSdkEnumVersionsService {
     //   enumVersionList: enumVersionList
     // }}));
     const latestEnumVersion: EnumVersion | undefined = this.getLatestVersionFromList({ enumVersionList: enumVersionList });
-    if(latestEnumVersion === undefined) return undefined;
-    if(latestEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestEnumVersion.version === undefined', {
+    if (latestEnumVersion === undefined) return undefined;
+    if (latestEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestEnumVersion.version === undefined', {
       latestEnumVersion: latestEnumVersion
     });
     return latestEnumVersion.version;
   }
 
-  public getLatestVersionForEnumId = async({ enumId, applicationDomainId }: {
+  public getLatestVersionForEnumId = async ({ enumId, applicationDomainId }: {
     applicationDomainId: string;
     enumId: string;
   }): Promise<EnumVersion | undefined> => {
@@ -118,7 +118,7 @@ class EpSdkEnumVersionsService {
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumId({ 
+    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumId({
       enumId: enumId,
     });
 
@@ -126,16 +126,16 @@ class EpSdkEnumVersionsService {
     return latestEnumVersion;
   }
 
-  public getLastestVersionForEnumName = async({ applicationDomainId, enumName }:{
+  public getLastestVersionForEnumName = async ({ applicationDomainId, enumName }: {
     applicationDomainId: string;
     enumName: string;
   }): Promise<EnumVersion | undefined> => {
     const funcName = 'getLastestVersionForEnumName';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumName({ 
-      enumName: enumName, 
-      applicationDomainId: applicationDomainId 
+    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumName({
+      enumName: enumName,
+      applicationDomainId: applicationDomainId
     });
     // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
     //   enumVersionList: enumVersionList

@@ -8,7 +8,8 @@ import { EpSdkTask_TransactionLog, IEpSdkTask_TransactionLogData } from "./EpSdk
 
 export enum EEpSdkTask_EpObjectType {
   UNDEFINED = "undefined",
-  APPLICATION_DOMAIN = "applicationDomain"
+  APPLICATION_DOMAIN = "applicationDomain",
+  ENUM = "enum"
 }
 export interface IEpSdkTask_EpObjectKeys {
   epObjectType: EEpSdkTask_EpObjectType; 
