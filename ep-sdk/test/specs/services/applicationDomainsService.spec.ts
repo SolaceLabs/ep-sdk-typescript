@@ -51,8 +51,8 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get application domain by id`, async () => {
       try {
-        const applicationDomain: ApplicationDomain | undefined = await EpSdkApplicationDomainsService.getById({ applicationDomainId: ApplicationDomainId });
-        expect(applicationDomain, TestLogger.createApiTestFailMessage('applicationDomain === undefined')).to.not.be.undefined;
+        const applicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.getById({ applicationDomainId: ApplicationDomainId });
+        expect(applicationDomain.id, TestLogger.createApiTestFailMessage(`applicationDomain.id !== ${ApplicationDomainId}`)).to.eq(ApplicationDomainId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;

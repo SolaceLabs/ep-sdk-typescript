@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { EpSdkConfig } from "../EpSdkConfig";
 import { EpSdkApiContentError, EpSdkInternalTaskError } from "../EpSdkErrors";
 import { EpSdkLogger } from "../EpSdkLogger";
@@ -44,7 +43,7 @@ export interface IEpSdkApplicationDomainTask_UpdateFuncReturn extends Omit<IEpSd
 export interface IEpSdkApplicationDomainTask_DeleteFuncReturn extends Omit<IEpSdkTask_DeleteFuncReturn, "epObject"> {
   epObject: ApplicationDomain;
 }
-export interface IEpSdkApplicationDomainTask_ExecuteReturn extends IEpSdkTask_ExecuteReturn {
+export interface IEpSdkApplicationDomainTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: ApplicationDomain;
 }
 
@@ -64,7 +63,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
   private getTaskConfig(): IEpSdkApplicationDomainTask_Config { 
     return this.epSdkTask_Config as IEpSdkApplicationDomainTask_Config; 
   }
-  private createApplicationDomainSettings(): Partial<ApplicationDomain> {
+  private createObjectSettings(): Partial<ApplicationDomain> {
     return {
       ...this.Default_TEpSdkApplicationDomainTask_Settings,
       ...this.getTaskConfig().applicationDomainSettings,
@@ -119,9 +118,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       applicationDomain: applicationDomain ? applicationDomain : 'undefined'
     }}));
 
-    if(applicationDomain === undefined) {
-      return this.Empty_IEpSdkApplicationDomainTask_GetFuncReturn;
-    }
+    if(applicationDomain === undefined) return this.Empty_IEpSdkApplicationDomainTask_GetFuncReturn;
 
     const epSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn = {
       epObjectKeys: this.getEpObjectKeys(applicationDomain),
@@ -147,7 +144,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       topicDomainEnforcementEnabled: existingObject.topicDomainEnforcementEnabled,
       uniqueTopicAddressEnforcementEnabled: existingObject.uniqueTopicAddressEnforcementEnabled,
     }
-    const requestedCompareObject: TEpSdkApplicationDomainTask_CompareObject = this.createApplicationDomainSettings();
+    const requestedCompareObject: TEpSdkApplicationDomainTask_CompareObject = this.createObjectSettings();
 
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 
       existingObject: existingCompareObject, 
@@ -171,7 +168,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name }));
 
     const create: ApplicationDomain = {
-      ...this.createApplicationDomainSettings(),
+      ...this.createObjectSettings(),
       name: this.getTaskConfig().applicationDomainName,
     };
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
@@ -219,12 +216,12 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
     if(epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined');
-    if(epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined', {
+    if(epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkApplicationDomainTask_GetFuncReturn.epObject
     });
     
     const update: ApplicationDomain = {
-      ...this.createApplicationDomainSettings(),
+      ...this.createObjectSettings(),
       name: this.getTaskConfig().applicationDomainName,
     };
 
@@ -269,12 +266,12 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
 
   protected async deleteFunc(epSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn): Promise<IEpSdkApplicationDomainTask_DeleteFuncReturn> {
     const funcName = 'deleteFunc';
-    const logName = `${EpSdkTask.name}.${funcName}()`;
+    const logName = `${EpSdkApplicationDomainTask.name}.${funcName}()`;
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE, module: this.constructor.name }));
 
     if(epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined');
-    if(epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationDomainTask_GetFuncReturn.epObject === undefined', {
+    if(epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationDomainTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkApplicationDomainTask_GetFuncReturn.epObject
     });
 
@@ -296,11 +293,10 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
       epObjectKeys: this.getEpObjectKeys(applicationDomain)
     };
     return epSdkApplicationDomainTask_DeleteFuncReturn;
-
   }
 
   public async execute(): Promise<IEpSdkApplicationDomainTask_ExecuteReturn> { 
-    const epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn = await super.execute();
+    const epSdkTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await super.execute();
     return epSdkTask_ExecuteReturn;
   }
 
