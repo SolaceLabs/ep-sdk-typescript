@@ -15,7 +15,7 @@ import {
 } from '../../../src/sep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
-import EpSdkSchemasService, { EpSdkSchemaContentType, EpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
+import EpSdkSchemasService, { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -52,8 +52,8 @@ describe(`${scriptName}`, () => {
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: SchemaName,
-            schemaType: EpSdkSchemaType.JSON_SCHEMA,
-            contentType: EpSdkSchemaContentType.APPLICATION_JSON,
+            schemaType: EEpSdkSchemaType.JSON_SCHEMA,
+            contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
           }
         });
         SchemaId = schemaResponse.data.id;
@@ -114,8 +114,8 @@ describe(`${scriptName}`, () => {
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: SchemaName,
-            schemaType: EpSdkSchemaType.JSON_SCHEMA,
-            contentType: EpSdkSchemaContentType.APPLICATION_JSON,
+            schemaType: EEpSdkSchemaType.JSON_SCHEMA,
+            contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
           }
         });
         SchemaId = schemaResponse.data.id;

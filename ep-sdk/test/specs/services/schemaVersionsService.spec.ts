@@ -17,7 +17,7 @@ import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EpSdkSchemaContentType, EpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
+import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -51,8 +51,8 @@ describe(`${scriptName}`, () => {
         requestBody: {
           applicationDomainId: ApplicationDomainId,
           name: SchemaName,
-          schemaType: EpSdkSchemaType.JSON_SCHEMA,
-          contentType: EpSdkSchemaContentType.APPLICATION_JSON,
+          schemaType: EEpSdkSchemaType.JSON_SCHEMA,
+          contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
         }
       });
       SchemaId = schemaResponse.data.id;

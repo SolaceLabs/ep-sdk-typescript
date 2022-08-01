@@ -9,10 +9,10 @@ import {
 } from '../sep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
-export enum EpSdkSchemaType {
+export enum EEpSdkSchemaType {
   JSON_SCHEMA = "jsonSchema"
 }
-export enum EpSdkSchemaContentType {
+export enum EEpSdkSchemaContentType {
   APPLICATION_JSON = "json"
 }
 

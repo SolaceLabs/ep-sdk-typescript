@@ -22,7 +22,7 @@ import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn } from '.
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkSchemaContentType, EpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
+import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 
 
 const scriptName: string = path.basename(__filename);
@@ -80,8 +80,8 @@ describe(`${scriptName}`, () => {
       requestBody: {
         applicationDomainId: ApplicationDomainId,
         name: SchemaName,
-        contentType: EpSdkSchemaContentType.APPLICATION_JSON,
-        schemaType: EpSdkSchemaType.JSON_SCHEMA,
+        contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
+        schemaType: EEpSdkSchemaType.JSON_SCHEMA,
       }
     });
     SchemaId = schemaResponse.data.id;

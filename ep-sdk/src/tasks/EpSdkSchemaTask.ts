@@ -6,7 +6,7 @@ import {
   SchemaResponse,
   SchemasService
 } from '../sep-openapi-node';
-import EpSdkSchemasService, { EpSdkSchemaContentType, EpSdkSchemaType } from "../services/EpSdkSchemasService";
+import EpSdkSchemasService, { EEpSdkSchemaContentType, EEpSdkSchemaType } from "../services/EpSdkSchemasService";
 import { 
   EEpSdkTask_EpObjectType,
   EpSdkTask,
@@ -58,8 +58,8 @@ export class EpSdkSchemaTask extends EpSdkTask {
   };
   private readonly Default_TEpSdkSchemaTask_Settings: TEpSdkSchemaTask_Settings = {
     shared: true,
-    contentType: EpSdkSchemaContentType.APPLICATION_JSON,
-    schemaType: EpSdkSchemaType.JSON_SCHEMA,
+    contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
+    schemaType: EEpSdkSchemaType.JSON_SCHEMA,
   }
   private getTaskConfig(): IEpSdkSchemaTask_Config { 
     return this.epSdkTask_Config as IEpSdkSchemaTask_Config; 
