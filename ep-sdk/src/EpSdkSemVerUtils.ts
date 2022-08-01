@@ -3,7 +3,6 @@ import {
   // coerce as SemVerCoerce, 
   valid as SemVerValid 
 } from "semver";
-import { EpSdkInvalidSemVerStringError } from "./EpSdkErrors";
 import { EpSdkUtils } from "./EpSdkUtils";
 
 export enum EEpSdk_VersionStrategy {
@@ -11,7 +10,7 @@ export enum EEpSdk_VersionStrategy {
   BUMP_PATCH = "bump_patch"
 }
 
-export class EpSdkSemVerUtils {
+class EpSdkSemVerUtils {
 
   public isSemVerFormat({ versionString }:{
     versionString: string;
