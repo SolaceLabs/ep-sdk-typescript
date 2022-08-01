@@ -1,0 +1,208 @@
+import 'mocha';
+import { expect } from 'chai';
+import path from 'path';
+import { TestLogger } from '../../lib/TestLogger';
+import { TestContext } from '../../lib/TestContext';
+import TestConfig from '../../lib/TestConfig';
+import { TestUtils } from '../../lib/TestUtils';
+import { 
+  ApiError, 
+  ApplicationDomainResponse, 
+  ApplicationDomainsService, 
+  SchemaResponse, 
+  SchemasService,
+  SchemaVersion
+} from '../../../src/sep-openapi-node';
+import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
+import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
+import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
+import { EpSdkSchemaContentType, EpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
+
+const scriptName: string = path.basename(__filename);
+TestLogger.logMessage(scriptName, ">>> starting ...");
+
+const TestSpecId: string = TestUtils.getUUID();
+const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
+let ApplicationDomainId: string | undefined;
+const SchemaName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
+let SchemaId: string | undefined;
+const SchemaVersionString = '1.0.0';
+let SchemaVersionId: string | undefined;
+const SchemaNextVersionString = '1.0.1';
+let SchemaNextVersionId: string | undefined;
+
+
+describe(`${scriptName}`, () => {
+
+    beforeEach(() => {
+      TestContext.newItId();
+    });
+
+    before(async() => {
+      const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        requestBody: {
+          name: ApplicationDomainName,
+        }
+      });
+      ApplicationDomainId = applicationDomainResponse.data.id;
+
+      const schemaResponse: SchemaResponse = await SchemasService.createSchema({
+        requestBody: {
+          applicationDomainId: ApplicationDomainId,
+          name: SchemaName,
+          schemaType: EpSdkSchemaType.JSON_SCHEMA,
+          contentType: EpSdkSchemaContentType.APPLICATION_JSON,
+        }
+      });
+      SchemaId = schemaResponse.data.id;
+    });
+
+    after(async() => {
+      // delete application domain
+      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
+    });
+
+    it(`${scriptName}: should create schema version`, async () => {
+      try {
+
+        const create: SchemaVersion = {
+          description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
+          version: SchemaVersionString
+        };
+
+        const created: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+          applicationDomainId: ApplicationDomainId,
+          schemaId: SchemaId,
+          schemaVersion: create,
+          targetLifecycleStateId: EpSdkStatesService.releasedId
+        });
+        SchemaVersionId = created.id;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get schema version by version`, async () => {
+      try {
+        const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getVersionByVersion({ 
+          schemaId: SchemaId,
+          schemaVersionString: SchemaVersionString,
+        });
+        expect(schemaVersion.version, TestLogger.createApiTestFailMessage('version mismatch')).to.eq(SchemaVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get schema versions for schema id`, async () => {
+      try {
+        const schemaVersionList: Array<SchemaVersion> = await EpSdkSchemaVersionsService.getVersionsForSchemaId({ schemaId: SchemaId });
+        expect(schemaVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
+        const schemaVersion: SchemaVersion = schemaVersionList[0];
+        expect(schemaVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(SchemaVersionId);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get schema versions for schema name`, async () => {
+      try {
+        const schemaVersionList: Array<SchemaVersion> = await EpSdkSchemaVersionsService.getVersionsForSchemaName({ 
+          applicationDomainId: ApplicationDomainId,
+          schemaName: SchemaName 
+        });
+        expect(schemaVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
+        const schemaVersion: SchemaVersion = schemaVersionList[0];
+        expect(schemaVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(SchemaVersionId);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should create new schema version`, async () => {
+      try {
+        const create: SchemaVersion = {
+          description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
+          version: SchemaNextVersionString
+        };
+        const created: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+          applicationDomainId: ApplicationDomainId,
+          schemaId: SchemaId,
+          schemaVersion: create,
+          targetLifecycleStateId: EpSdkStatesService.releasedId
+        });
+        SchemaNextVersionId = created.id;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version string`, async () => {
+      try {
+        const latestVersionString: string = await EpSdkSchemaVersionsService.getLastestVersionString({ schemaId: SchemaId });
+        expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(SchemaNextVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version for schema id`, async () => {
+      try {
+        const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({ 
+          applicationDomainId: ApplicationDomainId,
+          schemaId: SchemaId 
+        });
+        expect(schemaVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(SchemaNextVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version for schema name`, async () => {
+      try {
+        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLastestVersionForSchemaName({ 
+          applicationDomainId: ApplicationDomainId,
+          schemaName: SchemaName
+        });
+        expect(schemaVersion, TestLogger.createApiTestFailMessage('schemaVersion === undefined')).to.not.be.undefined;
+        expect(schemaVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(SchemaNextVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version for schema name that doesn't exist`, async () => {
+      const NonExistentName = 'non-existent';
+      try {
+        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLastestVersionForSchemaName({ 
+          applicationDomainId: ApplicationDomainId,
+          schemaName: NonExistentName
+        });
+        expect(schemaVersion, TestLogger.createApiTestFailMessage('schemaVersion === undefined')).to.be.undefined;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        const epSdkServiceError: EpSdkServiceError = e;
+        expect(epSdkServiceError.toString(), TestLogger.createApiTestFailMessage(`error does not contain ${NonExistentName}`)).to.contain(NonExistentName);
+      }
+    });
+
+});
+

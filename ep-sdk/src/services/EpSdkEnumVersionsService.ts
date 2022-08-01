@@ -11,7 +11,6 @@ import {
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 
-
 class EpSdkEnumVersionsService extends EpSdkVersionService {
 
   private getLatestVersionFromList = ({ enumVersionList }: {
@@ -162,17 +161,17 @@ class EpSdkEnumVersionsService extends EpSdkVersionService {
       enumId: enumId,
       requestBody: enumVersion
     });
-    if(enumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data', {
+    if(enumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data === undefined', {
       enumVersionResponse: enumVersionResponse
     });
     const createdEnumVersion: EnumVersion = enumVersionResponse.data;
-    if(createdEnumVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.id', {
+    if(createdEnumVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.id === undefined', {
       enumVersionResponse: enumVersionResponse
     });
-    if(createdEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.stateId', {
+    if(createdEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.stateId === undefined', {
       enumVersionResponse: enumVersionResponse
     });
-    if(createdEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.version', {
+    if(createdEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.version === undefined', {
       enumVersionResponse: enumVersionResponse
     });
     if(createdEnumVersion.stateId !== targetLifecycleStateId) {

@@ -6,14 +6,23 @@ import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
 import { 
-  ApiError, ApplicationDomainResponse, ApplicationDomainsService, EnumResponse, EnumsService
+  ApiError, 
+  ApplicationDomainResponse, 
+  ApplicationDomainsService, 
+  SchemaResponse, 
+  SchemasService
  } from '../../../src/sep-openapi-node';
-import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError } from '../../../src/EpSdkErrors';
+import { 
+  EpSdkError, 
+  EpSdkFeatureNotSupportedError, 
+  EpSdkInvalidSemVerStringError 
+} from '../../../src/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumVersionTask';
+import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import { EpSdkSchemaContentType, EpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 
 
 const scriptName: string = path.basename(__filename);
@@ -22,10 +31,37 @@ TestLogger.logMessage(scriptName, ">>> starting ...");
 const TestSpecId: string = TestUtils.getUUID();
 const ApplicationDomainName = `${TestConfig.getAppId()}/tasks/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
-const EnumName = `${TestConfig.getAppId()}-tasks-${TestSpecId}`;
-let EnumId: string | undefined;
-const EnumVersionName = `${TestSpecId}`;
-let EnumVersionId: string | undefined;
+const SchemaName = `${TestConfig.getAppId()}-tasks-${TestSpecId}`;
+let SchemaId: string | undefined;
+const SchemaVersionName = `${TestSpecId}`;
+let SchemaVersionId: string | undefined;
+
+const SchemaContent = `
+{
+  "description": "Generic message header.",
+  "type": "object",
+  "properties": {
+    "sentAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when the message was sent."
+    },
+    "transactionId": {
+      "type": "string",
+      "description": "The transaction id."
+    },
+    "storeId": {
+      "type": "string",
+      "description": "The store id."
+    }
+  },
+  "required": [
+    "sentAt",
+    "transactionId",
+    "storeId"
+  ]
+}
+`;
 
 describe(`${scriptName}`, () => {
     
@@ -40,13 +76,15 @@ describe(`${scriptName}`, () => {
       }
     });
     ApplicationDomainId = applicationDomainResponse.data.id;
-    const enumResponse: EnumResponse = await EnumsService.createEnum({ 
+    const schemaResponse: SchemaResponse = await SchemasService.createSchema({ 
       requestBody: {
         applicationDomainId: ApplicationDomainId,
-        name: EnumName,
+        name: SchemaName,
+        contentType: EpSdkSchemaContentType.APPLICATION_JSON,
+        schemaType: EpSdkSchemaType.JSON_SCHEMA,
       }
     });
-    EnumId = enumResponse.data.id;
+    SchemaId = schemaResponse.data.id;
   });
 
   after(async() => {
@@ -61,20 +99,21 @@ describe(`${scriptName}`, () => {
     // EpSdkLogger.getLoggerInstance().setLogLevel(EEpSdkLogLevel.Trace);
   });
 
-  it(`${scriptName}: enum version present: checkmode create`, async () => {
+  it(`${scriptName}: schema version present: checkmode create`, async () => {
     try {
 
-      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        enumId: EnumId,
+        schemaId: SchemaId,
         initialVersionString: '1.2.0',
-        enumVersionSettings: {
+        schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: EnumVersionName,
+          displayName: SchemaVersionName,
+          description: 'description',
+          content: SchemaContent
         },
         epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
-        enumValues: [ 'one', 'two'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -82,10 +121,10 @@ describe(`${scriptName}`, () => {
         checkmode: true,
       });
 
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_FIRST_VERSION);
+      const message = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn', epSdkSchemaVersionTask_ExecuteReturn);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_FIRST_VERSION);
 
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -97,32 +136,33 @@ describe(`${scriptName}`, () => {
     }
   });
     
-  it(`${scriptName}: enum version present: create`, async () => {
+  it(`${scriptName}: schema version present: create`, async () => {
     try {
 
-      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        enumId: EnumId,
+        schemaId: SchemaId,
         initialVersionString: '1.2.0',
-        enumVersionSettings: {
+        schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: EnumVersionName,
+          displayName: SchemaVersionName,
+          description: 'description',
+          content: SchemaContent
         },
         epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
-        enumValues: [ 'one', 'two'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
       });
 
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_FIRST_VERSION);
+      const message = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn', epSdkSchemaVersionTask_ExecuteReturn);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_FIRST_VERSION);
       
-      EnumVersionId = epSdkEnumVersionTask_ExecuteReturn.epObject.id;
+      SchemaVersionId = epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
 
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -134,31 +174,32 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: enum version present: create`, async () => {
+  it(`${scriptName}: schema version present: create idempotency`, async () => {
     try {
 
-      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        enumId: EnumId,
+        schemaId: SchemaId,
         initialVersionString: '1.2.0',
-        enumVersionSettings: {
+        schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: EnumVersionName,
+          displayName: SchemaVersionName,
+          description: 'description',
+          content: SchemaContent
         },
         epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
-        enumValues: [ 'one', 'two'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
       });
 
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.id, message).to.eq(EnumVersionId);
+      const message = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn', epSdkSchemaVersionTask_ExecuteReturn);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epObject.id, message).to.eq(SchemaVersionId);
       
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -170,20 +211,21 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: enum version present: checkmode update`, async () => {
+  it(`${scriptName}: schema version present: checkmode update`, async () => {
     try {
 
-      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        enumId: EnumId,
+        schemaId: SchemaId,
         initialVersionString: '1.2.0',
-        enumVersionSettings: {
+        schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: EnumVersionName,
+          displayName: SchemaVersionName,
+          description: 'updated description',
+          content: SchemaContent
         },
         epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
-        enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -191,11 +233,11 @@ describe(`${scriptName}`, () => {
         checkmode: true
       });
 
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.id, message).to.eq(EnumVersionId);
+      const message = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn', epSdkSchemaVersionTask_ExecuteReturn);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epObject.id, message).to.eq(SchemaVersionId);
       
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -207,35 +249,35 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: enum version present: update`, async () => {
+  it(`${scriptName}: schema version present: update`, async () => {
     try {
 
-      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        enumId: EnumId,
+        schemaId: SchemaId,
         initialVersionString: '1.2.0',
-        enumVersionSettings: {
+        schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: EnumVersionName,
+          displayName: SchemaVersionName,
+          description: 'updated description',
+          content: SchemaContent
         },
         epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
-        enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
-        checkmode: false
       });
 
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.enumId, message).to.eq(EnumId);
-      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.version, message).to.eq('1.2.1');
+      const message = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn', epSdkSchemaVersionTask_ExecuteReturn);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epObject.schemaId, message).to.eq(SchemaId);
+      expect(epSdkSchemaVersionTask_ExecuteReturn.epObject.version, message).to.eq('1.2.1');
 
-      EnumVersionId = epSdkEnumVersionTask_ExecuteReturn.epObject.id;
+      SchemaVersionId = epSdkSchemaVersionTask_ExecuteReturn.epObject.id;
       
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -247,28 +289,28 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: enum version present: update`, async () => {
+  it(`${scriptName}: schema version present: update , catch not semver error`, async () => {
     try {
 
-      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        enumId: EnumId,
+        schemaId: SchemaId,
         initialVersionString: 'not-semver',
-        enumVersionSettings: {
+        schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: EnumVersionName,
+          displayName: SchemaVersionName,
+          description: 'updated description again',
+          content: SchemaContent
         },
         epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
-        enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
-        checkmode: false
       });
 
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -277,28 +319,28 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: enum version absent`, async () => {
+  it(`${scriptName}: schema version absent`, async () => {
     try {
 
-      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
-        enumId: EnumId,
+        schemaId: SchemaId,
         initialVersionString: '1.2.0',
-        enumVersionSettings: {
+        schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          displayName: EnumVersionName,
+          displayName: SchemaVersionName,
+          description: 'updated description',
+          content: SchemaContent
         },
         epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
-        enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
-        checkmode: false
       });
 
-      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
