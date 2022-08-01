@@ -9,12 +9,12 @@ import { EpSdkTask_TransactionLog, IEpSdkTask_TransactionLogData } from "./EpSdk
 export enum EEpSdkTask_EpObjectType {
   UNDEFINED = "undefined",
   APPLICATION_DOMAIN = "applicationDomain",
-  ENUM = "enum"
+  ENUM = "enum",
+  ENUM_VERSION = "enumVersion",
 }
 export interface IEpSdkTask_EpObjectKeys {
   epObjectType: EEpSdkTask_EpObjectType; 
   epObjectId: string; 
-  epVersionObjectId?: string;
 }
 export enum EEpSdkTask_TargetState {
   PRESENT = "PRESENT",
@@ -282,10 +282,9 @@ export abstract class EpSdkTask {
     };
   }
 
-  // PARKED
-  // protected async initializeTask(): Promise<void> {
-  //   // do nothing, override in derived class
-  // }
+  protected async validateTaskConfig(): Promise<void> {
+    // do nothing, override in derived class
+  }
 
   protected async execute(): Promise<IEpSdkTask_ExecuteReturn> { 
     const funcName = 'execute';
@@ -296,8 +295,7 @@ export abstract class EpSdkTask {
         epSdkTask_Config: this.epSdkTask_Config
       }}));
 
-      // PARKED
-      // const xvoid: void = await this.initializeTask();
+      const xvoid: void = await this.validateTaskConfig();
 
       const epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn = await this.getFuncCall(this.getTaskKeys());
       EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_GET, module: this.constructor.name, details: {

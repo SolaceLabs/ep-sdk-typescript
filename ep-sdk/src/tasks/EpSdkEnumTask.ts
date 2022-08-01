@@ -1,11 +1,7 @@
-import { EpSdkConfig } from "../EpSdkConfig";
 import { EpSdkApiContentError, EpSdkInternalTaskError } from "../EpSdkErrors";
 import { EpSdkLogger } from "../EpSdkLogger";
 import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
 import { 
-  ApplicationDomain, 
-  ApplicationDomainResponse, 
-  ApplicationDomainsService, 
   Enum,
   EnumResponse,
   EnumsService
@@ -303,7 +299,7 @@ export class EpSdkEnumTask extends EpSdkTask {
   }
 
   public async execute(): Promise<IEpSdkEnumTask_ExecuteReturn> { 
-    const epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn = await super.execute();
+    const epSdkTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await super.execute();
     return epSdkTask_ExecuteReturn;
   }
 

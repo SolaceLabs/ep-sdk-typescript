@@ -146,3 +146,22 @@ export class EpSdkServiceError extends EpSdkError {
   }
 }
 
+export class EpSdkFeatureNotSupportedError extends EpSdkError {
+  protected static DefaultDescription = 'EP Sdk Feature not supported Error';
+  private featureDescription: any;
+  constructor(internalLogName: string, internalModuleName: string, message: string = EpSdkFeatureNotSupportedError.DefaultDescription, featureDescription: any, ) {
+    super(internalLogName, internalModuleName, message);
+    this.featureDescription = featureDescription;
+  }
+}
+
+export class EpSdkInvalidSemVerStringError extends EpSdkError {
+  protected static DefaultDescription = 'EP Sdk Invalid SemVer string Error';
+  private semVerString: string;
+  constructor(internalLogName: string, internalModuleName: string, message: string = EpSdkInvalidSemVerStringError.DefaultDescription, semVerString: string ) {
+    super(internalLogName, internalModuleName, message);
+    this.semVerString = semVerString;
+  }
+}
+
+

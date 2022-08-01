@@ -296,7 +296,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
   }
 
   public async execute(): Promise<IEpSdkApplicationDomainTask_ExecuteReturn> { 
-    const epSdkTask_ExecuteReturn: IEpSdkTask_ExecuteReturn = await super.execute();
+    const epSdkTask_ExecuteReturn: IEpSdkApplicationDomainTask_ExecuteReturn = await super.execute();
     return epSdkTask_ExecuteReturn;
   }
 

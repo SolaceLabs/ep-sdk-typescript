@@ -3,6 +3,7 @@ import {
   // coerce as SemVerCoerce, 
   valid as SemVerValid 
 } from "semver";
+import { EpSdkInvalidSemVerStringError } from "./EpSdkErrors";
 import { EpSdkUtils } from "./EpSdkUtils";
 
 export enum EEpSdk_VersionStrategy {
@@ -24,14 +25,14 @@ export class EpSdkSemVerUtils {
     }
   }
 
-  public createNextVersion({ versionString, strategy }:{
-    versionString: string;
+  public createNextVersion({ fromVersionString, strategy }:{
+    fromVersionString: string;
     strategy: EEpSdk_VersionStrategy;
   }): string {
     const funcName = 'createNextVersion';
     const logName = `${EpSdkSemVerUtils.name}.${funcName}()`;
 
-    const versionSemVer = new SemVer(versionString);
+    const versionSemVer = new SemVer(fromVersionString);
     switch(strategy) {
       case EEpSdk_VersionStrategy.BUMP_MINOR:
         versionSemVer.inc("minor");
