@@ -164,4 +164,14 @@ export class EpSdkInvalidSemVerStringError extends EpSdkError {
   }
 }
 
+export class EpSdkValidationError extends EpSdkError {
+  protected static DefaultDescription = 'EP Sdk Validation Error';
+  private validationError: any;
+  private value: any;
+  constructor(internalLogName: string, internalModuleName: string, message: string = EpSdkValidationError.DefaultDescription, validationError: any, value: any ) {
+    super(internalLogName, internalModuleName, message);
+    this.validationError = validationError;
+    this.value = value;
+  }
+}
 
