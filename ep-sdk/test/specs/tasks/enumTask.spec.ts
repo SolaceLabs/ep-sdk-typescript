@@ -301,14 +301,18 @@ describe(`${scriptName}`, () => {
   it(`${scriptName}: enum absent: checkmode with non-existing`, async () => {
     try {
 
+      const NonExisting = 'non-existing';
+
+
       const epSdkEnumTask = new EpSdkEnumTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
-        enumName: EnumName,
+        enumName: NonExisting,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
+        checkmode: true
       });
 
       const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();

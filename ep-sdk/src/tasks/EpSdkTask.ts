@@ -12,7 +12,9 @@ export enum EEpSdkTask_EpObjectType {
   ENUM = "enum",
   ENUM_VERSION = "enumVersion",
   SCHEMA_OBJECT = "schemaObject",
-  SCHEMA_VERSION = "schemaVersion"
+  SCHEMA_VERSION = "schemaVersion",
+  EVENT = "EVENT",
+  EVENT_VERSION = "EVENT_VERSION",
 }
 export interface IEpSdkTask_EpObjectKeys {
   epObjectType: EEpSdkTask_EpObjectType; 
@@ -284,6 +286,13 @@ export abstract class EpSdkTask {
     };
   }
 
+  /**
+   * Allows for async init of task
+   */
+  protected async initializeTask(): Promise<void> {
+    // do nothing, override in derived class
+  }
+  
   protected async validateTaskConfig(): Promise<void> {
     // do nothing, override in derived class
   }
@@ -297,7 +306,9 @@ export abstract class EpSdkTask {
         epSdkTask_Config: this.epSdkTask_Config
       }}));
 
-      const xvoid: void = await this.validateTaskConfig();
+      let xvoid: void = await this.initializeTask();
+
+      xvoid = await this.validateTaskConfig();
 
       const epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn = await this.getFuncCall(this.getTaskKeys());
       EpSdkLogger.debug(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_DONE_GET, module: this.constructor.name, details: {
