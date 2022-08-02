@@ -6,9 +6,15 @@ import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
 import { 
+  Address,
+  AddressLevel,
   ApiError, 
   ApplicationDomainResponse, 
   ApplicationDomainsService, 
+  DeliveryDescriptor, 
+  EventResponse, 
+  EventsService, 
+  EventVersion, 
   SchemaResponse, 
   SchemasService,
   SchemaVersion
@@ -18,6 +24,8 @@ import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicati
 import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
+import EpSdkEpEventVersionsService from '../../../src/services/EpSdkEpEventVersionsService';
+
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -25,12 +33,29 @@ TestLogger.logMessage(scriptName, ">>> starting ...");
 const TestSpecId: string = TestUtils.getUUID();
 const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
-const SchemaName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
+
+const SchemaName = `${TestSpecId}`;
 let SchemaId: string | undefined;
 const SchemaVersionString = '1.0.0';
 let SchemaVersionId: string | undefined;
-const SchemaNextVersionString = '1.0.1';
-let SchemaNextVersionId: string | undefined;
+
+const EventName = `${TestSpecId}`;
+let EventId: string | undefined;
+const EventVersionString = '1.1.1';
+let EventVersionId: string | undefined;
+const EventNextVersionString = '1.1.2';
+let EventNextVersionId: string | undefined;
+
+const EventVersionDeliveryDescriptor: DeliveryDescriptor = {
+  brokerType: "solace",
+  address: {
+    addressType: Address.addressType.TOPIC,
+    addressLevels: [
+      { addressLevelType: AddressLevel.addressLevelType.LITERAL, name: 'hello' },
+      { addressLevelType: AddressLevel.addressLevelType.LITERAL, name: 'world' },
+    ]
+  }
+};
 
 
 describe(`${scriptName}`, () => {
@@ -53,9 +78,33 @@ describe(`${scriptName}`, () => {
           name: SchemaName,
           schemaType: EEpSdkSchemaType.JSON_SCHEMA,
           contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
+          shared: true
         }
       });
       SchemaId = schemaResponse.data.id;
+
+      const createSchemaVersion: SchemaVersion = {
+        displayName: SchemaName,
+        description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
+        version: SchemaVersionString
+      };
+      const createdSchemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+        applicationDomainId: ApplicationDomainId,
+        schemaId: SchemaId,
+        schemaVersion: createSchemaVersion,
+        targetLifecycleStateId: EpSdkStatesService.releasedId
+      });
+      SchemaVersionId = createdSchemaVersion.id;
+
+      const eventResponse: EventResponse = await EventsService.createEvent({
+        requestBody: {
+          applicationDomainId: ApplicationDomainId,
+          name: EventName,
+          shared: true,          
+        }
+      });
+      EventId = eventResponse.data.id;
+
     });
 
     after(async() => {
@@ -63,21 +112,22 @@ describe(`${scriptName}`, () => {
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
     });
 
-    it(`${scriptName}: should create schema version`, async () => {
+    it(`${scriptName}: should create event version`, async () => {
       try {
-
-        const create: SchemaVersion = {
-          description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
-          version: SchemaVersionString
+        const create: EventVersion = {
+          description: `event version for event = ${EventName}, id=${EventId}`,        
+          version: EventVersionString,
+          displayName: EventName,
+          schemaVersionId: SchemaVersionId,
+          deliveryDescriptor: EventVersionDeliveryDescriptor,
         };
-
-        const created: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+        const created: EventVersion = await EpSdkEpEventVersionsService.createEventVersion({
           applicationDomainId: ApplicationDomainId,
-          schemaId: SchemaId,
-          schemaVersion: create,
+          eventId: EventId,
+          eventVersion: create,
           targetLifecycleStateId: EpSdkStatesService.releasedId
         });
-        SchemaVersionId = created.id;
+        EventVersionId = created.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -85,13 +135,13 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get schema version by version`, async () => {
+    it(`${scriptName}: should get event version by version`, async () => {
       try {
-        const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getVersionByVersion({ 
-          schemaId: SchemaId,
-          schemaVersionString: SchemaVersionString,
+        const eventVersion: EventVersion = await EpSdkEpEventVersionsService.getVersionByVersion({ 
+          eventId: EventId,
+          eventVersionString: EventVersionString,
         });
-        expect(schemaVersion.version, TestLogger.createApiTestFailMessage('version mismatch')).to.eq(SchemaVersionString);
+        expect(eventVersion.version, TestLogger.createApiTestFailMessage('version mismatch')).to.eq(EventVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -99,12 +149,12 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get schema versions for schema id`, async () => {
+    it(`${scriptName}: should get event versions for event id`, async () => {
       try {
-        const schemaVersionList: Array<SchemaVersion> = await EpSdkSchemaVersionsService.getVersionsForSchemaId({ schemaId: SchemaId });
-        expect(schemaVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
-        const schemaVersion: SchemaVersion = schemaVersionList[0];
-        expect(schemaVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(SchemaVersionId);
+        const eventVersionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventId({ eventId: EventId });
+        expect(eventVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
+        const eventVersion: EventVersion = eventVersionList[0];
+        expect(eventVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(EventVersionId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -112,15 +162,15 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get schema versions for schema name`, async () => {
+    it(`${scriptName}: should get event versions for event name`, async () => {
       try {
-        const schemaVersionList: Array<SchemaVersion> = await EpSdkSchemaVersionsService.getVersionsForSchemaName({ 
+        const eventVersionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventName({ 
           applicationDomainId: ApplicationDomainId,
-          schemaName: SchemaName 
+          eventName: EventName 
         });
-        expect(schemaVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
-        const schemaVersion: SchemaVersion = schemaVersionList[0];
-        expect(schemaVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(SchemaVersionId);
+        expect(eventVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
+        const eventVersion: EventVersion = eventVersionList[0];
+        expect(eventVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(EventVersionId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -128,19 +178,21 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should create new schema version`, async () => {
+    it(`${scriptName}: should create new event version`, async () => {
       try {
-        const create: SchemaVersion = {
-          description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
-          version: SchemaNextVersionString
+        const create: EventVersion = {
+          description: `event version for event = ${EventName}, id=${EventId}`,        
+          version: EventNextVersionString,
+          schemaVersionId: SchemaVersionId,
+          deliveryDescriptor: EventVersionDeliveryDescriptor,
         };
-        const created: SchemaVersion = await EpSdkSchemaVersionsService.createSchemaVersion({
+        const created: EventVersion = await EpSdkEpEventVersionsService.createEventVersion({
           applicationDomainId: ApplicationDomainId,
-          schemaId: SchemaId,
-          schemaVersion: create,
+          eventId: EventId,
+          eventVersion: create,
           targetLifecycleStateId: EpSdkStatesService.releasedId
         });
-        SchemaNextVersionId = created.id;
+        EventNextVersionId = created.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -150,8 +202,8 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get latest version string`, async () => {
       try {
-        const latestVersionString: string = await EpSdkSchemaVersionsService.getLastestVersionString({ schemaId: SchemaId });
-        expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(SchemaNextVersionString);
+        const latestVersionString: string = await EpSdkEpEventVersionsService.getLastestVersionString({ eventId: EventId });
+        expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(EventNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -159,13 +211,13 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get latest version for schema id`, async () => {
+    it(`${scriptName}: should get latest version for event id`, async () => {
       try {
-        const schemaVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({ 
+        const eventVersion: EventVersion = await EpSdkEpEventVersionsService.getLatestVersionForEventId({ 
           applicationDomainId: ApplicationDomainId,
-          schemaId: SchemaId 
+          eventId: EventId
         });
-        expect(schemaVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(SchemaNextVersionString);
+        expect(eventVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(EventNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -173,14 +225,14 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get latest version for schema name`, async () => {
+    it(`${scriptName}: should get latest version for event name`, async () => {
       try {
-        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLastestVersionForSchemaName({ 
+        const eventVersion: EventVersion = await EpSdkEpEventVersionsService.getLastestVersionForEventName({ 
           applicationDomainId: ApplicationDomainId,
-          schemaName: SchemaName
+          eventName: EventName
         });
-        expect(schemaVersion, TestLogger.createApiTestFailMessage('schemaVersion === undefined')).to.not.be.undefined;
-        expect(schemaVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(SchemaNextVersionString);
+        expect(eventVersion, TestLogger.createApiTestFailMessage('eventVersion === undefined')).to.not.be.undefined;
+        expect(eventVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(EventNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -188,14 +240,14 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get latest version for schema name that doesn't exist`, async () => {
+    it(`${scriptName}: should get latest version for event name that doesn't exist`, async () => {
       const NonExistentName = 'non-existent';
       try {
-        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLastestVersionForSchemaName({ 
+        const eventVersion: EventVersion = await EpSdkEpEventVersionsService.getLastestVersionForEventName({ 
           applicationDomainId: ApplicationDomainId,
-          schemaName: NonExistentName
+          eventName: NonExistentName
         });
-        expect(schemaVersion, TestLogger.createApiTestFailMessage('schemaVersion !== undefined')).to.be.undefined;
+        expect(eventVersion, TestLogger.createApiTestFailMessage('eventVersion !== undefined')).to.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;

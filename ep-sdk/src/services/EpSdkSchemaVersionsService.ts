@@ -1,7 +1,5 @@
 import { EpSdkApiContentError } from "../EpSdkErrors";
-import EpSdkSemVerUtils from "../EpSdkSemVerUtils";
 import {
-  EnumVersion,
   SchemaObject,
   SchemasService,
   SchemaVersion,
@@ -12,30 +10,6 @@ import EpSdkSchemasService from "./EpSdkSchemasService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 
 class EpSdkSchemaVersionsService extends EpSdkVersionService {
-
-  private getLatestEpObjectVersionFromList = ({ epObjectVersionList }: {
-    epObjectVersionList: Array<EnumVersion>;
-  }): EnumVersion | undefined => {
-    const funcName = 'getLatestVersionFromList';
-    const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
-
-    let latestEpObjectVersion: SchemaObject | undefined = undefined;
-    let latestEpObjectVersionString: string = '0.0.0';
-    for (const epObjectVersion of epObjectVersionList) {
-      if(epObjectVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObjectVersion.version === undefined', {
-        epObjectVersion: epObjectVersion
-      });
-      const newEpObjectVersionString: string = epObjectVersion.version;
-      if (EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
-        newVersionString: newEpObjectVersionString,
-        oldVersionString: latestEpObjectVersionString,
-      })) {
-        latestEpObjectVersionString = newEpObjectVersionString;
-        latestEpObjectVersion = epObjectVersion;
-      }
-    }
-    return latestEpObjectVersion;
-  }
 
   public getVersionByVersion = async ({ schemaId, schemaVersionString }: {
     schemaId: string;
@@ -134,7 +108,7 @@ class EpSdkSchemaVersionsService extends EpSdkVersionService {
   public getLastestVersionForSchemaName = async ({ applicationDomainId, schemaName }: {
     applicationDomainId: string;
     schemaName: string;
-  }): Promise<EnumVersion | undefined> => {
+  }): Promise<SchemaVersion | undefined> => {
     const funcName = 'getLastestVersionForSchemaName';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
@@ -153,7 +127,7 @@ class EpSdkSchemaVersionsService extends EpSdkVersionService {
   public createSchemaVersion = async({ applicationDomainId, schemaId, schemaVersion, targetLifecycleStateId }:{
     applicationDomainId: string;
     schemaId: string;
-    schemaVersion: EnumVersion;
+    schemaVersion: SchemaVersion;
     targetLifecycleStateId: string;
   }): Promise<SchemaVersion> => {
     const funcName = 'createSchemaVersion';

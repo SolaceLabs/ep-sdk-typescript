@@ -1,5 +1,4 @@
 import { EpSdkApiContentError } from "../EpSdkErrors";
-import EpSdkSemVerUtils from "../EpSdkSemVerUtils";
 import {
   Enum,
   EnumsService,
@@ -12,30 +11,6 @@ import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 
 class EpSdkEnumVersionsService extends EpSdkVersionService {
-
-  private getLatestVersionFromList = ({ enumVersionList }: {
-    enumVersionList: Array<EnumVersion>;
-  }): EnumVersion | undefined => {
-    const funcName = 'getLatestVersionFromList';
-    const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
-
-    let latestEnumVersion: EnumVersion | undefined = undefined;
-    let latestVersionString: string = '0.0.0';
-    for (const enumVersion of enumVersionList) {
-      if (enumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersion.version === undefined', {
-        enumVersion: enumVersion
-      });
-      const newVersionString: string = enumVersion.version;
-      if (EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
-        newVersionString: newVersionString,
-        oldVersionString: latestVersionString,
-      })) {
-        latestVersionString = newVersionString;
-        latestEnumVersion = enumVersion;
-      }
-    }
-    return latestEnumVersion;
-  }
 
   public getVersionByVersion = async ({ enumId, enumVersionString }: {
     enumId: string;
@@ -104,7 +79,7 @@ class EpSdkEnumVersionsService extends EpSdkVersionService {
     // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
     //   enumVersionList: enumVersionList
     // }}));
-    const latestEnumVersion: EnumVersion | undefined = this.getLatestVersionFromList({ enumVersionList: enumVersionList });
+    const latestEnumVersion: EnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: enumVersionList });
     if (latestEnumVersion === undefined) return undefined;
     if (latestEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestEnumVersion.version === undefined', {
       latestEnumVersion: latestEnumVersion
@@ -124,7 +99,7 @@ class EpSdkEnumVersionsService extends EpSdkVersionService {
       enumId: enumId,
     });
 
-    const latestEnumVersion: EnumVersion | undefined = this.getLatestVersionFromList({ enumVersionList: enumVersionList });
+    const latestEnumVersion: EnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: enumVersionList });
     return latestEnumVersion;
   }
 
@@ -143,7 +118,7 @@ class EpSdkEnumVersionsService extends EpSdkVersionService {
     //   enumVersionList: enumVersionList
     // }}));
 
-    const latestEnumVersion: EnumVersion | undefined = this.getLatestVersionFromList({ enumVersionList: enumVersionList });
+    const latestEnumVersion: EnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: enumVersionList });
     return latestEnumVersion;
   }
 
