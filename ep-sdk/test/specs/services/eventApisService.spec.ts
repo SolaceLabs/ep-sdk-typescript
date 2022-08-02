@@ -9,13 +9,13 @@ import {
   ApiError, 
   ApplicationDomainResponse, 
   ApplicationDomainsService, 
-  EventResponse, 
-  EventsService, 
-  Event as EPEvent,
+  EventApIsService,
+  EventApiResponse,
+  EventApi,
 } from '../../../src/sep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
-import EpSdkEpEventsService from '../../../src/services/EpSdkEpEventsService';
+import EpSdkEventApisService from '../../../src/services/EpSdkEventApisService';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -23,8 +23,9 @@ TestLogger.logMessage(scriptName, ">>> starting ...");
 const TestSpecId: string = TestUtils.getUUID();
 const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
-const EpEventName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
-let EpEventId: string | undefined;
+
+const EventApiName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
+let EventApiId: string | undefined;
 
 describe(`${scriptName}`, () => {
 
@@ -46,15 +47,15 @@ describe(`${scriptName}`, () => {
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
     });
 
-    it(`${scriptName}: should create epEvent`, async () => {
+    it(`${scriptName}: should create eventApi`, async () => {
       try {
-        const eventResponse: EventResponse = await EventsService.createEvent({ 
+        const eventApiResponse: EventApiResponse = await EventApIsService.createEventApi({ 
           requestBody: {
             applicationDomainId: ApplicationDomainId,
-            name: EpEventName,
+            name: EventApiName,
           }
         });
-        EpEventId = eventResponse.data.id;
+        EventApiId = eventApiResponse.data.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -62,28 +63,13 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get epEvent by name`, async () => {
+    it(`${scriptName}: should get eventApi by name`, async () => {
       try {
-        const epEvent: EPEvent | undefined = await EpSdkEpEventsService.getByName({
+        const eventApi: EventApi | undefined = await EpSdkEventApisService.getByName({
           applicationDomainId: ApplicationDomainId,
-          eventName: EpEventName
-        })
-        expect(epEvent, TestLogger.createApiTestFailMessage('epEvent === undefined')).to.not.be.undefined;
-      } catch(e) {
-        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
-        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
-      }
-    });
-
-    it(`${scriptName}: should get epEvent by id`, async () => {
-      try {
-        const epEvent: EPEvent | undefined = await EpSdkEpEventsService.getById({
-          applicationDomainId: ApplicationDomainId,
-          eventId: EpEventId
+          eventApiName: EventApiName
         });
-        expect(epEvent.id, TestLogger.createApiTestFailMessage('failed')).to.eq(EpEventId);
-        expect(epEvent.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
+        expect(eventApi, TestLogger.createApiTestFailMessage('eventApi === undefined')).to.not.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -91,14 +77,15 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should delete epEvent by id`, async () => {
+    it(`${scriptName}: should get eventApi by id`, async () => {
       try {
-        const epEvent: EPEvent | undefined = await EpSdkEpEventsService.deleteById({
+        const eventApi: EventApi | undefined = await EpSdkEventApisService.getById({
           applicationDomainId: ApplicationDomainId,
-          eventId: EpEventId
+          eventApiId: EventApiId
         });
-        expect(epEvent.id, TestLogger.createApiTestFailMessage('failed')).to.eq(EpEventId);
-        expect(epEvent.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
+
+        expect(eventApi.id, TestLogger.createApiTestFailMessage('failed')).to.eq(EventApiId);
+        expect(eventApi.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -106,15 +93,30 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should create epEvent`, async () => {
+    it(`${scriptName}: should delete eventApi by id`, async () => {
       try {
-        const eventResponse: EventResponse = await EventsService.createEvent({ 
+        const eventApi: EventApi | undefined = await EpSdkEventApisService.deleteById({
+          applicationDomainId: ApplicationDomainId,
+          eventApiId: EventApiId
+        });
+        expect(eventApi.id, TestLogger.createApiTestFailMessage('failed')).to.eq(EventApiId);
+        expect(eventApi.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should create eventApi`, async () => {
+      try {
+        const eventApiResponse: EventApiResponse = await EventApIsService.createEventApi({ 
           requestBody: {
             applicationDomainId: ApplicationDomainId,
-            name: EpEventName,
+            name: EventApiName,
           }
         });
-        EpEventId = eventResponse.data.id;
+        EventApiId = eventApiResponse.data.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -122,15 +124,15 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should delete epEvent by name`, async () => {
+    it(`${scriptName}: should delete eventApi by name`, async () => {
       try {
-        const epEvent: EPEvent | undefined = await EpSdkEpEventsService.deleteByName({
+        const eventApi: EventApi | undefined = await EpSdkEventApisService.deleteByName({
           applicationDomainId: ApplicationDomainId,
-          eventName: EpEventName
+          eventApiName: EventApiName
         });
-        expect(epEvent.name, TestLogger.createApiTestFailMessage('failed')).to.eq(EpEventName);
-        expect(epEvent.id, TestLogger.createApiTestFailMessage('failed')).to.eq(EpEventId);
-        expect(epEvent.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
+        expect(eventApi.name, TestLogger.createApiTestFailMessage('failed')).to.eq(EventApiName);
+        expect(eventApi.id, TestLogger.createApiTestFailMessage('failed')).to.eq(EventApiId);
+        expect(eventApi.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -138,12 +140,12 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should catch delete epEvent by name that doesn't exist`, async () => {
+    it(`${scriptName}: should catch delete eventApi by name that doesn't exist`, async () => {
       const NonExistentName = 'non-existent';
       try {
-        const epEvent: EPEvent | undefined = await EpSdkEpEventsService.deleteByName({
+        const eventApi: EventApi | undefined = await EpSdkEventApisService.deleteByName({
           applicationDomainId: ApplicationDomainId,
-          eventName: NonExistentName
+          eventApiName: NonExistentName
         });
         expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
@@ -154,12 +156,12 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should catch delete epEvent by id that doesn't exist`, async () => {
+    it(`${scriptName}: should catch delete eventApi by id that doesn't exist`, async () => {
       const NonExistentId = 'non-existent';
       try {
-        const epEvent: EPEvent | undefined = await EpSdkEpEventsService.deleteById({
+        const eventApi: EventApi | undefined = await EpSdkEventApisService.deleteById({
           applicationDomainId: ApplicationDomainId,
-          eventId: NonExistentId
+          eventApiId: NonExistentId
         });
         expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
