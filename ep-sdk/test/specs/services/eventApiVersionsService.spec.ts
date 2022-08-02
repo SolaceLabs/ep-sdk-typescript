@@ -158,7 +158,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get latest version string`, async () => {
       try {
-        const latestVersionString: string = await EpSdkEventApiVersionsService.getLastestVersionString({ eventApiId: EventApiId });
+        const latestVersionString: string = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
         expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(EventApiNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -183,7 +183,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get latest version for event api name`, async () => {
       try {
-        const eventApiVersion: EventApiVersion = await EpSdkEventApiVersionsService.getLastestVersionForEventApiName({ 
+        const eventApiVersion: EventApiVersion = await EpSdkEventApiVersionsService.getLatestVersionForEventApiName({ 
           applicationDomainId: ApplicationDomainId,
           eventApiName: EventApiName
         });
@@ -199,7 +199,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should get latest version for event api name that doesn't exist`, async () => {
       const NonExistentName = 'non-existent';
       try {
-        const eventApiVersion: EventApiVersion = await EpSdkEventApiVersionsService.getLastestVersionForEventApiName({ 
+        const eventApiVersion: EventApiVersion = await EpSdkEventApiVersionsService.getLatestVersionForEventApiName({ 
           applicationDomainId: ApplicationDomainId,
           eventApiName: NonExistentName
         });

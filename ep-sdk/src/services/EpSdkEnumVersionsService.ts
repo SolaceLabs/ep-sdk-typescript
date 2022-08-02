@@ -69,10 +69,10 @@ class EpSdkEnumVersionsService extends EpSdkVersionService {
     return enumVersionList;
   }
 
-  public getLastestVersionString = async ({ enumId }: {
+  public getLatestVersionString = async ({ enumId }: {
     enumId: string;
   }): Promise<string | undefined> => {
-    const funcName = 'getLastestVersionString';
+    const funcName = 'getLatestVersionString';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
     const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumId({ enumId: enumId });
@@ -103,11 +103,11 @@ class EpSdkEnumVersionsService extends EpSdkVersionService {
     return latestEnumVersion;
   }
 
-  public getLastestVersionForEnumName = async ({ applicationDomainId, enumName }: {
+  public getLatestVersionForEnumName = async ({ applicationDomainId, enumName }: {
     applicationDomainId: string;
     enumName: string;
   }): Promise<EnumVersion | undefined> => {
-    const funcName = 'getLastestVersionForEnumName';
+    const funcName = 'getLatestVersionForEnumName';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
     const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumName({

@@ -150,7 +150,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get latest version string`, async () => {
       try {
-        const latestVersionString: string = await EpSdkSchemaVersionsService.getLastestVersionString({ schemaId: SchemaId });
+        const latestVersionString: string = await EpSdkSchemaVersionsService.getLatestVersionString({ schemaId: SchemaId });
         expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(SchemaNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -175,7 +175,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get latest version for schema name`, async () => {
       try {
-        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLastestVersionForSchemaName({ 
+        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLatestVersionForSchemaName({ 
           applicationDomainId: ApplicationDomainId,
           schemaName: SchemaName
         });
@@ -191,7 +191,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should get latest version for schema name that doesn't exist`, async () => {
       const NonExistentName = 'non-existent';
       try {
-        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLastestVersionForSchemaName({ 
+        const schemaVersion: SchemaVersion | undefined = await EpSdkSchemaVersionsService.getLatestVersionForSchemaName({ 
           applicationDomainId: ApplicationDomainId,
           schemaName: NonExistentName
         });

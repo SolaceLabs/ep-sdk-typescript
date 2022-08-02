@@ -153,7 +153,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get latest version string`, async () => {
       try {
-        const latestVersionString: string = await EpSdkEnumVersionsService.getLastestVersionString({ enumId: EnumId });
+        const latestVersionString: string = await EpSdkEnumVersionsService.getLatestVersionString({ enumId: EnumId });
         expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(EnumNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -178,7 +178,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get latest version for enum name`, async () => {
       try {
-        const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionsService.getLastestVersionForEnumName({ 
+        const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumName({ 
           applicationDomainId: ApplicationDomainId,
           enumName: EnumName
         });
@@ -194,7 +194,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should get latest version for enum name that doesn't exist`, async () => {
       const NonExistentName = 'non-existent';
       try {
-        const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionsService.getLastestVersionForEnumName({ 
+        const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumName({ 
           applicationDomainId: ApplicationDomainId,
           enumName: NonExistentName
         });
