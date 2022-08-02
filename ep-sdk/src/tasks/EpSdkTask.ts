@@ -12,7 +12,9 @@ export enum EEpSdkTask_EpObjectType {
   ENUM = "enum",
   ENUM_VERSION = "enumVersion",
   SCHEMA_OBJECT = "schemaObject",
-  SCHEMA_VERSION = "schemaVersion"
+  SCHEMA_VERSION = "schemaVersion",
+  EVENT = "EVENT",
+  EVENT_VERSION = "EVENT_VERSION",
 }
 export interface IEpSdkTask_EpObjectKeys {
   epObjectType: EEpSdkTask_EpObjectType; 

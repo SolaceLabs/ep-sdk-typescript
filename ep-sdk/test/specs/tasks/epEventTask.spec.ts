@@ -10,8 +10,9 @@ import {
  } from '../../../src/sep-openapi-node';
 import { EpSdkError } from '../../../src/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EpSdkSchemaTask, IEpSdkSchemaTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaTask';
+// import { EpSdkSchemaTask, IEpSdkSchemaTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaTask';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import { EpSdkEpEventTask, IEpSdkEpEventTask_ExecuteReturn } from '../../../src/tasks/EpSdkEpEventTask';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -19,8 +20,8 @@ TestLogger.logMessage(scriptName, ">>> starting ...");
 const TestSpecId: string = TestUtils.getUUID();
 const ApplicationDomainName = `${TestConfig.getAppId()}/tasks/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
-const SchemaName = `${TestConfig.getAppId()}-tasks-${TestSpecId}`;
-let SchemaId: string | undefined;
+const EventName = `${TestConfig.getAppId()}-tasks-${TestSpecId}`;
+let EventId: string | undefined;
 
 describe(`${scriptName}`, () => {
     
@@ -49,13 +50,13 @@ describe(`${scriptName}`, () => {
     // EpSdkLogger.getLoggerInstance().setLogLevel(EEpSdkLogLevel.Trace);
   });
 
-  it(`${scriptName}: schema present: checkmode create`, async () => {
+  it(`${scriptName}: epEvent present: checkmode create`, async () => {
     try {
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
-        schemaObjectSettings: {
+        eventName: EventName,
+        eventObjectSettings: {
           shared: true,
         },
         epSdkTask_TransactionConfig: {
@@ -65,10 +66,10 @@ describe(`${scriptName}`, () => {
         checkmode: true
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE);
 
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -80,14 +81,14 @@ describe(`${scriptName}`, () => {
     }
   });
     
-  it(`${scriptName}: schema present: create`, async () => {
+  it(`${scriptName}: epEvent present: create`, async () => {
     try {
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
-        schemaObjectSettings: {
+        eventName: EventName,
+        eventObjectSettings: {
           shared: true,
         },
         epSdkTask_TransactionConfig: {
@@ -96,12 +97,12 @@ describe(`${scriptName}`, () => {
         },
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE);
       
-      SchemaId = epSdkSchemaTask_ExecuteReturn.epObject.id;
+      EventId = epSdkEpEventTask_ExecuteReturn.epObject.id;
 
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -113,14 +114,14 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: schema present: create: nothing to do`, async () => {
+  it(`${scriptName}: epEvent present: create: idempotency`, async () => {
     try {
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
-        schemaObjectSettings: {
+        eventName: EventName,
+        eventObjectSettings: {
           shared: true,
         },
         epSdkTask_TransactionConfig: {
@@ -129,11 +130,11 @@ describe(`${scriptName}`, () => {
         },
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
-      expect(epSdkSchemaTask_ExecuteReturn.epObject.id, message).to.eq(SchemaId);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(epSdkEpEventTask_ExecuteReturn.epObject.id, message).to.eq(EventId);
 
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -145,14 +146,14 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: schema present: checkmode update`, async () => {
+  it(`${scriptName}: epEvent present: checkmode update`, async () => {
     try {
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
-        schemaObjectSettings: {
+        eventName: EventName,
+        eventObjectSettings: {
           shared: false,
         },
         epSdkTask_TransactionConfig: {
@@ -162,12 +163,12 @@ describe(`${scriptName}`, () => {
         checkmode: true
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
 
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_UPDATE);
-      expect(epSdkSchemaTask_ExecuteReturn.epObject.id, message).to.eq(SchemaId);
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_UPDATE);
+      expect(epSdkEpEventTask_ExecuteReturn.epObject.id, message).to.eq(EventId);
 
       // // DEBUG
       // expect(false, message).to.be.true;
@@ -179,27 +180,29 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: schema present: update`, async () => {
+  it(`${scriptName}: epEvent present: update`, async () => {
     try {
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
-        schemaObjectSettings: {
+        eventName: EventName,
+        eventObjectSettings: {
           shared: false,
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
+        checkmode: false
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.UPDATE);
-      expect(epSdkSchemaTask_ExecuteReturn.epObject.id, message).to.eq(SchemaId);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
+
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.UPDATE);
+      expect(epSdkEpEventTask_ExecuteReturn.epObject.id, message).to.eq(EventId);
       // // DEBUG
       // expect(false, message).to.be.true;
 
@@ -210,27 +213,28 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: schema present: no action`, async () => {
+  it(`${scriptName}: epEvent present: idempotency`, async () => {
     try {
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
-        schemaObjectSettings: {
+        eventName: EventName,
+        eventObjectSettings: {
           shared: false,
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
+        checkmode: false
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
-      expect(epSdkSchemaTask_ExecuteReturn.epObject.id, message).to.eq(SchemaId);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(epSdkEpEventTask_ExecuteReturn.epObject.id, message).to.eq(EventId);
       // // DEBUG
       // expect(false, message).to.be.true;
 
@@ -241,13 +245,13 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: schema absent: checkmode with existing`, async () => {
+  it(`${scriptName}: epEvent absent: checkmode with existing`, async () => {
     try {
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
+        eventName: EventName,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -255,12 +259,12 @@ describe(`${scriptName}`, () => {
         checkmode: true
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
 
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_DELETE);
-      expect(epSdkSchemaTask_ExecuteReturn.epObject.id, message).to.eq(SchemaId);
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_DELETE);
+      expect(epSdkEpEventTask_ExecuteReturn.epObject.id, message).to.eq(EventId);
       // // DEBUG
       // expect(false, message).to.be.true;
 
@@ -271,24 +275,25 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: schema absent`, async () => {
+  it(`${scriptName}: epEvent absent`, async () => {
     try {
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: SchemaName,
+        eventName: EventName,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
         },
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.DELETE);
-      expect(epSdkSchemaTask_ExecuteReturn.epObject.id, message).to.eq(SchemaId);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
+
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.DELETE);
+      expect(epSdkEpEventTask_ExecuteReturn.epObject.id, message).to.eq(EventId);
       // // DEBUG
       // expect(false, message).to.be.true;
 
@@ -299,15 +304,15 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: schema absent: checkmode with non-existing`, async () => {
+  it(`${scriptName}: epEvent absent: checkmode with non-existing`, async () => {
     try {
 
       const NonExisting = 'non-existing';
 
-      const epSdkSchemaTask = new EpSdkSchemaTask({
+      const epSdkEpEventTask = new EpSdkEpEventTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
-        schemaName: NonExisting,
+        eventName: NonExisting,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -315,10 +320,11 @@ describe(`${scriptName}`, () => {
         checkmode: true
       });
 
-      const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+      const epSdkEpEventTask_ExecuteReturn: IEpSdkEpEventTask_ExecuteReturn = await epSdkEpEventTask.execute();
 
-      const message = TestLogger.createLogMessage('epSdkSchemaTask_ExecuteReturn', epSdkSchemaTask_ExecuteReturn);
-      expect(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      const message = TestLogger.createLogMessage('epSdkEpEventTask_ExecuteReturn', epSdkEpEventTask_ExecuteReturn);
+
+      expect(epSdkEpEventTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
       // // DEBUG
       // expect(false, message).to.be.true;
 
