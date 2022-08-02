@@ -149,6 +149,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           schemaName: NonExistentName
         });
+        expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
@@ -164,6 +165,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           schemaId: NonExistentId
         });
+        expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
         expect(e instanceof ApiError, TestLogger.createApiTestFailMessage('not ApiError')).to.be.true;
         const apiError: ApiError = e;

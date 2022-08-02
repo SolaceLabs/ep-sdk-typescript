@@ -117,7 +117,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   protected getDefaultEpObjectKeys(): IEpSdkVersionTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.ENUM_VERSION,
+      epObjectType: EEpSdkTask_EpObjectType.EVENT_VERSION,
       epVersionObjectId: 'undefined'
     };
   };

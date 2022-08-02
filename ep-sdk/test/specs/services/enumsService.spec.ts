@@ -131,6 +131,7 @@ describe(`${scriptName}`, () => {
       const NonExistentName = 'non-existent';
       try {
         const epEnum: Enum = await EpSdkEnumsService.deleteByName({ applicationDomainId: ApplicationDomainId, enumName: NonExistentName });
+        expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;

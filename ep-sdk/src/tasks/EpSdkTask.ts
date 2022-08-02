@@ -15,6 +15,8 @@ export enum EEpSdkTask_EpObjectType {
   SCHEMA_VERSION = "schemaVersion",
   EVENT = "EVENT",
   EVENT_VERSION = "EVENT_VERSION",
+  EVENT_API = "EVENT_API",
+  EVENT_API_VERSION = "EVENT_API_VERSION"
 }
 export interface IEpSdkTask_EpObjectKeys {
   epObjectType: EEpSdkTask_EpObjectType; 

@@ -101,6 +101,7 @@ describe(`${scriptName}`, () => {
       const NonExistentName = 'non-existent-application-domain';
       try {
         const applicationDomain: ApplicationDomain = await EpSdkApplicationDomainsService.deleteByName({ applicationDomainName: NonExistentName });
+        expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;

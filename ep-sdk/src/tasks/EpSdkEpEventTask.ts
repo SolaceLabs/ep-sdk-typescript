@@ -19,7 +19,7 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
-import EpSdkEventsService from '../services/EpSdkEpEventsService';
+import EpSdkEpEventsService from '../services/EpSdkEpEventsService';
 
 type TEpSdkEpEventTask_Settings = Partial<Pick<EpEvent, "shared">>;
 type TEpSdkEpEventTask_CompareObject = TEpSdkEpEventTask_Settings;
@@ -109,7 +109,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
       epSdkEpEventTask_Keys: epSdkEpEventTask_Keys
     }}));
 
-    const epEvent: EpEvent | undefined = await EpSdkEventsService.getByName({ 
+    const epEvent: EpEvent | undefined = await EpSdkEpEventsService.getByName({ 
       eventName: epSdkEpEventTask_Keys.eventName,
       applicationDomainId: epSdkEpEventTask_Keys.applicationDomainId
     });
@@ -288,7 +288,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
       };
     }
 
-    const epEvent: EpEvent = await EpSdkEventsService.deleteById({ 
+    const epEvent: EpEvent = await EpSdkEpEventsService.deleteById({ 
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       eventId: epSdkEpEventTask_GetFuncReturn.epObject.id,
     });

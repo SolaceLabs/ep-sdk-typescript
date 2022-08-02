@@ -14,8 +14,6 @@ import {
   SchemaResponse,
   SchemasService,
   SchemaVersion, 
-  // SchemaResponse, 
-  // SchemasService
  } from '../../../src/sep-openapi-node';
 import { 
   EpSdkError, 
@@ -23,11 +21,9 @@ import {
   EpSdkInvalidSemVerStringError 
 } from '../../../src/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-// import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-// import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 import { EpSdkEpEventVersionTask, IEpSdkEpEventVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEpEventVersionTask';
 import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
@@ -41,38 +37,10 @@ let ApplicationDomainId: string | undefined;
 
 const SchemaName = `${TestConfig.getAppId()}-tasks-${TestSpecId}`;
 let SchemaId: string | undefined;
-const SchemaVersionName = `${TestSpecId}`;
 let SchemaVersionId: string | undefined;
-// const SchemaContent = `
-// {
-//   "description": "Generic message header.",
-//   "type": "object",
-//   "properties": {
-//     "sentAt": {
-//       "type": "string",
-//       "format": "date-time",
-//       "description": "Date and time when the message was sent."
-//     },
-//     "transactionId": {
-//       "type": "string",
-//       "description": "The transaction id."
-//     },
-//     "storeId": {
-//       "type": "string",
-//       "description": "The store id."
-//     }
-//   },
-//   "required": [
-//     "sentAt",
-//     "transactionId",
-//     "storeId"
-//   ]
-// }
-// `;
 
 const EventName = `${TestConfig.getAppId()}-tasks-${TestSpecId}`;
 let EventId: string | undefined;
-const EventVersionName = `${TestSpecId}`;
 let EventVersionId: string | undefined;
 
 describe(`${scriptName}`, () => {
