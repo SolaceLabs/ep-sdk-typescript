@@ -24,7 +24,7 @@ class EpSdkSemVerUtils {
     }
   }
 
-  public createNextVersion({ fromVersionString, strategy }:{
+  public createNextVersionByStrategy({ fromVersionString, strategy }:{
     fromVersionString: string;
     strategy: EEpSdk_VersionStrategy;
   }): string {

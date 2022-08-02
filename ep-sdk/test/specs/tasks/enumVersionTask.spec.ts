@@ -12,8 +12,8 @@ import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringErro
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
 
 
 const scriptName: string = path.basename(__filename);
@@ -68,12 +68,12 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
+        versionTaskStrategy: EEpSdk_VersionTaskStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -104,12 +104,11 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -141,12 +140,11 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -177,12 +175,11 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -214,12 +211,11 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -254,12 +250,11 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
-        initialVersionString: 'not-semver',
+        versionString: 'not-semver',
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -284,12 +279,11 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two', 'three'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',

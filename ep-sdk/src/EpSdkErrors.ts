@@ -175,3 +175,12 @@ export class EpSdkValidationError extends EpSdkError {
   }
 }
 
+export class EpSdkVersionTaskStrategyValidationError extends EpSdkError {
+  protected static DefaultDescription = 'EP Sdk Version Task Version Strategy Validation Error';
+  private details: any;
+  constructor(internalLogName: string, internalModuleName: string, message: string = EpSdkVersionTaskStrategyValidationError.DefaultDescription, details: any ) {
+    super(internalLogName, internalModuleName, message);
+    this.details = details;
+  }
+}
+

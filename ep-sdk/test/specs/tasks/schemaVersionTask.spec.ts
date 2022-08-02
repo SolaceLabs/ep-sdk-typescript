@@ -20,7 +20,6 @@ import {
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 
@@ -106,14 +105,13 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         schemaId: SchemaId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: SchemaVersionName,
           description: 'description',
           content: SchemaContent
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -143,14 +141,13 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         schemaId: SchemaId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: SchemaVersionName,
           description: 'description',
           content: SchemaContent
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -181,14 +178,13 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         schemaId: SchemaId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: SchemaVersionName,
           description: 'description',
           content: SchemaContent
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -218,14 +214,13 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         schemaId: SchemaId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: SchemaVersionName,
           description: 'updated description',
           content: SchemaContent
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -256,14 +251,13 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         schemaId: SchemaId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: SchemaVersionName,
           description: 'updated description',
           content: SchemaContent
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -296,14 +290,13 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         schemaId: SchemaId,
-        initialVersionString: 'not-semver',
+        versionString: 'not-semver',
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: SchemaVersionName,
           description: 'updated description again',
           content: SchemaContent
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -326,14 +319,13 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
         schemaId: SchemaId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         schemaVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: SchemaVersionName,
           description: 'updated description',
           content: SchemaContent
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
