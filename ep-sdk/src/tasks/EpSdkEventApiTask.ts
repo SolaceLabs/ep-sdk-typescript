@@ -76,7 +76,7 @@ export class EpSdkEventApiTask extends EpSdkTask {
   protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.EVENT,
+      epObjectType: EEpSdkTask_EpObjectType.EVENT_API,
     };
   };
 
