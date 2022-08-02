@@ -17,7 +17,7 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
 type TEpSdkEnumVersionTask_Settings = Required<Pick<EnumVersion, "displayName" | "stateId">> & Pick<EnumVersion, "description">;
 type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<EnumVersion, "values">;
@@ -141,7 +141,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       epObjectKeys: this.getEpObjectKeys(enumVersion),
       epObject: enumVersion,
       epObjectExists: true,
-    }
+    };
     return epSdkEnumVersionTask_GetFuncReturn;
   };
 
@@ -203,7 +203,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     const create: EnumVersion = {
       ...this.createObjectSettings(),
       enumId: this.getTaskConfig().enumId,
-      version: this.initialVersionString,
+      version: this.versionString,
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
@@ -260,14 +260,13 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     });
 
     // getFuncReturn has the latest version object
-
+    
     const update: EnumVersion = {
       ...this.createObjectSettings(),
       enumId: epSdkEnumVersionTask_GetFuncReturn.epObject.id,
-      version: EpSdkSemVerUtils.createNextVersion({
-        fromVersionString: epSdkEnumVersionTask_GetFuncReturn.epObject.version,
-        strategy: this.getTaskConfig().epSdk_VersionStrategy,
-      })
+      version: this.createNextVersionWithStrategyValidation({
+        existingObjectVersionString: epSdkEnumVersionTask_GetFuncReturn.epObject.version,
+      }),
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {

@@ -177,7 +177,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     const create: SchemaVersion = {
       ...this.createObjectSettings(),
       schemaId: this.getTaskConfig().schemaId,
-      version: this.initialVersionString,
+      version: this.versionString,
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
@@ -238,10 +238,9 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     const update: SchemaVersion = {
       ...this.createObjectSettings(),
       schemaId: epSdkSchemaVersionTask_GetFuncReturn.epObject.id,
-      version: EpSdkSemVerUtils.createNextVersion({
-        fromVersionString: epSdkSchemaVersionTask_GetFuncReturn.epObject.version,
-        strategy: this.getTaskConfig().epSdk_VersionStrategy,
-      })
+      version: this.createNextVersionWithStrategyValidation({
+        existingObjectVersionString: epSdkSchemaVersionTask_GetFuncReturn.epObject.version,
+      }),
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {

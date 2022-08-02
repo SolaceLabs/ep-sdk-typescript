@@ -89,7 +89,7 @@ export interface IEpSdkTaskDeepCompareResult extends IEpSdkDeepCompareResult  {
 export abstract class EpSdkTask {
   protected epSdkTask_Config: IEpSdkTask_Config;
   private taskTransactionId: string;
-  private epSdkTask_TransactionLog: EpSdkTask_TransactionLog;
+  protected epSdkTask_TransactionLog: EpSdkTask_TransactionLog;
 
   protected isCheckmode(): boolean {
     if(this.epSdkTask_Config.checkmode === undefined) return false;

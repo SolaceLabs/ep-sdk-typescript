@@ -22,7 +22,6 @@ import {
 } from '../../../src/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkEpEventVersionTask, IEpSdkEpEventVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEpEventVersionTask';
 import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
@@ -110,7 +109,7 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         topicString: 'test/hello/world',
         eventVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
@@ -118,7 +117,6 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -149,7 +147,7 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         topicString: 'test/hello/world',
         eventVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
@@ -157,7 +155,6 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -188,7 +185,7 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         topicString: 'test/hello/world',
         eventVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
@@ -196,7 +193,6 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -226,7 +222,7 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         topicString: 'test/hello/world',
         eventVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
@@ -234,7 +230,6 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -266,7 +261,7 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         topicString: 'test/hello/world',
         eventVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
@@ -274,7 +269,6 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -309,7 +303,7 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
-        initialVersionString: 'not-semver',
+        versionString: 'not-semver',
         topicString: 'test/hello/world',
         eventVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
@@ -317,7 +311,6 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'
@@ -340,7 +333,7 @@ describe(`${scriptName}`, () => {
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
-        initialVersionString: '1.2.0',
+        versionString: '1.2.0',
         topicString: 'test/hello/world',
         eventVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
@@ -348,7 +341,6 @@ describe(`${scriptName}`, () => {
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId
         },
-        epSdk_VersionStrategy: EEpSdk_VersionStrategy.BUMP_PATCH,
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
           groupTransactionId: 'groupTransactionId'

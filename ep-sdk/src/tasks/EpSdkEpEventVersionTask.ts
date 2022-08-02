@@ -225,7 +225,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     const create: EventVersion = {
       ...this.createObjectSettings(),
       eventId: this.getTaskConfig().eventId,
-      version: this.initialVersionString,
+      version: this.versionString,
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
@@ -286,10 +286,9 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     const update: EventVersion = {
       ...this.createObjectSettings(),
       eventId: epSdkEpEventVersionTask_GetFuncReturn.epObject.id,
-      version: EpSdkSemVerUtils.createNextVersion({
-        fromVersionString: epSdkEpEventVersionTask_GetFuncReturn.epObject.version,
-        strategy: this.getTaskConfig().epSdk_VersionStrategy,
-      })
+      version: this.createNextVersionWithStrategyValidation({
+        existingObjectVersionString: epSdkEpEventVersionTask_GetFuncReturn.epObject.version,
+      }),
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {

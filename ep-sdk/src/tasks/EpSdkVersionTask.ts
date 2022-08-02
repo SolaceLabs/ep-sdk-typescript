@@ -1,4 +1,4 @@
-import { EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError } from "../EpSdkErrors";
+import { EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError, EpSdkVersionTaskStrategyValidationError } from "../EpSdkErrors";
 import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from "../EpSdkSemVerUtils";
 import { 
   EEpSdkTask_Action, 
@@ -9,29 +9,62 @@ import {
   IEpSdkTask_GetFuncReturn 
 } from "./EpSdkTask";
 
+export enum EEpSdk_VersionTaskStrategy {
+  BUMP_MINOR = "bump_minor",
+  BUMP_PATCH = "bump_patch",
+  EXACT_VERSION = "exact_version"
+}
+
 export interface IEpSdkVersionTask_Config extends IEpSdkTask_Config {
-  initialVersionString?: string;
-  epSdk_VersionStrategy: EEpSdk_VersionStrategy;
+  versionString?: string;
+  versionTaskStrategy?: EEpSdk_VersionTaskStrategy;
 }
 export interface IEpSdkVersionTask_EpObjectKeys extends IEpSdkTask_EpObjectKeys {
   epVersionObjectId: string;
 }
 
 export abstract class EpSdkVersionTask extends EpSdkTask {
-  private Default_InitialVersionString: string = '1.0.0';
-  protected initialVersionString: string;
+  protected versionString: string = '1.0.0';
+  protected versionTaskStrategy: EEpSdk_VersionTaskStrategy = EEpSdk_VersionTaskStrategy.BUMP_PATCH;
 
   constructor(epSdkVersionTask_Config: IEpSdkVersionTask_Config) {
     super(epSdkVersionTask_Config);
-    if(epSdkVersionTask_Config.initialVersionString === undefined) this.initialVersionString = this.Default_InitialVersionString;
-    else this.initialVersionString = epSdkVersionTask_Config.initialVersionString;
+    if(epSdkVersionTask_Config.versionString !== undefined) this.versionString = epSdkVersionTask_Config.versionString;
+    if(epSdkVersionTask_Config.versionTaskStrategy !== undefined) this.versionTaskStrategy = epSdkVersionTask_Config.versionTaskStrategy;
   }
 
   protected async validateTaskConfig(): Promise<void> {
     const funcName = 'validateTaskConfig';
     const logName = `${EpSdkVersionTask.name}.${funcName}()`;
     const xvoid: void = await super.validateTaskConfig();
-    if(!EpSdkSemVerUtils.isSemVerFormat({ versionString: this.initialVersionString })) throw new EpSdkInvalidSemVerStringError(logName, this.constructor.name, undefined, this.initialVersionString);
+    if(!EpSdkSemVerUtils.isSemVerFormat({ versionString: this.versionString })) throw new EpSdkInvalidSemVerStringError(logName, this.constructor.name, undefined, this.versionString);
+  }
+
+  protected createNextVersionWithStrategyValidation({ existingObjectVersionString }:{
+    existingObjectVersionString: string;
+  }): string {
+    const funcName = 'createNextVersionWithStrategyValidation';
+    const logName = `${EpSdkVersionTask.name}.${funcName}()`;
+
+    if(this.versionTaskStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
+      // check if requrest versionString > existingObjectVersionString
+      if(!EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
+        newVersionString: this.versionString,
+        oldVersionString: existingObjectVersionString
+      })) {
+        throw new EpSdkVersionTaskStrategyValidationError(logName, this.constructor.name, undefined, {
+          versionTaskStrategy: this.versionTaskStrategy,
+          existingObjectVersionString: existingObjectVersionString,
+          epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
+        });  
+      }
+      // return requested versionString
+      return this.versionString;
+    }
+    return EpSdkSemVerUtils.createNextVersionByStrategy({
+      fromVersionString: existingObjectVersionString,
+      strategy: (this.versionTaskStrategy as unknown) as EEpSdk_VersionStrategy,
+    });
   }
 
   protected getCreateFuncAction(): EEpSdkTask_Action {
