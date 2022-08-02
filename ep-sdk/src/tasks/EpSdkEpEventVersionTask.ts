@@ -78,7 +78,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
         topicLevel = topicLevel.replace('}', '').replace('{', '');
         type = AddressLevel.addressLevelType.VARIABLE;
         // get the enumVersionId if it exists
-        const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionService.getLastestVersionForEnumName({ 
+        const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionService.getLatestVersionForEnumName({ 
           enumName: topicLevel, 
           applicationDomainId: this.getTaskConfig().applicationDomainId        
         });

@@ -2,6 +2,12 @@
 
 Solace Event Portal SDK.
 
+## Version 0.2.7-alpha
+  * [Solace Event Portal OpenAPI](https://github.com/solace-iot-team/ep-sdk/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
+
+**Fixes:**
+- fixed spelling mistakes in method names
+
 ## Version 0.2.6-alpha
   * [Solace Event Portal OpenAPI](https://github.com/solace-iot-team/ep-sdk/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 

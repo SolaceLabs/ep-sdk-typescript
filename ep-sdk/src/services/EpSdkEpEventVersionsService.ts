@@ -72,10 +72,10 @@ class EpSdkEpEventVersionsService extends EpSdkVersionService {
     return eventVersionList;
   }
 
-  public getLastestVersionString = async ({ eventId }: {
+  public getLatestVersionString = async ({ eventId }: {
     eventId: string;
   }): Promise<string | undefined> => {
-    const funcName = 'getLastestVersionString';
+    const funcName = 'getLatestVersionString';
     const logName = `${EpSdkEpEventVersionsService.name}.${funcName}()`;
 
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ eventId: eventId });
@@ -106,11 +106,11 @@ class EpSdkEpEventVersionsService extends EpSdkVersionService {
     return latestEventVersion;
   }
 
-  public getLastestVersionForEventName = async ({ applicationDomainId, eventName }: {
+  public getLatestVersionForEventName = async ({ applicationDomainId, eventName }: {
     applicationDomainId: string;
     eventName: string;
   }): Promise<EventVersion | undefined> => {
-    const funcName = 'getLastestVersionForEventName';
+    const funcName = 'getLatestVersionForEventName';
     const logName = `${EpSdkEpEventVersionsService.name}.${funcName}()`;
 
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventName({

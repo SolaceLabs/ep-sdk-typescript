@@ -71,10 +71,10 @@ class EpSdkSchemaVersionsService extends EpSdkVersionService {
     return schemaVersionList;
   }
 
-  public getLastestVersionString = async ({ schemaId }: {
+  public getLatestVersionString = async ({ schemaId }: {
     schemaId: string;
   }): Promise<string | undefined> => {
-    const funcName = 'getLastestVersionString';
+    const funcName = 'getLatestVersionString';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
     const schemaVersionList: Array<SchemaVersion> = await this.getVersionsForSchemaId({ schemaId: schemaId });
@@ -105,11 +105,11 @@ class EpSdkSchemaVersionsService extends EpSdkVersionService {
     return latestSchemaVersion;
   }
 
-  public getLastestVersionForSchemaName = async ({ applicationDomainId, schemaName }: {
+  public getLatestVersionForSchemaName = async ({ applicationDomainId, schemaName }: {
     applicationDomainId: string;
     schemaName: string;
   }): Promise<SchemaVersion | undefined> => {
-    const funcName = 'getLastestVersionForSchemaName';
+    const funcName = 'getLatestVersionForSchemaName';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
     const schemaVersionList: Array<SchemaVersion> = await this.getVersionsForSchemaName({
