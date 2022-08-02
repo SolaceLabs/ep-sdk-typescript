@@ -2,6 +2,15 @@
 
 Solace Event Portal SDK.
 
+## Version 0.2.8-alpha
+  * [Solace Event Portal OpenAPI](https://github.com/solace-iot-team/ep-sdk/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
+
+**Enhancements:**
+- **EpSdkVersionTasks**
+  - added 'EEpSdk_VersionTaskStrategy.EXACT_VERSION' to version strategy
+    - creates the exact version as defined in the `versionString` config if required
+    - aborts with `EpSdkVersionTaskStrategyValidationError` if `versionString` is not greater than existing version
+
 ## Version 0.2.7-alpha
   * [Solace Event Portal OpenAPI](https://github.com/solace-iot-team/ep-sdk/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
