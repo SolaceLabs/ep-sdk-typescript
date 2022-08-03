@@ -73,11 +73,6 @@ jobs:
           cd "${EP_SDK_DIR}"
           npm install
 
-      - name: "npm run dev:build"
-        run: |
-          cd "${EP_SDK_DIR}"
-          npm run dev:build
-
       # - name: "server:lint"
       #   run: |
       #     cd "${APIM_SERVER_DIR}"
