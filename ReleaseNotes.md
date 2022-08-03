@@ -2,6 +2,12 @@
 
 Solace Event Portal SDK.
 
+## Version 0.3.0-alpha
+
+**Core:**
+- **ep-openapi-node**
+  - switched to packaged ep-openapi-node and removed from repo
+
 ## Version 0.2.9-alpha
   * [Solace Event Portal OpenAPI](https://github.com/solace-iot-team/ep-sdk/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
