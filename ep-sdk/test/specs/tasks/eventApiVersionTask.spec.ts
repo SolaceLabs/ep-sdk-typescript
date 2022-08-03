@@ -12,22 +12,15 @@ import {
   EventApiResponse,
   EventApIsService, 
   eventApiVersion as EventApiVersion,
-  // EventResponse, 
-  // EventsService,
-  // SchemaResponse,
-  // SchemasService,
-  // SchemaVersion, 
- } from '../../../src/sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { 
   EpSdkError, 
   EpSdkFeatureNotSupportedError, 
-  EpSdkInvalidSemVerStringError, 
   EpSdkVersionTaskStrategyValidationError,
   TEpSdkVersionTaskStrategyValidationError_Details
 } from '../../../src/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkEventApiVersionTask, IEpSdkEventApiVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEventApiVersionTask';
 import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';

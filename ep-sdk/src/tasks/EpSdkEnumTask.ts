@@ -5,7 +5,7 @@ import {
   Enum,
   EnumResponse,
   EnumsService
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import EpSdkEnumsService from "../services/EpSdkEnumsService";
 import { 
   EEpSdkTask_EpObjectType,

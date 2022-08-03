@@ -2,16 +2,12 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import request from 'supertest';
-import { ApiRequestOptions } from "../../src/sep-openapi-node/core/ApiRequestOptions";
-import { ApiError } from "../../src/sep-openapi-node";
-import { ApiResult } from "../../src/sep-openapi-node/core/ApiResult";
+import { ApiRequestOptions } from "@solace-iot-team/ep-openapi-node/dist/core/ApiRequestOptions";
+import { ApiError } from "@solace-iot-team/ep-openapi-node";
+import { ApiResult } from "@solace-iot-team/ep-openapi-node/dist/core/ApiResult";
 
 export type TTestEnv = {
   projectRootDir: string;
-  // enableLogging: boolean,
-  // testApiSpecsDir: string;
-  // globalDomainNamePrefix: string;
-  // createdAppDomainNameList: Array<string>;
 }
 
 export class TestContext {

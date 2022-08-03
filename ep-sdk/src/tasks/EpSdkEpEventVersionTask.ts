@@ -8,7 +8,7 @@ import {
   AddressLevel,
   EnumVersion,
   EventVersion, 
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 
   EEpSdkTask_EpObjectType,

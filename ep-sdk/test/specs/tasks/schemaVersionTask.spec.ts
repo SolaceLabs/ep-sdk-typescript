@@ -11,7 +11,7 @@ import {
   ApplicationDomainsService, 
   SchemaResponse, 
   SchemasService
- } from '../../../src/sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { 
   EpSdkError, 
   EpSdkFeatureNotSupportedError, 

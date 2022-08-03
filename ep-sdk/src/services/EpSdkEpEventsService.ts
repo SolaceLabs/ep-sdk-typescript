@@ -6,7 +6,7 @@ import {
   EventResponse, 
   EventsResponse,
   EventsService,
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
 class EpSdkEpEventsService extends EpSdkService {

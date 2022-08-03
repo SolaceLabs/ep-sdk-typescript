@@ -7,7 +7,7 @@ import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError, ApplicationDomainResponse, ApplicationDomainsService
- } from '../../../src/sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { EpSdkError } from '../../../src/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import { EpSdkEnumTask, IEpSdkEnumTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumTask';

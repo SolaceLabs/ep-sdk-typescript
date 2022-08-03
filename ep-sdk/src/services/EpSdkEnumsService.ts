@@ -6,7 +6,7 @@ import {
   EnumResponse,
   EnumsResponse,
   EnumsService,
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
 class EpSdkEnumsService extends EpSdkService {

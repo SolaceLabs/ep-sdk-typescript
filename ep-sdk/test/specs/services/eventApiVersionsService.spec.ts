@@ -12,14 +12,7 @@ import {
   EventApiResponse, 
   EventApIsService, 
   eventApiVersion as EventApiVersion,
-
-  // EventResponse, 
-  // EventsService, 
-  // EventVersion, 
-  // SchemaResponse, 
-  // SchemasService,
-  // SchemaVersion
-} from '../../../src/sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';

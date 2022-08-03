@@ -3,7 +3,9 @@ import { EpSdkAbstractMethodError, EpSdkEpApiError, EpSdkError, EPSdkErrorFromEr
 import { EpSdkLogger } from "../EpSdkLogger";
 import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
 import { EpSdkUtils, IEpSdkDeepCompareResult, TEpSdkDeepDiffFromTo } from "../EpSdkUtils";
-import { ApiError } from "../sep-openapi-node";
+import { 
+  ApiError 
+} from '@solace-iot-team/ep-openapi-node';
 import { EpSdkTask_TransactionLog, IEpSdkTask_TransactionLogData } from "./EpSdkTask_TransactionLog";
 
 export enum EEpSdkTask_EpObjectType {

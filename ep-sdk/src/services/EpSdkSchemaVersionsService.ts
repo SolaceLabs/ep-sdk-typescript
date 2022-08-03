@@ -5,7 +5,7 @@ import {
   SchemaVersion,
   SchemaVersionResponse,
   VersionedObjectStateChangeRequest
-} from "../sep-openapi-node";
+} from '@solace-iot-team/ep-openapi-node';
 import EpSdkSchemasService from "./EpSdkSchemasService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 

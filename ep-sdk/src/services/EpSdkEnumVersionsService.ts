@@ -6,7 +6,7 @@ import {
   EnumVersionResponse,
   EnumVersionsResponse,
   VersionedObjectStateChangeRequest
-} from "../sep-openapi-node";
+} from '@solace-iot-team/ep-openapi-node';
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 

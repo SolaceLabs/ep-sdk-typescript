@@ -6,7 +6,7 @@ import {
   SchemaResponse,
   SchemasResponse,
   SchemasService,
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
 export enum EEpSdkSchemaType {

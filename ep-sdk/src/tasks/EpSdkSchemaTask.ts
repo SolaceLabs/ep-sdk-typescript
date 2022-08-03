@@ -5,7 +5,7 @@ import {
   SchemaObject,
   SchemaResponse,
   SchemasService
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import EpSdkSchemasService, { EEpSdkSchemaContentType, EEpSdkSchemaType } from "../services/EpSdkSchemasService";
 import { 
   EEpSdkTask_EpObjectType,

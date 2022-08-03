@@ -1,5 +1,5 @@
 import { EpSdkLogger } from "./EpSdkLogger";
-import { ApiError } from "./sep-openapi-node";
+import { ApiError } from "@solace-iot-team/ep-openapi-node";
 import { IEpSdkTask_TransactionLogData } from "./tasks/EpSdkTask_TransactionLog";
 import { EEpSdk_VersionTaskStrategy } from "./tasks/EpSdkVersionTask";
 

@@ -5,7 +5,7 @@ import { TestLogger } from '../../lib/TestLogger';
 import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
-import { ApiError, ApplicationDomainResponse, ApplicationDomainsService, Enum, EnumResponse, EnumsService } from '../../../src/sep-openapi-node';
+import { ApiError, ApplicationDomainResponse, ApplicationDomainsService, Enum, EnumResponse, EnumsService } from '@solace-iot-team/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkEnumsService from '../../../src/services/EpSdkEnumsService';
 import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';

@@ -1,8 +1,8 @@
 
 import { EpSdkError } from "../../src/EpSdkErrors";
-import { ApiError } from "../../src/sep-openapi-node";
-import { ApiRequestOptions } from "../../src/sep-openapi-node/core/ApiRequestOptions";
-import { ApiResult } from "../../src/sep-openapi-node/core/ApiResult";
+import { ApiError } from "@solace-iot-team/ep-openapi-node";
+import { ApiRequestOptions } from "@solace-iot-team/ep-openapi-node/dist/core/ApiRequestOptions";
+import { ApiResult } from "@solace-iot-team/ep-openapi-node/dist/core/ApiResult";
 import { ServerResponseUtil } from "./ServerResponseUtil";
 import { TestContext } from "./TestContext";
 

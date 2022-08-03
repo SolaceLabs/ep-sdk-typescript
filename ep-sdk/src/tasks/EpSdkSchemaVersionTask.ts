@@ -2,10 +2,9 @@ import { EpSdkConfig } from '../EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
-import EpSdkSemVerUtils from '../EpSdkSemVerUtils';
 import { 
   SchemaVersion, 
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import EpSdkSchemaVersionsService from '../services/EpSdkSchemaVersionsService';
 import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 

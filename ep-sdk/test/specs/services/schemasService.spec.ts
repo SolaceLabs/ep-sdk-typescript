@@ -12,7 +12,7 @@ import {
   SchemaObject, 
   SchemaResponse, 
   SchemasService 
-} from '../../../src/sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
 import EpSdkSchemasService, { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';

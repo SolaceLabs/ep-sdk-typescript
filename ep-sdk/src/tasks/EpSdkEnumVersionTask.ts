@@ -6,7 +6,7 @@ import EpSdkSemVerUtils from '../EpSdkSemVerUtils';
 import { 
   EnumValue, 
   EnumVersion, 
-} from '../sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import EpSdkEnumVersionsService from '../services/EpSdkEnumVersionsService';
 import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 

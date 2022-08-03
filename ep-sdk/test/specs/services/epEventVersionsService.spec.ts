@@ -18,7 +18,7 @@ import {
   SchemaResponse, 
   SchemasService,
   SchemaVersion
-} from '../../../src/sep-openapi-node';
+} from '@solace-iot-team/ep-openapi-node';
 import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
