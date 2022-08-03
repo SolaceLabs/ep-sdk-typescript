@@ -26,11 +26,7 @@ const copySourcesToWorkingDir = () => {
   if(s.cp('-rf', CONSTANTS.EpSdkDir, CONSTANTS.WorkingDir).code !== 0) process.exit(1);
   if(s.rm('-rf', `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);
   if(s.rm('-rf', `${CONSTANTS.WorkingEpSdkDir}/node_modules`).code !== 0) process.exit(1);
-  if(s.rm('-rf', `${CONSTANTS.WorkingEpSdkDir}/src/sep-openapi-node`).code !== 0) process.exit(1);
   
-  // copy the spec file
-  const specFile = "/sep-openapi-spec.json";
-  if(s.cp('-L', `${CONSTANTS.EpSdkResourcesDir}/sep-openapi-spec.json`, `${CONSTANTS.WorkingDir}/resources`).code !== 0) process.exit(1);
   console.log(`${logName}: success.`);
 }
 
@@ -41,7 +37,7 @@ const devBuild = () => {
   s.cd(`${CONSTANTS.WorkingEpSdkDir}`);
   console.log(`${logName}: directory = ${s.exec(`pwd`)}`);
   if(s.exec('npm install').code !== 0) process.exit(1);
-  if(s.exec('npm run dev:build').code !== 0) process.exit(1);
+  // if(s.exec('npm run dev:build').code !== 0) process.exit(1);
   if(s.cd(`${scriptDir}`).code !== 0) process.exit(1);
   console.log(`${logName}: success.`);
 }
