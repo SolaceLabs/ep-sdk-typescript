@@ -22,7 +22,8 @@ import {
   EpSdkError, 
   EpSdkFeatureNotSupportedError, 
   EpSdkInvalidSemVerStringError, 
-  EpSdkVersionTaskStrategyValidationError
+  EpSdkVersionTaskStrategyValidationError,
+  TEpSdkVersionTaskStrategyValidationError_Details
 } from '../../../src/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
@@ -30,6 +31,7 @@ import { EEpSdk_VersionStrategy } from '../../../src/EpSdkSemVerUtils';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkEventApiVersionTask, IEpSdkEventApiVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEventApiVersionTask';
 import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
+import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -303,7 +305,7 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         eventApiId: EventApiId,
         versionString: ExactVersionString,
-        versionTaskStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
         eventApiVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
@@ -344,7 +346,7 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         eventApiId: EventApiId,
         versionString: ExactVersionString,
-        versionTaskStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
         eventApiVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
@@ -385,7 +387,7 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         eventApiId: EventApiId,
         versionString: ExactVersionString,
-        versionTaskStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
         eventApiVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           description: 'updated description',
@@ -404,6 +406,50 @@ describe(`${scriptName}`, () => {
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkVersionTaskStrategyValidationError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      const epSdkVersionTaskStrategyValidationError: EpSdkVersionTaskStrategyValidationError = e;
+      const details: TEpSdkVersionTaskStrategyValidationError_Details = epSdkVersionTaskStrategyValidationError.details;
+      expect(details.versionString, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(ExactVersionString);
+      expect(details.existingVersionString, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(ExactVersionString);
+      const transactionLogData: IEpSdkTask_TransactionLogData = epSdkVersionTaskStrategyValidationError.details.transactionLogData;
+      expect(transactionLogData.epSdkTask_Action, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(transactionLogData.epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: event api version present: create exact version match with checkmode: should catch error`, async () => {
+    const ExactVersionString = '2.0.0';
+    try {
+      const epSdkEventApiVersionTask = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        versionString: ExactVersionString,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: {
+          stateId: EpSdkStatesService.releasedId,
+          description: 'updated description',
+          displayName: 'displayName',
+          producedEventVersionIds: ([] as unknown) as EventApiVersion.producedEventVersionIds,
+          consumedEventVersionIds: ([] as unknown) as EventApiVersion.consumedEventVersionIds,  
+        },
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      const epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask.execute();
+      expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkVersionTaskStrategyValidationError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      const epSdkVersionTaskStrategyValidationError: EpSdkVersionTaskStrategyValidationError = e;
+      const details: TEpSdkVersionTaskStrategyValidationError_Details = epSdkVersionTaskStrategyValidationError.details;
+      expect(details.versionString, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(ExactVersionString);
+      expect(details.existingVersionString, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(ExactVersionString);
+      const transactionLogData: IEpSdkTask_TransactionLogData = epSdkVersionTaskStrategyValidationError.details.transactionLogData;
+      expect(transactionLogData.epSdkTask_Action, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(transactionLogData.epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
 

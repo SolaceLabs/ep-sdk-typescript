@@ -17,7 +17,7 @@ export enum EEpSdk_VersionTaskStrategy {
 
 export interface IEpSdkVersionTask_Config extends IEpSdkTask_Config {
   versionString?: string;
-  versionTaskStrategy?: EEpSdk_VersionTaskStrategy;
+  versionStrategy?: EEpSdk_VersionTaskStrategy;
 }
 export interface IEpSdkVersionTask_EpObjectKeys extends IEpSdkTask_EpObjectKeys {
   epVersionObjectId: string;
@@ -25,12 +25,12 @@ export interface IEpSdkVersionTask_EpObjectKeys extends IEpSdkTask_EpObjectKeys 
 
 export abstract class EpSdkVersionTask extends EpSdkTask {
   protected versionString: string = '1.0.0';
-  protected versionTaskStrategy: EEpSdk_VersionTaskStrategy = EEpSdk_VersionTaskStrategy.BUMP_PATCH;
+  protected versionStrategy: EEpSdk_VersionTaskStrategy = EEpSdk_VersionTaskStrategy.BUMP_PATCH;
 
   constructor(epSdkVersionTask_Config: IEpSdkVersionTask_Config) {
     super(epSdkVersionTask_Config);
     if(epSdkVersionTask_Config.versionString !== undefined) this.versionString = epSdkVersionTask_Config.versionString;
-    if(epSdkVersionTask_Config.versionTaskStrategy !== undefined) this.versionTaskStrategy = epSdkVersionTask_Config.versionTaskStrategy;
+    if(epSdkVersionTask_Config.versionStrategy !== undefined) this.versionStrategy = epSdkVersionTask_Config.versionStrategy;
   }
 
   protected async validateTaskConfig(): Promise<void> {
@@ -46,16 +46,17 @@ export abstract class EpSdkVersionTask extends EpSdkTask {
     const funcName = 'createNextVersionWithStrategyValidation';
     const logName = `${EpSdkVersionTask.name}.${funcName}()`;
 
-    if(this.versionTaskStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
+    if(this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
       // check if requrest versionString > existingObjectVersionString
       if(!EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
         newVersionString: this.versionString,
         oldVersionString: existingObjectVersionString
       })) {
         throw new EpSdkVersionTaskStrategyValidationError(logName, this.constructor.name, undefined, {
-          versionTaskStrategy: this.versionTaskStrategy,
-          existingObjectVersionString: existingObjectVersionString,
-          epSdkTask_TransactionLogData: this.epSdkTask_TransactionLog.getData(),
+          versionString: this.versionString,
+          versionStrategy: this.versionStrategy,
+          existingVersionString: existingObjectVersionString,
+          transactionLogData: this.epSdkTask_TransactionLog.getData(),
         });  
       }
       // return requested versionString
@@ -63,7 +64,7 @@ export abstract class EpSdkVersionTask extends EpSdkTask {
     }
     return EpSdkSemVerUtils.createNextVersionByStrategy({
       fromVersionString: existingObjectVersionString,
-      strategy: (this.versionTaskStrategy as unknown) as EEpSdk_VersionStrategy,
+      strategy: (this.versionStrategy as unknown) as EEpSdk_VersionStrategy,
     });
   }
 
