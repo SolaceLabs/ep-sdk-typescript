@@ -69,11 +69,11 @@ describe(`${scriptName}`, () => {
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
         versionString: '1.2.0',
+        versionStrategy: EEpSdk_VersionTaskStrategy.BUMP_PATCH,
         enumVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
           displayName: EnumVersionName,
         },
-        versionTaskStrategy: EEpSdk_VersionTaskStrategy.BUMP_PATCH,
         enumValues: [ 'one', 'two'],
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
