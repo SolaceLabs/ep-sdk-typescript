@@ -2,7 +2,6 @@ import { EpSdkConfig } from '../EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
-import EpSdkSemVerUtils from '../EpSdkSemVerUtils';
 import { 
   eventApiVersion as EventApiVersion,
 } from '../sep-openapi-node';

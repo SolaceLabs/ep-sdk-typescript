@@ -1,5 +1,7 @@
 import { EpSdkLogger } from "./EpSdkLogger";
 import { ApiError } from "./sep-openapi-node";
+import { IEpSdkTask_TransactionLogData } from "./tasks/EpSdkTask_TransactionLog";
+import { EEpSdk_VersionTaskStrategy } from "./tasks/EpSdkVersionTask";
 
 enum ELoggerCodes {
   EP_SDK_INTERNAL_ERROR = "EP_SDK_INTERNAL_ERROR"
@@ -175,10 +177,16 @@ export class EpSdkValidationError extends EpSdkError {
   }
 }
 
+export type TEpSdkVersionTaskStrategyValidationError_Details = {
+  versionString: string;
+  versionStrategy: EEpSdk_VersionTaskStrategy;
+  existingVersionString: string;
+  transactionLogData: IEpSdkTask_TransactionLogData;
+}
 export class EpSdkVersionTaskStrategyValidationError extends EpSdkError {
   protected static DefaultDescription = 'EP Sdk Version Task Version Strategy Validation Error';
-  private details: any;
-  constructor(internalLogName: string, internalModuleName: string, message: string = EpSdkVersionTaskStrategyValidationError.DefaultDescription, details: any ) {
+  public details: TEpSdkVersionTaskStrategyValidationError_Details;
+  constructor(internalLogName: string, internalModuleName: string, message: string = EpSdkVersionTaskStrategyValidationError.DefaultDescription, details: TEpSdkVersionTaskStrategyValidationError_Details ) {
     super(internalLogName, internalModuleName, message);
     this.details = details;
   }
