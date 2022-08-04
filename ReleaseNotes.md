@@ -4,6 +4,12 @@ Solace Event Portal SDK.
 
 ## Version 0.5.0-alpha
 
+**Enhancements:**
+- **EpSdkStatesService**
+  - added a validation method for testing
+
+## Version 0.5.0-alpha
+
 **Core:**
 - **EpSdkClient**
   - re-factored so an OpenAPI instance is passed as parameter to initialize() method
