@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.4.0-alpha
+
+**Packaging:**
+- refactored packaging with index.js and index.d.ts for ease of import & support of npm link
+
 ## Version 0.3.0-alpha
 
 **Core:**

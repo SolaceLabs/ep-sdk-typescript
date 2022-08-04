@@ -1,6 +1,6 @@
 import s from 'shelljs';
 import path from 'path';
-import fs from 'fs';
+// import fs from 'fs';
 import { Constants } from './lib/Constants';
 
 const scriptName: string = path.basename(__filename);
@@ -47,8 +47,8 @@ const publishPackages = () => {
 
   const publish = (releaseDir: string) => {
     s.cd(`${releaseDir}`);
-    // if(s.exec('npm publish dist/ --dry-run').code !== 0) process.exit(1);  
-    if(s.exec('npm publish dist/').code !== 0) process.exit(1);
+    // if(s.exec('npm publish --dry-run').code !== 0) process.exit(1);  
+    if(s.exec('npm publish').code !== 0) process.exit(1);
   }
 
   publish(CONSTANTS.WorkingEpSdkDir);

@@ -13,7 +13,7 @@ const prepare = () => {
   console.log(`${logName}: starting ...`);
   if(s.rm('-rf', CONSTANTS.WorkingDir).code !== 0) process.exit(1);
   if(s.mkdir('-p', CONSTANTS.WorkingDir).code !== 0) process.exit(1);
-  if(s.mkdir('-p', `${CONSTANTS.WorkingDir}/resources`).code !== 0) process.exit(1);
+  // if(s.mkdir('-p', `${CONSTANTS.WorkingDir}/resources`).code !== 0) process.exit(1);
   console.log(`${logName}: success.`);
 }
 
@@ -42,29 +42,30 @@ const devBuild = () => {
   console.log(`${logName}: success.`);
 }
 
-const compileSrcs = () => {
-  const funcName = 'compileSrcs';
+const build = () => {
+  const funcName = 'build';
   const logName = `${scriptDir}/${scriptName}.${funcName}()`;
 
   s.cd(`${CONSTANTS.WorkingEpSdkDir}`);
+  console.log(`${logName}: directory = ${s.exec(`pwd`)}`);
   if(s.rm('-rf', `./dist`).code !== 0) process.exit(1);
-  if(s.exec('npx tsc').code !== 0) process.exit(1);
+  if(s.exec('npm run build').code !== 0) process.exit(1);
 
   console.log(`${logName}: success.`);
 }
 
-const copyAssets2Dist = () => {
-  const funcName = 'copyAssets2Dist';
-  const logName = `${scriptDir}/${scriptName}.${funcName}()`;
+// const copyAssets2Dist = () => {
+//   const funcName = 'copyAssets2Dist';
+//   const logName = `${scriptDir}/${scriptName}.${funcName}()`;
 
-  console.log(`${logName}: starting ...`);
+//   console.log(`${logName}: starting ...`);
 
-  if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/package.json`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
-  if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/README.md`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
-  if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/LICENSE`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
+//   if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/package.json`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
+//   if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/README.md`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
+//   if(s.cp('-f', `${CONSTANTS.WorkingEpSdkDir}/LICENSE`, `${CONSTANTS.WorkingEpSdkDir}/dist`).code !== 0) process.exit(1);  
 
-  console.log(`${logName}: success.`);
-}
+//   console.log(`${logName}: success.`);
+// }
 
 const main = () => {
   const funcName = 'main';
@@ -75,8 +76,8 @@ const main = () => {
   prepare();
   copySourcesToWorkingDir();
   devBuild();
-  compileSrcs();
-  copyAssets2Dist();
+  build();
+  // copyAssets2Dist();
 
   console.log(`${logName}: success.`);
 }
