@@ -6,6 +6,7 @@ export * from './EpSdkLogger';
 export { default as EpSdkSemVerUtils } from './EpSdkSemVerUtils';
 
 // tasks
+export * from './tasks/EpSdkTask_TransactionLog';
 export * from './tasks/EpSdkTask';
 export * from './tasks/EpSdkVersionTask';
 export * from './tasks/EpSdkApplicationDomainTask';

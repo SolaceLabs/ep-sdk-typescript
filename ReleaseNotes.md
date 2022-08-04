@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.4.1-alpha
+
+**Packaging:**
+- fixed index.ts
+
 ## Version 0.4.0-alpha
 
 **Packaging:**
