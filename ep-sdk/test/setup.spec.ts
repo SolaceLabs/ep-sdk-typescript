@@ -7,6 +7,7 @@ import { TestContext } from "./lib/TestContext";
 import { EpSdkClient } from "../src/EpSdkClient";
 import { EpSdkConsoleLogger } from "../src/EpSdkConsoleLogger";
 import { EpSdkLogger } from "../src/EpSdkLogger";
+import { OpenAPI } from "@solace-iot-team/ep-openapi-node";
 
 // load test stub
 const x = require('./lib/TestStub');
@@ -53,6 +54,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should initialize EP client`, async () => {
       try {
         EpSdkClient.initialize({
+          globalOpenAPI: OpenAPI,
           token: TestConfig.getSolaceCloudToken(),
           baseUrl: TestConfig.getConfig().epBaseUrl,
         });
