@@ -2,6 +2,15 @@
 
 Solace Event Portal SDK.
 
+## Version 0.5.0-alpha
+
+**Core:**
+- **EpSdkClient**
+  - re-factored so an OpenAPI instance is passed as parameter to initialize() method
+  - this allows to use a global OpenAPI instance
+  - works now with `npm link` (for dev) as well
+
+
 ## Version 0.4.1-alpha
 
 **Packaging:**
