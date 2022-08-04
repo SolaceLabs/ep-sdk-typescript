@@ -15,9 +15,7 @@ import {
 } from '@solace-iot-team/ep-openapi-node';
 import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 import EpSdkEventApiVersionsService from '../../../src/services/EpSdkEventApiVersionsService';
 
 
