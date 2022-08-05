@@ -10,6 +10,10 @@ import {
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 
+/**
+ * @category Services
+ * @group Services
+ */
 class EpSdkEnumVersionsService extends EpSdkVersionService {
 
   public getVersionByVersion = async ({ enumId, enumVersionString }: {

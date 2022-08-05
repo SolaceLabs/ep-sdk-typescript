@@ -9,15 +9,17 @@ import {
 } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
+/** @category Utils */
 export type TEpSdkDeepDiffFromTo = {
   from: any;
   to: any;
 }
+/** @category Utils */
 export interface IEpSdkDeepCompareResult {
   isEqual: boolean;
   difference: Record<string, TEpSdkDeepDiffFromTo> | undefined;
 }
-
+/** @category Utils */
 export class EpSdkUtils {
 
   public static assertNever = (extLogName: string, x: never): never => {

@@ -1,4 +1,9 @@
-import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
+/**
+ * This is the doc comment for EpSdkApplicationDomainsService.ts
+ *
+ * @module EpSdkApplicationDomainsService
+ */
+ import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
 import { 
@@ -9,7 +14,7 @@ import {
 } from '@solace-iot-team/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
-class EpSdkApplicationDomainsService extends EpSdkService {
+export class EpSdkApplicationDomainsService extends EpSdkService {
 
   public getByName = async({ applicationDomainName }:{
     applicationDomainName: string;
@@ -84,6 +89,5 @@ class EpSdkApplicationDomainsService extends EpSdkService {
   }
 
 }
-
 export default new EpSdkApplicationDomainsService();
 

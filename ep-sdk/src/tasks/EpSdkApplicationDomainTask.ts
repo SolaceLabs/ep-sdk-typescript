@@ -47,7 +47,9 @@ export interface IEpSdkApplicationDomainTask_ExecuteReturn extends Omit<IEpSdkTa
   epObject: ApplicationDomain;
 }
 
-
+/**
+ * @category Tasks
+ */
 export class EpSdkApplicationDomainTask extends EpSdkTask {
 
   private readonly Empty_IEpSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn = {
