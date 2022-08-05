@@ -12,7 +12,7 @@ import {
   EventApiResponse,
   EventApIsService, 
   eventApiVersion as EventApiVersion,
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkError, 
   EpSdkFeatureNotSupportedError, 

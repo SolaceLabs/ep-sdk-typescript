@@ -6,7 +6,7 @@ import {
   ApplicationDomain, 
   ApplicationDomainResponse, 
   ApplicationDomainsService 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../services/EpSdkApplicationDomainsService';
 import { 
   EEpSdkTask_EpObjectType,

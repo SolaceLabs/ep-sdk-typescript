@@ -3,11 +3,9 @@ import { expect } from 'chai';
 import path from 'path';
 import { TestLogger } from '../../lib/TestLogger';
 import { TestContext } from '../../lib/TestContext';
-import TestConfig from '../../lib/TestConfig';
-import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError, 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { EpSdkError } from '../../../src/EpSdkErrors';
 import EpSdkStatesService, { EEpSdkStateDTONames } from '../../../src/services/EpSdkStatesService';
 

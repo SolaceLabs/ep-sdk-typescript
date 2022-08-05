@@ -6,7 +6,7 @@ import {
   Event as EpEvent,
   EventVersionResponse,
   VersionedObjectStateChangeRequest
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkEpEventsService from "./EpSdkEpEventsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 

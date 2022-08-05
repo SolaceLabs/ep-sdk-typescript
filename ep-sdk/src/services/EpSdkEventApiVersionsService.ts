@@ -9,7 +9,7 @@ import {
   EventApiVersionsResponse,
   EventApi,
   EventApiVersionResponse,
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
 
 class EpSdkEventApiVersionsService extends EpSdkVersionService {

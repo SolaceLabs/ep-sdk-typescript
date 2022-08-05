@@ -5,7 +5,7 @@ import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
 import { 
   EnumValue, 
   EnumVersion, 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkEnumVersionsService from '../services/EpSdkEnumVersionsService';
 import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 

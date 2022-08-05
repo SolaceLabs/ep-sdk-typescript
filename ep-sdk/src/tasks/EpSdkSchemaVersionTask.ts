@@ -4,7 +4,7 @@ import { EpSdkLogger } from '../EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
 import { 
   SchemaVersion, 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkSchemaVersionsService from '../services/EpSdkSchemaVersionsService';
 import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 

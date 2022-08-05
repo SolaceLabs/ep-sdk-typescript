@@ -5,7 +5,7 @@ import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
 import { EpSdkUtils, IEpSdkDeepCompareResult, TEpSdkDeepDiffFromTo } from "../EpSdkUtils";
 import { 
   ApiError 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { EpSdkTask_TransactionLog, IEpSdkTask_TransactionLogData } from "./EpSdkTask_TransactionLog";
 
 export enum EEpSdkTask_EpObjectType {

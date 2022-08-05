@@ -11,7 +11,7 @@ import {
   ApplicationDomainResponse,
   ApplicationDomainsResponse,
   ApplicationDomainsService,
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
 export class EpSdkApplicationDomainsService extends EpSdkService {

@@ -12,7 +12,7 @@ import {
   EventResponse, 
   EventsService, 
   Event as EPEvent,
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
 import EpSdkEpEventsService from '../../../src/services/EpSdkEpEventsService';
