@@ -5,7 +5,7 @@ import {
   EventApi,
   EventApiResponse,
   EventApIsService, 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EEpSdkTask_EpObjectType,
   EpSdkTask,

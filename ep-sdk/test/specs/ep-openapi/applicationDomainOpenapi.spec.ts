@@ -5,7 +5,7 @@ import { TestLogger } from '../../lib/TestLogger';
 import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
-import { ApiError, ApplicationDomainResponse, ApplicationDomainsService } from '@solace-iot-team/ep-openapi-node';
+import { ApiError, ApplicationDomainResponse, ApplicationDomainsService } from '@solace-labs/ep-openapi-node';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

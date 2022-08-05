@@ -2,11 +2,10 @@ import { EpSdkConfig } from '../EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
-import EpSdkSemVerUtils from '../EpSdkSemVerUtils';
 import { 
   EnumValue, 
   EnumVersion, 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkEnumVersionsService from '../services/EpSdkEnumVersionsService';
 import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 
@@ -17,9 +16,9 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
-type TEpSdkEnumVersionTask_Settings = Required<Pick<EnumVersion, "displayName" | "stateId">> & Pick<EnumVersion, "description">;
+export type TEpSdkEnumVersionTask_Settings = Required<Pick<EnumVersion, "displayName" | "stateId">> & Pick<EnumVersion, "description">;
 type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<EnumVersion, "values">;
 
 export interface IEpSdkEnumVersionTask_Config extends IEpSdkVersionTask_Config {
@@ -45,6 +44,9 @@ export interface IEpSdkEnumVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_
   epObject: EnumVersion;
 }
 
+/**
+ * @category Tasks
+ */
 export class EpSdkEnumVersionTask extends EpSdkVersionTask {
 
   private readonly Empty_IEpSdkEnumVersionTask_GetFuncReturn: IEpSdkEnumVersionTask_GetFuncReturn = {

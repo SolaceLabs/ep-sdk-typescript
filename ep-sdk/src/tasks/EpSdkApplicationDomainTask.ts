@@ -6,7 +6,7 @@ import {
   ApplicationDomain, 
   ApplicationDomainResponse, 
   ApplicationDomainsService 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../services/EpSdkApplicationDomainsService';
 import { 
   EEpSdkTask_EpObjectType,
@@ -47,7 +47,9 @@ export interface IEpSdkApplicationDomainTask_ExecuteReturn extends Omit<IEpSdkTa
   epObject: ApplicationDomain;
 }
 
-
+/**
+ * @category Tasks
+ */
 export class EpSdkApplicationDomainTask extends EpSdkTask {
 
   private readonly Empty_IEpSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn = {

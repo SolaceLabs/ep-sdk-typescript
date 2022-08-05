@@ -1,7 +1,7 @@
 import {
   OpenAPI,
   OpenAPIConfig 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 
 export class EpSdkClient {
 

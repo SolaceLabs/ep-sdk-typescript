@@ -1,4 +1,4 @@
-import { StatesResponse, StatesService } from "@solace-iot-team/ep-openapi-node";
+import { StatesResponse, StatesService } from "@solace-labs/ep-openapi-node";
 import { EpSdkApiContentError } from "../EpSdkErrors";
 import { EpSdkLogger } from "../EpSdkLogger";
 import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";

@@ -1,14 +1,18 @@
+/**
+ * This is the doc comment for EpSdkEpEventVersionTask.ts
+ *
+ * @module EpSdkEpEventVersionTask
+ */
 import { EpSdkConfig } from '../EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
-import EpSdkSemVerUtils from '../EpSdkSemVerUtils';
 import { 
   Address,
   AddressLevel,
   EnumVersion,
   EventVersion, 
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 
   EEpSdkTask_EpObjectType,
@@ -22,32 +26,49 @@ import { EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectK
 import EpSdkEnumVersionService from '../services/EpSdkEnumVersionsService';
 import EpSdkEpEventVersionsService from '../services/EpSdkEpEventVersionsService';
 
-type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">>;
+/** @category EpSdkEpEventVersionTask */
+export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">>;
 type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor">;
 
+/** @category EpSdkEpEventVersionTask */
 export interface IEpSdkEpEventVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
   eventId: string;
   eventVersionSettings: TEpSdkEpEventVersionTask_Settings;
   topicString: string;
 }
+/** @category EpSdkEpEventVersionTask */
 export interface IEpSdkEpEventVersionTask_Keys extends IEpSdkTask_Keys {
   applicationDomainId: string;
   eventId: string;
 }
+/**
+ * @category EpSdkEpEventVersionTask
+ */
 export interface IEpSdkEpEventVersionTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
   epObject: EventVersion | undefined;
 }
+/**
+ * @category EpSdkEpEventVersionTask
+*/
 export interface IEpSdkEpEventVersionTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
   epObject: EventVersion;
 }
+/**
+ * @category EpSdkEpEventVersionTask
+ */
 export interface IEpSdkEpEventVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: EventVersion;
 }
- export interface IEpSdkEpEventVersionTask_ExecuteReturn extends Omit<IEpSdkEnumTask_ExecuteReturn, "epObject"> {
+/**
+ * @category EpSdkEpEventVersionTask
+ */
+export interface IEpSdkEpEventVersionTask_ExecuteReturn extends Omit<IEpSdkEnumTask_ExecuteReturn, "epObject"> {
   epObject: EventVersion;
 }
-
+/**
+ * @category EpSdkEpEventVersionTask
+ */
 export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   private topicAddressLevelList: Array<AddressLevel> = [];
 

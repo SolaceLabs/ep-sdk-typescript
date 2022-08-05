@@ -1,10 +1,10 @@
 
 import * as sinon from 'sinon';
 
-import { ApiRequestOptions } from "@solace-iot-team/ep-openapi-node/dist/core/ApiRequestOptions";
-import { CancelablePromise, OpenAPIConfig } from "@solace-iot-team/ep-openapi-node";
-import { ApiResult } from "@solace-iot-team/ep-openapi-node/dist/core/ApiResult";
-import * as __requestLib from '@solace-iot-team/ep-openapi-node/dist/core/request';
+import { ApiRequestOptions } from "@solace-labs/ep-openapi-node/dist/core/ApiRequestOptions";
+import { CancelablePromise, OpenAPIConfig } from "@solace-labs/ep-openapi-node";
+import { ApiResult } from "@solace-labs/ep-openapi-node/dist/core/ApiResult";
+import * as __requestLib from '@solace-labs/ep-openapi-node/dist/core/request';
 import { TestContext } from "./TestContext";
 import { TestLogger } from "./TestLogger";
 import { customRequest } from "./customOpenApiRequest";

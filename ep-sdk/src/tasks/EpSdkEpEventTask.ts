@@ -5,7 +5,7 @@ import {
   Event as EpEvent,
   EventResponse,
   EventsService,
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import { 
   EEpSdkTask_EpObjectType,
   EpSdkTask,
@@ -21,7 +21,7 @@ import {
 } from "./EpSdkTask";
 import EpSdkEpEventsService from '../services/EpSdkEpEventsService';
 
-type TEpSdkEpEventTask_Settings = Partial<Pick<EpEvent, "shared">>;
+export type TEpSdkEpEventTask_Settings = Partial<Pick<EpEvent, "shared">>;
 type TEpSdkEpEventTask_CompareObject = TEpSdkEpEventTask_Settings;
 
 export interface IEpSdkEpEventTask_Config extends IEpSdkTask_Config {
@@ -49,6 +49,9 @@ export interface IEpSdkEpEventTask_ExecuteReturn extends Omit<IEpSdkTask_Execute
   epObject: EpEvent;
 }
 
+/**
+ * @category Tasks
+ */
 export class EpSdkEpEventTask extends EpSdkTask {
 
   private readonly Empty_IEpSdkEpEventTask_GetFuncReturn: IEpSdkEpEventTask_GetFuncReturn = {

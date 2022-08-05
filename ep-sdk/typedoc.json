@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/services/*.ts", "./src/tasks/*.ts", "./src/*.ts"],
+  "exclude": ["./src/index.ts"],
+  "out": "tsdocs",
+  "includeVersion": true,
+  "hideGenerator": true,
+  "categorizeByGroup": true,
+  "excludePrivate": false,
+  "name": "EP SDK"
+}

@@ -2,6 +2,13 @@
 
 Solace Event Portal SDK.
 
+## Version 0.6.0-alpha
+
+**Core:**
+- **@solace-labs/ep-openapi-node**
+  - switched to using new npm package
+
+
 ## Version 0.5.0-alpha
 
 **Enhancements:**

@@ -7,7 +7,7 @@ import { TestContext } from "./lib/TestContext";
 import { EpSdkClient } from "../src/EpSdkClient";
 import { EpSdkConsoleLogger } from "../src/EpSdkConsoleLogger";
 import { EpSdkLogger } from "../src/EpSdkLogger";
-import { OpenAPI } from "@solace-iot-team/ep-openapi-node";
+import { OpenAPI } from "@solace-labs/ep-openapi-node";
 
 // load test stub
 const x = require('./lib/TestStub');

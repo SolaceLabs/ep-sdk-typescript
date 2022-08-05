@@ -21,7 +21,9 @@ export * from './tasks/EpSdkEventApiVersionTask';
 
 
 // services
-export { default as EpSdkApplicationDomainsService } from './services/EpSdkApplicationDomainsService';
+export { 
+  default as EpSdkApplicationDomainsService 
+} from './services/EpSdkApplicationDomainsService';
 export { 
   default as EpSdkSchemasService, 
   EEpSdkSchemaType, 
@@ -45,3 +47,6 @@ export {
 export {
   default as EpSdkStatesService
 } from './services/EpSdkStatesService';
+export {
+  default as EpSdkEnumVersionsService,
+} from './services/EpSdkEnumVersionsService'

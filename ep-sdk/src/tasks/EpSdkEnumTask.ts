@@ -1,3 +1,8 @@
+/**
+ * This is the doc comment for EpSdkEnumTask.ts
+ *
+ * @module EpSdkEnumTask
+ */
 import { EpSdkApiContentError, EpSdkInternalTaskError } from "../EpSdkErrors";
 import { EpSdkLogger } from "../EpSdkLogger";
 import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
@@ -5,7 +10,7 @@ import {
   Enum,
   EnumResponse,
   EnumsService
-} from '@solace-iot-team/ep-openapi-node';
+} from '@solace-labs/ep-openapi-node';
 import EpSdkEnumsService from "../services/EpSdkEnumsService";
 import { 
   EEpSdkTask_EpObjectType,
@@ -21,7 +26,7 @@ import {
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
 
-type TEpSdkEnumTask_Settings = Partial<Pick<Enum, "shared">>;
+export type TEpSdkEnumTask_Settings = Partial<Pick<Enum, "shared">>;
 type TEpSdkEnumTask_CompareObject = TEpSdkEnumTask_Settings;
 
 export interface IEpSdkEnumTask_Config extends IEpSdkTask_Config {
@@ -49,6 +54,9 @@ export interface IEpSdkEnumTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteRet
   epObject: Enum;
 }
 
+/**
+ * @category Tasks
+ */
 export class EpSdkEnumTask extends EpSdkTask {
 
   private readonly Empty_IEpSdkEnumTask_GetFuncReturn: IEpSdkEnumTask_GetFuncReturn = {

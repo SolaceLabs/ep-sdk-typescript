@@ -2,9 +2,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import request from 'supertest';
-import { ApiRequestOptions } from "@solace-iot-team/ep-openapi-node/dist/core/ApiRequestOptions";
-import { ApiError } from "@solace-iot-team/ep-openapi-node";
-import { ApiResult } from "@solace-iot-team/ep-openapi-node/dist/core/ApiResult";
+import { ApiRequestOptions } from "@solace-labs/ep-openapi-node/dist/core/ApiRequestOptions";
+import { ApiError } from "@solace-labs/ep-openapi-node";
+import { ApiResult } from "@solace-labs/ep-openapi-node/dist/core/ApiResult";
 
 export type TTestEnv = {
   projectRootDir: string;
