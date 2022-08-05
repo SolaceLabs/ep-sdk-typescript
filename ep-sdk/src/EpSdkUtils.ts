@@ -1,4 +1,9 @@
-import { 
+/**
+ * This is the doc comment for EpSdkEpEventVersionTask.ts
+ *
+ * @module Utils
+ */
+ import { 
   isUndefined as _isUndefined,
   keys as _keys,
   entries as _entries,
@@ -9,7 +14,6 @@ import {
 } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
-/** @category Utils */
 export type TEpSdkDeepDiffFromTo = {
   from: any;
   to: any;

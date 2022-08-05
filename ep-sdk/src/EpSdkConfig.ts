@@ -1,4 +1,7 @@
-export class EpSdkConfig {
+/**
+ * @group UtilsGroup
+ */
+ export class EpSdkConfig {
   private static appName: string = "EP SDK";
 
   public static initialize(appName: string) {

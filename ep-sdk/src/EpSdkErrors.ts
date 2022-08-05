@@ -1,3 +1,8 @@
+/**
+ * This is the doc comment for EpSdkErrors.ts
+ *
+ * @module Utils/EpSdkErrors
+ */
 import { EpSdkLogger } from "./EpSdkLogger";
 import { ApiError } from "@solace-labs/ep-openapi-node";
 import { IEpSdkTask_TransactionLogData } from "./tasks/EpSdkTask_TransactionLog";
@@ -6,14 +11,6 @@ import { EEpSdk_VersionTaskStrategy } from "./tasks/EpSdkVersionTask";
 enum ELoggerCodes {
   EP_SDK_INTERNAL_ERROR = "EP_SDK_INTERNAL_ERROR"
 }
-// export class EpSdkErrorFactory {
-//   public static createError = (e: any, logName: string): EpSdkError => {
-//     let epSdkError: EpSdkError;
-//     if (e instanceof EpSdkError ) epSdkError = e;
-//     else epSdkError = new EPSdkErrorFromError(e, logName);
-//     return epSdkError;
-//   }
-// }
 export class EpSdkError extends Error {
   private internalStack: Array<string>;
   private internalLogName: string;

@@ -1,4 +1,9 @@
-import { EpSdkLoggerNotInitializedError } from "./EpSdkErrors";
+/**
+ * This is the doc comment for EpSdkLogger.ts
+ *
+ * @module Utils/EpSdkLogger
+ */
+ import { EpSdkLoggerNotInitializedError } from "./EpSdkErrors";
 
 export interface IEpSdkLogDetails {
   module: string;

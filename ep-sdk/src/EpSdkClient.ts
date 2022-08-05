@@ -1,4 +1,4 @@
-import {
+ import {
   OpenAPI,
   OpenAPIConfig 
 } from '@solace-labs/ep-openapi-node';

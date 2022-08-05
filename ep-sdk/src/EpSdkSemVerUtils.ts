@@ -1,4 +1,9 @@
-import { 
+/**
+ * This is the doc comment for EpSdkEpEventVersionTask.ts
+ *
+ * @module Utils
+ */
+ import { 
   SemVer, 
   // coerce as SemVerCoerce, 
   valid as SemVerValid 

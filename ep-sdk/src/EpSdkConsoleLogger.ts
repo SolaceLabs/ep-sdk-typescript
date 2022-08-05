@@ -1,4 +1,9 @@
-import { EEpSdkLogLevel, IEpSdkLoggerInstance, IEpSdkLogDetails, IEpSdkLogEntry } from "./EpSdkLogger";
+/**
+ * This is the doc comment for EpSdkEpEventVersionTask.ts
+ *
+ * @module Utils
+ */
+ import { EEpSdkLogLevel, IEpSdkLoggerInstance, IEpSdkLogDetails, IEpSdkLogEntry } from "./EpSdkLogger";
 
 
 export class EpSdkConsoleLogger implements IEpSdkLoggerInstance {
