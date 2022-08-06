@@ -25,6 +25,7 @@ author = 'Ricardo Gomez-Ulmke'
 release = 'r0.0.2'
 
 
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -43,6 +44,7 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+datestamp = '%Y-%m-%d %H:%M UTC'
 today_fmt = '%d %b %Y at %H:%M'
 html_last_updated_fmt = '%d %b %Y at %H:%M'
 # -- Options for HTML output -------------------------------------------------
@@ -72,3 +74,5 @@ linkcheck_ignore = ['https://api.solace.cloud']
 # if required, add a list of regex of anchors to ignore
 # linkcheck cannot deal with solace swagger anchors like: ...config/index.html#/queue
 # linkcheck_anchors_ignore
+
+html_extra_path = ['./_generated']

@@ -29,7 +29,8 @@
   },
   "scripts": {
     "compile": "tsc",
-    "build": "tsc",
+    "build": "tsc && typedoc",
+    "build:tsdocs": "typedoc",
     "test": ". ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
   },
   "files": [
