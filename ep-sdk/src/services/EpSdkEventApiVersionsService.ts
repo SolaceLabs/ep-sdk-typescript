@@ -12,7 +12,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
 
-class EpSdkEventApiVersionsService extends EpSdkVersionService {
+export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
   public validateDisplayName = ({ displayName }: {
     displayName: string;

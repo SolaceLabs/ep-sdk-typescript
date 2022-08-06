@@ -1,4 +1,9 @@
- import {
+ /**
+ * This is the doc comment for EpSdkClient.ts
+ *
+ * @module utils/EpSdkClient
+ */
+import {
   OpenAPI,
   OpenAPIConfig 
 } from '@solace-labs/ep-openapi-node';

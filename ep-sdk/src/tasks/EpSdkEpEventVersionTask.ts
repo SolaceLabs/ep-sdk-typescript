@@ -1,8 +1,3 @@
-/**
- * This is the doc comment for EpSdkEpEventVersionTask.ts
- *
- * @module EpSdkEpEventVersionTask
- */
 import { EpSdkConfig } from '../EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';

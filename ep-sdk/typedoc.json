@@ -1,11 +1,22 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/services/*.ts", "./src/tasks/*.ts", "./src/*.ts"],
-  "exclude": ["./src/index.ts"],
+  "entryPoints": [
+    "./src/services/*.ts",
+    "./src/tasks/*.ts",
+    "./src/EpSdkUtils.ts",
+    "./src/EpSdkClient.ts",
+    "./src/EpSdkErrors.ts",
+    "./src/EpSdkLogger.ts",
+    "./src/EpSdkSemVerUtils.ts"
+  ],
   "out": "../docs/source/_generated/ep-sdk-tsdoc-content/tsdocs",
   "includeVersion": true,
   "hideGenerator": true,
   "categorizeByGroup": true,
   "excludePrivate": false,
-  "name": "EP SDK"
+  "name": "EP SDK",
+  "logLevel": "Verbose",
+  "treatWarningsAsErrors": true,
+  "sort": ["kind", "instance-first", "alphabetical"],
+  "disableSources": false
 }

@@ -1,9 +1,4 @@
-/**
- * This is the doc comment for EpSdkApplicationDomainsService.ts
- *
- * @module EpSdkApplicationDomainsService
- */
- import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
+import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
 import { EpSdkLogger } from '../EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
 import { 

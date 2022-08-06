@@ -1,7 +1,7 @@
 /**
- * This is the doc comment for EpSdkEpEventVersionTask.ts
+ * This is the doc comment for EpSdkSemVerUtils.ts
  *
- * @module Utils
+ * @module utils/EpSdkSemVerUtils
  */
  import { 
   SemVer, 
@@ -15,7 +15,7 @@ export enum EEpSdk_VersionStrategy {
   BUMP_PATCH = "bump_patch"
 }
 
-class EpSdkSemVerUtils {
+export class EpSdkSemVerUtils {
 
   public isSemVerFormat({ versionString }:{
     versionString: string;

@@ -9,7 +9,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
-class EpSdkEnumsService extends EpSdkService {
+export class EpSdkEnumsService extends EpSdkService {
   
   public getByName = async({ enumName, applicationDomainId }:{
     enumName: string;

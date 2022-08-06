@@ -35,14 +35,14 @@ import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
 //   }
 // ]
 
-export enum EEpSdkStateDTONames {
+enum EEpSdkStateDTONames {
   DRAFT = "Draft",
   RELEASED = "Released",
   DEPRECATED = "Deprecated",
   RETIRED = "Retired"
 }
 
-class EpSdkStatesService {
+export class EpSdkStatesService {
 
   private  _draftId: string = "1";
   private  _releasedId: string = "2";
@@ -110,28 +110,28 @@ class EpSdkStatesService {
     return this._retiredId;
   }
 
-  public getEpStateIdByName = ({ epSdkStateDTOName }:{
-    epSdkStateDTOName: EEpSdkStateDTONames;
-  }): string => {
-    const funcName = 'getEpStateIdByName';
-    const logName = `${EpSdkStatesService.name}.${funcName}()`;
+  // public getEpStateIdByName = ({ epSdkStateDTOName }:{
+  //   epSdkStateDTOName: EEpSdkStateDTONames;
+  // }): string => {
+  //   const funcName = 'getEpStateIdByName';
+  //   const logName = `${EpSdkStatesService.name}.${funcName}()`;
 
-    switch(epSdkStateDTOName) {
-      case EEpSdkStateDTONames.DRAFT:
-        return this._draftId;
-      case EEpSdkStateDTONames.RELEASED:
-        return this._releasedId;
-      case EEpSdkStateDTONames.DEPRECATED:
-        return this._deprecatedId;
-      case EEpSdkStateDTONames.RETIRED:
-        return this._retiredId;
-      default:
-        throw new EpSdkApiContentError(logName, this.constructor.name,'unknown epSdkStateDTOName', {
-          epSdkStateDTOName: epSdkStateDTOName,
-          knownNames: Object.values(EEpSdkStateDTONames)
-        });
-    }
-  }
+  //   switch(epSdkStateDTOName) {
+  //     case EEpSdkStateDTONames.DRAFT:
+  //       return this._draftId;
+  //     case EEpSdkStateDTONames.RELEASED:
+  //       return this._releasedId;
+  //     case EEpSdkStateDTONames.DEPRECATED:
+  //       return this._deprecatedId;
+  //     case EEpSdkStateDTONames.RETIRED:
+  //       return this._retiredId;
+  //     default:
+  //       throw new EpSdkApiContentError(logName, this.constructor.name,'unknown epSdkStateDTOName', {
+  //         epSdkStateDTOName: epSdkStateDTOName,
+  //         knownNames: Object.values(EEpSdkStateDTONames)
+  //       });
+  //   }
+  // }
 }
 
 export default new EpSdkStatesService();

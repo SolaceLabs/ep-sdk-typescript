@@ -9,7 +9,7 @@ import {
 import EpSdkSchemasService from "./EpSdkSchemasService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 
-class EpSdkSchemaVersionsService extends EpSdkVersionService {
+export class EpSdkSchemaVersionsService extends EpSdkVersionService {
 
   public getVersionByVersion = async ({ schemaId, schemaVersionString }: {
     schemaId: string;

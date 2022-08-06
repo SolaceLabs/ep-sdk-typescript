@@ -16,7 +16,7 @@ export enum EEpSdkSchemaContentType {
   APPLICATION_JSON = "json"
 }
 
-class EpSdkSchemasService extends EpSdkService {
+export class EpSdkSchemasService extends EpSdkService {
   
   public getByName = async({ schemaName, applicationDomainId }:{
     schemaName: string;

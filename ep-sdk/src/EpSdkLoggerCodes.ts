@@ -1,7 +1,7 @@
 /**
  * This is the doc comment for EEpSdkLoggerCodes.ts
  *
- * @module Utils/EpSdkLogger
+ * @module utils/EEpSdkLoggerCodes
  */
  export enum EEpSdkLoggerCodes {
   SERVICE_GET = "SERVICE_GET",

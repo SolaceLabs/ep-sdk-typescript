@@ -9,7 +9,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
-class EpSdkEventApisService extends EpSdkService {
+export class EpSdkEventApisService extends EpSdkService {
   
   public getByName = async({ eventApiName, applicationDomainId }:{
     eventApiName: string;

@@ -1,8 +1,9 @@
-/**
- * This is the doc comment for EpSdkEpEventVersionTask.ts
+ /**
+ * This is the doc comment for EpSdkConsoleLogger.ts
  *
- * @module Utils
+ * @module utils/EpSdkConsoleLogger
  */
+ 
  import { EEpSdkLogLevel, IEpSdkLoggerInstance, IEpSdkLogDetails, IEpSdkLogEntry } from "./EpSdkLogger";
 
 

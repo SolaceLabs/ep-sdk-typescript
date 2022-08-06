@@ -1,7 +1,7 @@
 /**
- * This is the doc comment for EpSdkEpEventVersionTask.ts
+ * This is the doc comment for EpSdkUtils.ts
  *
- * @module Utils
+ * @module utils/EpSdkUtils
  */
  import { 
   isUndefined as _isUndefined,
@@ -18,12 +18,12 @@ export type TEpSdkDeepDiffFromTo = {
   from: any;
   to: any;
 }
-/** @category Utils */
+
 export interface IEpSdkDeepCompareResult {
   isEqual: boolean;
   difference: Record<string, TEpSdkDeepDiffFromTo> | undefined;
 }
-/** @category Utils */
+
 export class EpSdkUtils {
 
   public static assertNever = (extLogName: string, x: never): never => {
