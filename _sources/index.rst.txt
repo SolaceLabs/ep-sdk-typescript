@@ -7,6 +7,7 @@ Solace Event Portal SDK
   :caption: Guides
 
   ep-openapi
+  ep-sdk-tsdoc
 
 Repos & Links
 -------------
