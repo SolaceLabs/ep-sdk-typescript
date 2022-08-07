@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.7.0-alpha
+
+**Documentation:**
+  * added generation of tsdocs and linked into doc site
+
 ## Version 0.6.0-alpha
 
 **Core:**
