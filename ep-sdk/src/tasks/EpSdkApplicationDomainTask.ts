@@ -1,7 +1,12 @@
-import { EpSdkConfig } from "../EpSdkConfig";
-import { EpSdkApiContentError, EpSdkInternalTaskError } from "../EpSdkErrors";
-import { EpSdkLogger } from "../EpSdkLogger";
-import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
+/**
+ * This is the doc for EpSdkApplicationDomainTask.ts file.
+ * 
+ * @packageDocumentation
+ */
+import { EpSdkConfig } from "../utils/EpSdkConfig";
+import { EpSdkApiContentError, EpSdkInternalTaskError } from "../utils/EpSdkErrors";
+import { EpSdkLogger } from "../utils/EpSdkLogger";
+import { EEpSdkLoggerCodes } from "../utils/EpSdkLoggerCodes";
 import { 
   ApplicationDomain, 
   ApplicationDomainResponse, 
@@ -22,10 +27,18 @@ import {
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
 
+
 type TEpSdkApplicationDomainTask_Settings = Partial<Pick<ApplicationDomain, "topicDomainEnforcementEnabled" | "uniqueTopicAddressEnforcementEnabled" | "description">>;
 type TEpSdkApplicationDomainTask_CompareObject = TEpSdkApplicationDomainTask_Settings;
+/**
+ * Configuration for the EpSdkApplicationDomainTask.
+ */
 export interface IEpSdkApplicationDomainTask_Config extends IEpSdkTask_Config {
+  /** Application domain name. Globally unique. */
   applicationDomainName: string;
+  /**
+   * settings
+   */
   applicationDomainSettings?: TEpSdkApplicationDomainTask_Settings;
 }
 export interface IEpSdkApplicationDomainTask_Keys extends IEpSdkTask_Keys {
@@ -47,9 +60,6 @@ export interface IEpSdkApplicationDomainTask_ExecuteReturn extends Omit<IEpSdkTa
   epObject: ApplicationDomain;
 }
 
-/**
- * @category Tasks
- */
 export class EpSdkApplicationDomainTask extends EpSdkTask {
 
   private readonly Empty_IEpSdkApplicationDomainTask_GetFuncReturn: IEpSdkApplicationDomainTask_GetFuncReturn = {

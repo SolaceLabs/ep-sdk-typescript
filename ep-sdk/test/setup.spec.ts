@@ -4,9 +4,9 @@ import { expect } from 'chai';
 import { TestLogger } from "./lib/TestLogger";
 import TestConfig from "./lib/TestConfig";
 import { TestContext } from "./lib/TestContext";
-import { EpSdkClient } from "../src/EpSdkClient";
-import { EpSdkConsoleLogger } from "../src/EpSdkConsoleLogger";
-import { EpSdkLogger } from "../src/EpSdkLogger";
+import { EpSdkClient } from "../src/utils/EpSdkClient";
+import { EpSdkConsoleLogger } from "../src/utils/EpSdkConsoleLogger";
+import { EpSdkLogger } from "../src/utils/EpSdkLogger";
 import { OpenAPI } from "@solace-labs/ep-openapi-node";
 
 // load test stub

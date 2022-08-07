@@ -1,5 +1,5 @@
-import { EpSdkApiContentError } from "../EpSdkErrors";
-import EpSdkSemVerUtils from "../EpSdkSemVerUtils";
+import { EpSdkApiContentError } from "../utils/EpSdkErrors";
+import EpSdkSemVerUtils from "../utils/EpSdkSemVerUtils";
 import { EpSdkService } from "./EpSdkService";
 
 export class EpSdkVersionService extends EpSdkService {

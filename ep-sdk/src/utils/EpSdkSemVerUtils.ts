@@ -1,9 +1,4 @@
-/**
- * This is the doc comment for EpSdkSemVerUtils.ts
- *
- * @module utils/EpSdkSemVerUtils
- */
- import { 
+import { 
   SemVer, 
   // coerce as SemVerCoerce, 
   valid as SemVerValid 

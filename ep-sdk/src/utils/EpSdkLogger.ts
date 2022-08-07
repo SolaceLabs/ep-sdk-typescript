@@ -1,10 +1,4 @@
-/**
- * This is the doc comment for EpSdkLogger.ts
- *
- * @module utils/EpSdkLogger
- */
-
- import { EpSdkLoggerNotInitializedError } from "./EpSdkErrors";
+import { EpSdkLoggerNotInitializedError } from "./EpSdkErrors";
 
 export interface IEpSdkLogDetails {
   module: string;

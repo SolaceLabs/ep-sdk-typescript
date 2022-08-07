@@ -19,7 +19,7 @@ import {
   EpSdkError, 
   EpSdkFeatureNotSupportedError, 
   EpSdkInvalidSemVerStringError 
-} from '../../../src/EpSdkErrors';
+} from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';

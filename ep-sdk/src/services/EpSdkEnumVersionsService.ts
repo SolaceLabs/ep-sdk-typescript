@@ -1,4 +1,4 @@
-import { EpSdkApiContentError } from "../EpSdkErrors";
+import { EpSdkApiContentError } from "../utils/EpSdkErrors";
 import {
   Enum,
   EnumsService,

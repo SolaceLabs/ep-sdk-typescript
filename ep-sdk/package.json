@@ -28,9 +28,9 @@
     "url": "https://github.com/solace-iot-team/ep-sdk/issues"
   },
   "scripts": {
-    "compile": "tsc",
-    "build": "tsc && typedoc",
-    "build:tsdocs": "typedoc",
+    "compile": "tsc -b -v",
+    "build:tsdocs": "ts-node build-tsdocs.ts",
+    "build": "npm run  build:tsdocs && tsc",
     "test": ". ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
   },
   "files": [

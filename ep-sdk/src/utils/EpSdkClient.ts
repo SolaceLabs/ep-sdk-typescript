@@ -1,20 +1,33 @@
- /**
- * This is the doc comment for EpSdkClient.ts
+/**
+ * This is the doc for EpSdkClient.ts file.
  *
- * @module utils/EpSdkClient
+ * @packageDocumentation
  */
 import {
   OpenAPI,
-  OpenAPIConfig 
+  OpenAPIConfig
 } from '@solace-labs/ep-openapi-node';
 
+// Need to include this once in the project to generate tsdoc links
+// in ALL other files correctly.
+// import {
+//   OpenAPI,
+//   OpenAPIConfig
+// } from '../@solace-labs/ep-openapi-node';
+
+/**
+ * Convenience class to initialize the OpenAPI config for @solace-labs/ep-openapi-node.
+ */
 export class EpSdkClient {
 
-  private static DEFAULT_EP_API_BASE_URL = "https://api.solace.cloud";
+  public static readonly DEFAULT_EP_API_BASE_URL = "https://api.solace.cloud";
 
   public static initialize = ({ globalOpenAPI, token, baseUrl=EpSdkClient.DEFAULT_EP_API_BASE_URL }:{
+    /** The global OpenAPI const object from  @solace-labs/ep-openapi-node. */
     globalOpenAPI: OpenAPIConfig;
+    /** The Solace Cloud token. */
     token: string;
+    /** Base url for the ep api. @defaultValue  {@link EpSdkClient.DEFAULT_EP_API_BASE_URL} */
     baseUrl?: string;
   }): OpenAPIConfig => {
     const funcName = 'initialize';
@@ -33,12 +46,10 @@ export class EpSdkClient {
     OpenAPI.CREDENTIALS = "include";
     OpenAPI.TOKEN = token;
 
-    // // DEBUG: 
+    // // DEBUG:
     // console.log(`>>>>>>>>\n\n${logName}:\n\n>>>>> globalOpenAPI=${JSON.stringify(globalOpenAPI, null, 2)}\n\n<<<<<<<<<<<`);
 
     return globalOpenAPI;
   }
 
 }
-
-

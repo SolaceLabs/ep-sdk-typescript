@@ -1,4 +1,4 @@
-import { EEpSdkLogLevel } from "../../src/EpSdkLogger";
+import { EEpSdkLogLevel } from "../../src/utils/EpSdkLogger";
 
 enum EEnvVars {
   EP_SDK_TEST_SOLACE_CLOUD_TOKEN = 'EP_SDK_TEST_SOLACE_CLOUD_TOKEN',

@@ -14,7 +14,7 @@ import {
   SchemasService 
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
+import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
 import EpSdkSchemasService, { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 
 const scriptName: string = path.basename(__filename);

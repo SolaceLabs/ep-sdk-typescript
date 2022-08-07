@@ -1,9 +1,9 @@
 // utils
-export * from './EpSdkUtils';
-export * from './EpSdkClient';
-export * from './EpSdkErrors';
-export * from './EpSdkLogger';
-export { default as EpSdkSemVerUtils } from './EpSdkSemVerUtils';
+export * from './utils/EpSdkUtils';
+export * from './utils/EpSdkClient';
+export * from './utils/EpSdkErrors';
+export * from './utils/EpSdkLogger';
+export { default as EpSdkSemVerUtils } from './utils/EpSdkSemVerUtils';
 
 // tasks
 export * from './tasks/EpSdkTask_TransactionLog';

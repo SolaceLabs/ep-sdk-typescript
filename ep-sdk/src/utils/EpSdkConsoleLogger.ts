@@ -1,11 +1,4 @@
- /**
- * This is the doc comment for EpSdkConsoleLogger.ts
- *
- * @module utils/EpSdkConsoleLogger
- */
- 
- import { EEpSdkLogLevel, IEpSdkLoggerInstance, IEpSdkLogDetails, IEpSdkLogEntry } from "./EpSdkLogger";
-
+import { EEpSdkLogLevel, IEpSdkLoggerInstance, IEpSdkLogDetails, IEpSdkLogEntry } from "./EpSdkLogger";
 
 export class EpSdkConsoleLogger implements IEpSdkLoggerInstance {
   appId: string;

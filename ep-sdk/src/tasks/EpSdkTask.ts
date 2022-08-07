@@ -1,8 +1,8 @@
 
-import { EpSdkAbstractMethodError, EpSdkEpApiError, EpSdkError, EPSdkErrorFromError, EpSdkInternalTaskError } from "../EpSdkErrors";
-import { EpSdkLogger } from "../EpSdkLogger";
-import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
-import { EpSdkUtils, IEpSdkDeepCompareResult, TEpSdkDeepDiffFromTo } from "../EpSdkUtils";
+import { EpSdkAbstractMethodError, EpSdkEpApiError, EpSdkError, EPSdkErrorFromError, EpSdkInternalTaskError } from "../utils/EpSdkErrors";
+import { EpSdkLogger } from "../utils/EpSdkLogger";
+import { EEpSdkLoggerCodes } from "../utils/EpSdkLoggerCodes";
+import { EpSdkUtils, IEpSdkDeepCompareResult, TEpSdkDeepDiffFromTo } from "../utils/EpSdkUtils";
 import { 
   ApiError 
 } from '@solace-labs/ep-openapi-node';

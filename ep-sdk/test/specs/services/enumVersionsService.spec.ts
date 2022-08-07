@@ -6,7 +6,7 @@ import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
 import { ApiError, ApplicationDomainResponse, ApplicationDomainsService, EnumResponse, EnumsService, EnumValue, EnumVersion, EnumVersionResponse } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
+import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
 import EpSdkEnumVersionsService from '../../../src/services/EpSdkEnumVersionsService';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 

@@ -1,6 +1,6 @@
-import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
-import { EpSdkLogger } from '../EpSdkLogger';
-import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
+import { EpSdkApiContentError, EpSdkServiceError } from '../utils/EpSdkErrors';
+import { EpSdkLogger } from '../utils/EpSdkLogger';
+import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   ApplicationDomain,
   ApplicationDomainResponse,

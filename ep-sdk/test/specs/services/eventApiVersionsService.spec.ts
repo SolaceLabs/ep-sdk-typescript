@@ -13,7 +13,7 @@ import {
   EventApIsService, 
   eventApiVersion as EventApiVersion,
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/EpSdkErrors';
+import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/utils/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkEventApiVersionsService from '../../../src/services/EpSdkEventApiVersionsService';

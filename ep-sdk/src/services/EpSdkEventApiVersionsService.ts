@@ -1,6 +1,6 @@
 import { Validator, ValidatorResult } from 'jsonschema';
 import { EpSdkVersionService } from "./EpSdkVersionService";
-import { EpSdkApiContentError, EpSdkValidationError } from "../EpSdkErrors";
+import { EpSdkApiContentError, EpSdkValidationError } from "../utils/EpSdkErrors";
 import {
   $eventApiVersion, 
   VersionedObjectStateChangeRequest,

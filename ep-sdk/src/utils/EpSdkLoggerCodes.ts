@@ -1,9 +1,4 @@
-/**
- * This is the doc comment for EEpSdkLoggerCodes.ts
- *
- * @module utils/EEpSdkLoggerCodes
- */
- export enum EEpSdkLoggerCodes {
+export enum EEpSdkLoggerCodes {
   SERVICE_GET = "SERVICE_GET",
   SERVICE_CREATE = "SERVICE_CREATE",
 
