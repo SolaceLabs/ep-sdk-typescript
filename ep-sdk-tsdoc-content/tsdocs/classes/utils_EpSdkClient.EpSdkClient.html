@@ -22,7 +22,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">EpSdkClient</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/solace-iot-team/ep-sdk/blob/9ba5ccf/ep-sdk/src/utils/EpSdkClient.ts#L21">src/utils/EpSdkClient.ts:21</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/solace-iot-team/ep-sdk/blob/a611b98/ep-sdk/src/utils/EpSdkClient.ts#L22">src/utils/EpSdkClient.ts:22</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -54,19 +54,26 @@
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <code class="tsd-tag ts-flagReadonly">Readonly</code> <span>DEFAULT_<wbr/>EP_<wbr/>API_<wbr/>BASE_<wbr/>URL</span><a href="#DEFAULT_EP_API_BASE_URL" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">DEFAULT_<wbr/>EP_<wbr/>API_<wbr/>BASE_<wbr/>URL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;https://api.solace.cloud&quot;</span><span class="tsd-signature-symbol"> = &quot;https://api.solace.cloud&quot;</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/solace-iot-team/ep-sdk/blob/9ba5ccf/ep-sdk/src/utils/EpSdkClient.ts#L23">src/utils/EpSdkClient.ts:23</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/solace-iot-team/ep-sdk/blob/a611b98/ep-sdk/src/utils/EpSdkClient.ts#L24">src/utils/EpSdkClient.ts:24</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="initialize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>initialize</span><a href="#initialize" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="initialize.initialize-1">initialize<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>baseUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>globalOpenAPI<span class="tsd-signature-symbol">: </span><a href="../types/_solace_labs_ep_openapi_node_dist.OpenAPIConfig.html" class="tsd-signature-type" data-tsd-kind="Type alias">OpenAPIConfig</a><span class="tsd-signature-symbol">; </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../types/_solace_labs_ep_openapi_node_dist.OpenAPIConfig.html" class="tsd-signature-type" data-tsd-kind="Type alias">OpenAPIConfig</a><a href="#initialize.initialize-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="initialize.initialize-1">initialize<span class="tsd-signature-symbol">(</span>params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>baseUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>globalOpenAPI<span class="tsd-signature-symbol">: </span><a href="../types/_solace_labs_ep_openapi_node_dist.OpenAPIConfig.html" class="tsd-signature-type" data-tsd-kind="Type alias">OpenAPIConfig</a><span class="tsd-signature-symbol">; </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../types/_solace_labs_ep_openapi_node_dist.OpenAPIConfig.html" class="tsd-signature-type" data-tsd-kind="Type alias">OpenAPIConfig</a><a href="#initialize.initialize-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Initialize the EP OpenAPI global constant.</p>
+
+<h3>Returns</h3><p>OpenAPIConfig</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-2">import</span><span class="hl-0"> { </span><span class="hl-3">OpenAPI</span><span class="hl-0"> } </span><span class="hl-2">from</span><span class="hl-0"> </span><span class="hl-4">&quot;@solace-labs/ep-openapi-node&quot;</span><span class="hl-0">;</span><br/><br/><span class="hl-3">EpSdkClient</span><span class="hl-0">.</span><span class="hl-7">initialize</span><span class="hl-0">({</span><br/><span class="hl-0"> </span><span class="hl-3">globalOpenAPI:</span><span class="hl-0"> </span><span class="hl-3">OpenAPI</span><span class="hl-0">,</span><br/><span class="hl-0"> </span><span class="hl-3">token:</span><span class="hl-0"> </span><span class="hl-4">&#39;my token&#39;</span><br/><span class="hl-0">});</span>
+</code></pre>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>baseUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>globalOpenAPI<span class="tsd-signature-symbol">: </span><a href="../types/_solace_labs_ep_openapi_node_dist.OpenAPIConfig.html" class="tsd-signature-type" data-tsd-kind="Type alias">OpenAPIConfig</a><span class="tsd-signature-symbol">; </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+<h5>params: <span class="tsd-signature-symbol">{ </span>baseUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>globalOpenAPI<span class="tsd-signature-symbol">: </span><a href="../types/_solace_labs_ep_openapi_node_dist.OpenAPIConfig.html" class="tsd-signature-type" data-tsd-kind="Type alias">OpenAPIConfig</a><span class="tsd-signature-symbol">; </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
 <ul class="tsd-parameters">
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> base<wbr/>Url<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
@@ -84,7 +91,7 @@
 </div></li></ul></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="../types/_solace_labs_ep_openapi_node_dist.OpenAPIConfig.html" class="tsd-signature-type" data-tsd-kind="Type alias">OpenAPIConfig</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/solace-iot-team/ep-sdk/blob/9ba5ccf/ep-sdk/src/utils/EpSdkClient.ts#L25">src/utils/EpSdkClient.ts:25</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/solace-iot-team/ep-sdk/blob/a611b98/ep-sdk/src/utils/EpSdkClient.ts#L42">src/utils/EpSdkClient.ts:42</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
