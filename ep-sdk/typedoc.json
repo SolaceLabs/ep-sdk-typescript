@@ -16,8 +16,9 @@
   "excludeProtected": false,
   "name": "EP SDK",
   "logLevel": "Verbose",
-  "treatWarningsAsErrors": false,
+  "treatWarningsAsErrors": true,
   "sort": ["kind", "instance-first", "alphabetical"],
   "disableSources": false,
-  "tsconfig": "./typedoc.tsconfig.json"
+  "tsconfig": "./typedoc.tsconfig.json",
+  "includes": "./examples"
 }

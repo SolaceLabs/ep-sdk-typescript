@@ -28,6 +28,9 @@ const EP_OPENAPI_NODE_DEST_TS_CONFIG_CONTENT = `
 const EP_SDK_CLIENT_FILE = './src/utils/EpSdkClient.ts';
 const EP_SDK_CLIENT_BACKUP_FILE = './src/utils/EpSdkClient.ts.backup';
 
+const EP_SDK_CLIENT_OPEN_API_FILE = `${EP_OPENAPI_NODE_DEST_DIR}/dist/core/OpenAPI.d.ts`;
+const EP_SDK_CLIENT_INDEX_FILE = `${EP_OPENAPI_NODE_DEST_DIR}/dist/index.d.ts`;
+
 
 const prepare = () => {
   const funcName = 'prepare';
@@ -56,14 +59,39 @@ const modifySources4TsDocs = () => {
   const logName = `${scriptDir}/${scriptName}.${funcName}()`;
   console.log(`${logName}: starting ...`);
   // create backup file
+  console.log(`${logName}: create backup file: ${EP_SDK_CLIENT_BACKUP_FILE}`);
   const code = s.cp(EP_SDK_CLIENT_FILE, EP_SDK_CLIENT_BACKUP_FILE).code;
   if(code !== 0) throw new Error(`${logName}: code=${code}`);
   // load file to string
   const epSdkClientBuffer: Buffer = fs.readFileSync(EP_SDK_CLIENT_FILE);
   const epSdkClientString: string = epSdkClientBuffer.toString('utf-8');
   // replace @solace-labs/ep-openapi-node with ../@solace-labs/ep-openapi-node
+  console.log(`${logName}: replace @solace-labs/ep-openapi-node with ../@solace-labs/ep-openapi-node`);
   const newEpSdkClientString: string = epSdkClientString.replace('@solace-labs/ep-openapi-node', '../@solace-labs/ep-openapi-node');
   fs.writeFileSync(EP_SDK_CLIENT_FILE, newEpSdkClientString);  
+
+
+  // OpenAPI.d.ts
+  console.log(`${logName}: add keyword export to ${EP_SDK_CLIENT_OPEN_API_FILE}`);
+  const epSdkClientOpenApiFileBuffer: Buffer = fs.readFileSync(EP_SDK_CLIENT_OPEN_API_FILE);
+  const epSdkClientOpenApiFileString: string = epSdkClientOpenApiFileBuffer.toString('utf-8');
+  const newepSdkClientOpenApiFileString0: string = epSdkClientOpenApiFileString.replace('declare type Resolver<T>', 'export declare type Resolver<T>');
+  const newepSdkClientOpenApiFileString1: string = newepSdkClientOpenApiFileString0.replace('declare type Headers', 'export declare type Headers');
+  fs.writeFileSync(EP_SDK_CLIENT_OPEN_API_FILE, newepSdkClientOpenApiFileString1);  
+
+  // index.d.ts: replace
+  console.log(`${logName}: add / replace lines in ${EP_SDK_CLIENT_INDEX_FILE}`);
+  const epSdkClientIndexFileBuffer: Buffer = fs.readFileSync(EP_SDK_CLIENT_INDEX_FILE);
+  const epSdkClientIndexFileString: string = epSdkClientIndexFileBuffer.toString('utf-8');
+  const newepSdkClientIndexFileString: string = epSdkClientIndexFileString.replace('export type { OpenAPIConfig }', 'export type { OpenAPIConfig, Headers, Resolver }');
+  // index.d.ts: add
+  const newNewepSdkClientIndexFileString = newepSdkClientIndexFileString + `
+export type { ApiResult } from './core/ApiResult';
+export type { ApiRequestOptions } from './core/ApiRequestOptions';
+export { OnCancel } from './core/CancelablePromise'
+`
+  fs.writeFileSync(EP_SDK_CLIENT_INDEX_FILE, newNewepSdkClientIndexFileString);  
+
   console.log(`${logName}: success.`);
 }
 

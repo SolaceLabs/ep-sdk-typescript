@@ -1,7 +1,8 @@
 /**
- * This is the doc for EpSdkClient.ts file.
- *
  * @packageDocumentation
+ * 
+ * Convenience class to initialize EP OpenAPI.
+ * 
  */
 import {
   OpenAPI,
@@ -22,6 +23,22 @@ export class EpSdkClient {
 
   public static readonly DEFAULT_EP_API_BASE_URL = "https://api.solace.cloud";
 
+  /**
+   * Initialize the EP OpenAPI global constant.
+   * 
+   * 
+   * @param params
+   * @returns OpenAPIConfig
+   * 
+   * @example
+   * import { OpenAPI } from "@solace-labs/ep-openapi-node";
+   * 
+   * EpSdkClient.initialize({
+   *  globalOpenAPI: OpenAPI,
+   *  token: 'my token'
+   * });
+   * 
+   */
   public static initialize = ({ globalOpenAPI, token, baseUrl=EpSdkClient.DEFAULT_EP_API_BASE_URL }:{
     /** The global OpenAPI const object from  @solace-labs/ep-openapi-node. */
     globalOpenAPI: OpenAPIConfig;

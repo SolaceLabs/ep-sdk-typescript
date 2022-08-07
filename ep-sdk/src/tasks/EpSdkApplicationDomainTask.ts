@@ -1,7 +1,10 @@
 /**
- * This is the doc for EpSdkApplicationDomainTask.ts file.
- * 
  * @packageDocumentation
+ * 
+ * Manage ApplicationDomains in an idempotent manner.
+ * 
+ * @example
+ * [[include:applicationDomainTask.example.ts]]
  */
 import { EpSdkConfig } from "../utils/EpSdkConfig";
 import { EpSdkApiContentError, EpSdkInternalTaskError } from "../utils/EpSdkErrors";

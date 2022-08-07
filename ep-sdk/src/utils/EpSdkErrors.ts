@@ -114,10 +114,10 @@ export class EpSdkAbstractMethodError extends EpSdkError {
 
 export class EpSdkInternalTaskError extends EpSdkError {
   protected static DefaultDescription = 'EP SDK Internal Task Error';
-  private cause: any;
+  private epSdkCause: any;
   constructor(internalLogName: string, internalModuleName: string, cause: any) {
     super(internalLogName, internalModuleName, EpSdkInternalTaskError.DefaultDescription);
-    this.cause = cause;
+    this.epSdkCause = cause;
   }
 }
 
