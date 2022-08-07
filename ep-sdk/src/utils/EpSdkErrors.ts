@@ -1,19 +1,12 @@
 import { EpSdkLogger } from "./EpSdkLogger";
 import { ApiError } from "@solace-labs/ep-openapi-node";
-import { IEpSdkTask_TransactionLogData } from "./tasks/EpSdkTask_TransactionLog";
-import { EEpSdk_VersionTaskStrategy } from "./tasks/EpSdkVersionTask";
+import { IEpSdkTask_TransactionLogData } from "../tasks/EpSdkTask_TransactionLog";
+import { EEpSdk_VersionTaskStrategy } from "../tasks/EpSdkVersionTask";
 
 enum ELoggerCodes {
   EP_SDK_INTERNAL_ERROR = "EP_SDK_INTERNAL_ERROR"
 }
-// export class EpSdkErrorFactory {
-//   public static createError = (e: any, logName: string): EpSdkError => {
-//     let epSdkError: EpSdkError;
-//     if (e instanceof EpSdkError ) epSdkError = e;
-//     else epSdkError = new EPSdkErrorFromError(e, logName);
-//     return epSdkError;
-//   }
-// }
+
 export class EpSdkError extends Error {
   private internalStack: Array<string>;
   private internalLogName: string;
@@ -27,6 +20,7 @@ export class EpSdkError extends Error {
 
   constructor(internalLogName: string, internalModuleName: string, internalMessage: string) {
     super(internalMessage?internalMessage:`${internalLogName}:${internalModuleName}`);
+    this.internalMessage = internalMessage;
     this.name = this.constructor.name;
     this.internalLogName = internalLogName;
     this.internalModuleNName = internalModuleName;
@@ -120,10 +114,10 @@ export class EpSdkAbstractMethodError extends EpSdkError {
 
 export class EpSdkInternalTaskError extends EpSdkError {
   protected static DefaultDescription = 'EP SDK Internal Task Error';
-  private cause: any;
+  private epSdkCause: any;
   constructor(internalLogName: string, internalModuleName: string, cause: any) {
     super(internalLogName, internalModuleName, EpSdkInternalTaskError.DefaultDescription);
-    this.cause = cause;
+    this.epSdkCause = cause;
   }
 }
 

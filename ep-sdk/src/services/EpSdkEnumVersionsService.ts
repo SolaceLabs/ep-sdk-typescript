@@ -1,4 +1,4 @@
-import { EpSdkApiContentError } from "../EpSdkErrors";
+import { EpSdkApiContentError } from "../utils/EpSdkErrors";
 import {
   Enum,
   EnumsService,
@@ -10,11 +10,7 @@ import {
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 
-/**
- * @category Services
- * @group Services
- */
-class EpSdkEnumVersionsService extends EpSdkVersionService {
+export class EpSdkEnumVersionsService extends EpSdkVersionService {
 
   public getVersionByVersion = async ({ enumId, enumVersionString }: {
     enumId: string;

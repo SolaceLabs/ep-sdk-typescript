@@ -1,5 +1,5 @@
 
-import { EpSdkError } from "../../src/EpSdkErrors";
+import { EpSdkError } from "../../src/utils/EpSdkErrors";
 import { ApiError } from "@solace-labs/ep-openapi-node";
 import { ApiRequestOptions } from "@solace-labs/ep-openapi-node/dist/core/ApiRequestOptions";
 import { ApiResult } from "@solace-labs/ep-openapi-node/dist/core/ApiResult";

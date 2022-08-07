@@ -14,7 +14,7 @@ import {
   Event as EPEvent,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
+import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
 import EpSdkEpEventsService from '../../../src/services/EpSdkEpEventsService';
 
 const scriptName: string = path.basename(__filename);

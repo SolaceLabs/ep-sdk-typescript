@@ -19,7 +19,7 @@ import {
   SchemasService,
   SchemaVersion
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkServiceError } from '../../../src/EpSdkErrors';
+import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';

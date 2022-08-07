@@ -1,7 +1,7 @@
 import { StatesResponse, StatesService } from "@solace-labs/ep-openapi-node";
-import { EpSdkApiContentError } from "../EpSdkErrors";
-import { EpSdkLogger } from "../EpSdkLogger";
-import { EEpSdkLoggerCodes } from "../EpSdkLoggerCodes";
+import { EpSdkApiContentError } from "../utils/EpSdkErrors";
+import { EpSdkLogger } from "../utils/EpSdkLogger";
+import { EEpSdkLoggerCodes } from "../utils/EpSdkLoggerCodes";
 
 
 // "data": [
@@ -42,7 +42,7 @@ export enum EEpSdkStateDTONames {
   RETIRED = "Retired"
 }
 
-class EpSdkStatesService {
+export class EpSdkStatesService {
 
   private  _draftId: string = "1";
   private  _releasedId: string = "2";

@@ -1,6 +1,6 @@
 import { Validator, ValidatorResult } from 'jsonschema';
 import { EpSdkVersionService } from "./EpSdkVersionService";
-import { EpSdkApiContentError, EpSdkValidationError } from "../EpSdkErrors";
+import { EpSdkApiContentError, EpSdkValidationError } from "../utils/EpSdkErrors";
 import {
   $eventApiVersion, 
   VersionedObjectStateChangeRequest,
@@ -12,7 +12,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
 
-class EpSdkEventApiVersionsService extends EpSdkVersionService {
+export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
   public validateDisplayName = ({ displayName }: {
     displayName: string;

@@ -8,7 +8,7 @@ import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError, ApplicationDomainResponse, ApplicationDomainsService, EnumResponse, EnumsService
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError } from '../../../src/EpSdkErrors';
+import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError } from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';

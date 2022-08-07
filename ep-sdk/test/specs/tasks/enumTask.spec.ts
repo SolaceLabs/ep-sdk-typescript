@@ -8,7 +8,7 @@ import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError, ApplicationDomainResponse, ApplicationDomainsService
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError } from '../../../src/EpSdkErrors';
+import { EpSdkError } from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import { EpSdkEnumTask, IEpSdkEnumTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumTask';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';

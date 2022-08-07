@@ -1,6 +1,6 @@
-import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
-import { EpSdkLogger } from '../EpSdkLogger';
-import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
+import { EpSdkApiContentError, EpSdkServiceError } from '../utils/EpSdkErrors';
+import { EpSdkLogger } from '../utils/EpSdkLogger';
+import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   Enum,
   EnumResponse,
@@ -9,7 +9,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
-class EpSdkEnumsService extends EpSdkService {
+export class EpSdkEnumsService extends EpSdkService {
   
   public getByName = async({ enumName, applicationDomainId }:{
     enumName: string;

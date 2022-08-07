@@ -1,6 +1,5 @@
 import { EEpSdkLogLevel, IEpSdkLoggerInstance, IEpSdkLogDetails, IEpSdkLogEntry } from "./EpSdkLogger";
 
-
 export class EpSdkConsoleLogger implements IEpSdkLoggerInstance {
   appId: string;
   epSdkLogLevel: EEpSdkLogLevel;

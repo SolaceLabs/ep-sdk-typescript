@@ -1,5 +1,5 @@
-import { EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError, EpSdkVersionTaskStrategyValidationError } from "../EpSdkErrors";
-import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from "../EpSdkSemVerUtils";
+import { EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError, EpSdkVersionTaskStrategyValidationError } from "../utils/EpSdkErrors";
+import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from "../utils/EpSdkSemVerUtils";
 import { 
   EEpSdkTask_Action, 
   EpSdkTask, 

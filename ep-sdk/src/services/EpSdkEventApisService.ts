@@ -1,6 +1,6 @@
-import { EpSdkApiContentError, EpSdkServiceError } from '../EpSdkErrors';
-import { EpSdkLogger } from '../EpSdkLogger';
-import { EEpSdkLoggerCodes } from '../EpSdkLoggerCodes';
+import { EpSdkApiContentError, EpSdkServiceError } from '../utils/EpSdkErrors';
+import { EpSdkLogger } from '../utils/EpSdkLogger';
+import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   EventApi,
   EventApiResponse,
@@ -9,7 +9,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
-class EpSdkEventApisService extends EpSdkService {
+export class EpSdkEventApisService extends EpSdkService {
   
   public getByName = async({ eventApiName, applicationDomainId }:{
     eventApiName: string;

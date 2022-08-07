@@ -10,7 +10,7 @@ export enum EEpSdk_VersionStrategy {
   BUMP_PATCH = "bump_patch"
 }
 
-class EpSdkSemVerUtils {
+export class EpSdkSemVerUtils {
 
   public isSemVerFormat({ versionString }:{
     versionString: string;

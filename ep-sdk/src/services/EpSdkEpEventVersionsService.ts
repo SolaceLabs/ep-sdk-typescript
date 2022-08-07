@@ -1,4 +1,4 @@
-import { EpSdkApiContentError } from "../EpSdkErrors";
+import { EpSdkApiContentError } from "../utils/EpSdkErrors";
 import {
   EventsService, 
   EventVersion, 
@@ -10,7 +10,7 @@ import {
 import EpSdkEpEventsService from "./EpSdkEpEventsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 
-class EpSdkEpEventVersionsService extends EpSdkVersionService {
+export class EpSdkEpEventVersionsService extends EpSdkVersionService {
 
   public getVersionByVersion = async ({ eventId, eventVersionString }: {
     eventId: string;
