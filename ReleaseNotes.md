@@ -15,6 +15,9 @@ Solace Event Portal SDK.
 **Tests:**
 - added test coverage using nyc
 
+**License**
+- moved to apache 2.0
+
 ## Version 0.7.0-alpha
 
 **Documentation:**

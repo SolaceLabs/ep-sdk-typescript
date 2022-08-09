@@ -23,7 +23,7 @@
       "email": "ricardo.gomez-ulmke@solace.com"
     }
   ],
-  "license": "MIT",
+  "license": "APACHE-2.0",
   "bugs": {
     "url": "https://github.com/solace-iot-team/ep-sdk/issues"
   },
