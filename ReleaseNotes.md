@@ -12,6 +12,8 @@ Solace Event Portal SDK.
     - EpSdkEventApiVersionsService
     - EpSdkSchemaVersionsService
 
+**Tests:**
+- added test coverage using nyc
 
 ## Version 0.7.0-alpha
 

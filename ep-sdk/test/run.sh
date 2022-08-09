@@ -15,8 +15,6 @@ scriptName=$(basename $(test -L "$0" && readlink "$0" || echo "$0"));
 # Run
 
   runScript="npm test"
-  # runScript="npm run test:devel:pretty"
-  # runScript="npm run test:devel:t"
   echo "starting: $runScript ..."
   logFile="$LOG_DIR/npm.run.test.out"; mkdir -p "$(dirname "$logFile")";
   # $runScript
@@ -26,7 +24,7 @@ scriptName=$(basename $(test -L "$0" && readlink "$0" || echo "$0"));
 ##############################################################################################################################
 # Check for errors
 
-filePattern="$LOG_DIR"
+filePattern="$logFile"
 tsErrors=$(grep -n -r -e "TSError" $filePattern )
 epSdkErrors=$(grep -n -r -e "EpSdkError" $filePattern )
 errors=$(grep -n -r -e " ERROR " $filePattern )

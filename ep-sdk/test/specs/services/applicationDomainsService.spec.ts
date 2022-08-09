@@ -30,6 +30,8 @@ describe(`${scriptName}`, () => {
           }
         });
         ApplicationDomainId = applicationDomainResponse.data.id;
+        // // DEBUG
+        // expect(false, `ApplicationDomainId=${ApplicationDomainId}`).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;

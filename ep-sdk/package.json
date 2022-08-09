@@ -32,7 +32,7 @@
     "compile": "tsc -b && npm run compile:examples",
     "build:tsdocs": "ts-node build-tsdocs.ts",
     "build": "npm run build:tsdocs && tsc",
-    "test": "npm run compile && . ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
+    "test": "npm run compile && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
   },
   "files": [
     "dist/**/*.js",
@@ -61,6 +61,7 @@
     "chai": "^4.3.6",
     "deepmerge": "^4.2.2",
     "mocha": "^10.0.0",
+    "nyc": "^15.1.0",
     "openapi-typescript-codegen": "^0.19.0",
     "pino": "^8.3.0",
     "pino-pretty": "^8.1.0",

@@ -1,0 +1,23 @@
+{
+  "all": true,
+  "check-coverage": true,
+  "lines": 96,
+  "statements": 88,
+  "branches": 67,
+  "functions": 91,
+  "temp-dir": "./test/logs/nyc_output",
+  "reporter": [
+    "html",
+    "text",
+    "text-summary",
+    "lcov"
+  ],
+  "report-dir": "./test/logs/coverage",
+  "exclude": [
+    "examples",
+    "src/index.ts",
+    "src/@solace-labs",
+    "src/utils/EpSdkErrors.ts",
+    "test"
+  ]
+}
