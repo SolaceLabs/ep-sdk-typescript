@@ -1,6 +1,6 @@
 {
   "name": "@solace-iot-team/ep-sdk",
-  "version": "0.7.0-alpha",
+  "version": "0.8.0-alpha",
   "description": "Solace Event Portal SDK",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -29,7 +29,7 @@
   },
   "scripts": {
     "compile:examples": "tsc --project examples/tsconfig.json",
-    "compile": "tsc -b -v && npm run compile:examples",
+    "compile": "tsc -b && npm run compile:examples",
     "build:tsdocs": "ts-node build-tsdocs.ts",
     "build": "npm run build:tsdocs && tsc",
     "test": "npm run compile && . ./test/source.env.sh && mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"

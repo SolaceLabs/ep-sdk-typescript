@@ -9,6 +9,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEpEventsService from "./EpSdkEpEventsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
+import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
 
 export class EpSdkEpEventVersionsService extends EpSdkVersionService {
 
@@ -35,21 +36,38 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     return found;
   }
 
-  public getVersionsForEventId = async ({ eventId }: {
+  public getVersionsForEventId = async ({ eventId, pageSize = EpApiHelpers.MaxPageSize }: {
     eventId: string;
+    pageSize?: number; /** for testing */
   }): Promise<Array<EventVersion>> => {
     const funcName = 'getVersionsForEventId';
     const logName = `${EpSdkEpEventVersionsService.name}.${funcName}()`;
 
-    // trick (EP API kaputt)
-    const params: any = {
-      eventId: eventId
+    const versionList: Array<EventVersion> = [];
+    let nextPage: number | null = 1;
+
+    while(nextPage !== null) {
+
+      // EP_API_KAPUTT_TRICK
+      const params: any = {
+        eventId: eventId
+      }
+      const versionsResponse: EventVersionsResponse = await EventsService.getEventVersionsForEvent({
+        ...params,
+        pageSize: pageSize,
+        pageNumber: nextPage
+      });
+      
+      if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
+
+      versionList.push(...versionsResponse.data);
+
+      const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
+      EpApiHelpers.validateMeta(meta);
+      nextPage = meta.pagination.nextPage;
+
     }
-    const eventVersionsResponse: EventVersionsResponse = await EventsService.getEventVersionsForEvent({
-      ...params
-    });
-    if(eventVersionsResponse.data === undefined || eventVersionsResponse.data.length === 0) return [];
-    return eventVersionsResponse.data;
+    return versionList;
   }
 
   public getVersionsForEventName = async ({ eventName, applicationDomainId }: {

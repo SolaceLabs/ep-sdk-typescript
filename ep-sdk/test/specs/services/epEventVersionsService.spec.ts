@@ -15,6 +15,7 @@ import {
   EventResponse, 
   EventsService, 
   EventVersion, 
+  EventVersionResponse, 
   SchemaResponse, 
   SchemasService,
   SchemaVersion
@@ -253,6 +254,55 @@ describe(`${scriptName}`, () => {
         expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
         const epSdkServiceError: EpSdkServiceError = e;
         expect(epSdkServiceError.toString(), TestLogger.createApiTestFailMessage(`error does not contain ${NonExistentName}`)).to.contain(NonExistentName);
+      }
+    });
+
+    it(`${scriptName}: should create 10 event versions & get latest version string them using paging`, async () => {
+      const PagingName = 'Paging-Object';
+      const VersionQuantity = 10;
+      const PageSize = 2;
+      try {
+        const response: EventResponse = await EventsService.createEvent({
+          requestBody: {
+            applicationDomainId: ApplicationDomainId,
+            name: PagingName,
+            shared: false
+          }
+        });
+        EventId = response.data.id;
+
+        let VersionString = '';
+        for(let i=0; i<VersionQuantity; i++) {
+          VersionString = `3.0.${i}`;
+          const versionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
+            eventId: EventId,
+            requestBody: {
+              description: 'paging version',
+              version: VersionString,
+            }
+          });
+        }
+        // // DEBUG
+        // expect(false, 'check 1000 enum versions created').to.be.true;
+        const versionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventId({ 
+          eventId: EventId,
+          pageSize: PageSize
+        });
+        expect(versionList.length, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionQuantity);
+
+        let latestObjectVersion: EventVersion = await EpSdkEpEventVersionsService.getLatestVersionForEventId({ eventId: EventId, applicationDomainId: ApplicationDomainId });
+        expect(latestObjectVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+        latestObjectVersion = await EpSdkEpEventVersionsService.getLatestVersionForEventName({ eventName: PagingName, applicationDomainId: ApplicationDomainId });
+        expect(latestObjectVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+        const latestObjectVersionString: string = await EpSdkEpEventVersionsService.getLatestVersionString({ eventId: EventId });
+        expect(latestObjectVersionString, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
 

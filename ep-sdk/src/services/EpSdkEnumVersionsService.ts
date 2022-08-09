@@ -9,6 +9,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
+import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
 
 export class EpSdkEnumVersionsService extends EpSdkVersionService {
 
@@ -30,24 +31,38 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     return enumVersionsResponse.data[0];
   }
 
-  public getVersionsForEnumId = async ({ enumId }: {
+  public getVersionsForEnumId = async ({ enumId, pageSize = EpApiHelpers.MaxPageSize }: {
     enumId: string;
+    pageSize?: number; /** for testing */
   }): Promise<Array<EnumVersion>> => {
     const funcName = 'getVersionsForEnumId';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    // wrong call
-    // const enumVersionsResponse: EnumVersionsResponse = await EnumsService.getEnumVersions({
-    //   ids: [enumId]
+    const enumVersionList: Array<EnumVersion> = [];
+    let nextPage: number | null = 1;
+
+    while(nextPage !== null) {
+
+      const enumVersionsResponse: EnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+        enumId: enumId,
+        pageSize: pageSize,
+        pageNumber: nextPage
+      });
+      
+      if (enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return [];
+
+      enumVersionList.push(...enumVersionsResponse.data);
+
+      const meta: T_EpMeta = enumVersionsResponse.meta as T_EpMeta;
+      EpApiHelpers.validateMeta(meta);
+      nextPage = meta.pagination.nextPage;
+
+    }
+    // // DEBUG
+    // throw new EpSdkApiContentError(logName, this.constructor.name, 'testing', {
+    //   enumVersionList: enumVersionList
     // });
-    const enumVersionsResponse: EnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
-      enumId: enumId,
-    });
-    // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
-    //   enumVersionsResponse: enumVersionsResponse
-    // }}));
-    if (enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return [];
-    return enumVersionsResponse.data;
+    return enumVersionList;
   }
 
   public getVersionsForEnumName = async ({ enumName, applicationDomainId }: {

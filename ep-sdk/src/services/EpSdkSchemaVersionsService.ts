@@ -8,6 +8,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemasService from "./EpSdkSchemasService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
+import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
 
 export class EpSdkSchemaVersionsService extends EpSdkVersionService {
 
@@ -18,7 +19,7 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
-    // EP API kaputt
+    // EP_API_KAPUTT_TRICK
     // const schemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersionsForSchema({
     //   schemaId: schemaId,
     //   versions: [schemaVersionString]
@@ -36,20 +37,37 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     return found;
   }
 
-  public getVersionsForSchemaId = async ({ schemaId }: {
+  public getVersionsForSchemaId = async ({ schemaId, pageSize = EpApiHelpers.MaxPageSize }: {
     schemaId: string;
+    pageSize?: number; /** for testing */
   }): Promise<Array<SchemaVersion>> => {
     const funcName = 'getVersionsForSchemaId';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
-    const schemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersionsForSchema({
-      schemaId: schemaId,
-    });
+    const versionList: Array<SchemaVersion> = [];
+    let nextPage: number | null = 1;
 
-    // TODO: EP API is wrong, data is actually an Array<SchemaVersion>
-    const data: Array<SchemaVersion> | undefined = schemaVersionResponse.data as Array<SchemaVersion> | undefined;
-    if(data === undefined) return [];
-    return data;
+    while(nextPage !== null) {
+
+      const versionsResponse: SchemaVersionResponse = await SchemasService.getSchemaVersionsForSchema({
+        schemaId: schemaId,
+        pageSize: pageSize,
+        pageNumber: nextPage
+      });
+  
+      // EP_API_KAPUTT_TRICK
+      // TODO: EP API is wrong, data is actually an Array<SchemaVersion>
+      const data: Array<SchemaVersion> | undefined = versionsResponse.data as Array<SchemaVersion> | undefined;
+      if (data === undefined || data.length === 0) return [];
+
+      versionList.push(...data);
+
+      const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
+      EpApiHelpers.validateMeta(meta);
+      nextPage = meta.pagination.nextPage;
+
+    }
+    return versionList;
   }
 
   public getVersionsForSchemaName = async ({ schemaName, applicationDomainId }: {

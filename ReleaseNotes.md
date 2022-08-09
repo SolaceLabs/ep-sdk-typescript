@@ -2,6 +2,17 @@
 
 Solace Event Portal SDK.
 
+## Version 0.8.0-alpha
+
+**Enhancements:**
+* **VersionsServices**
+  - added paging when retrieving latest version to:
+    - EpSdkEnumVersionsService
+    - EpSdkEpEventVersionsService
+    - EpSdkEventApiVersionsService
+    - EpSdkSchemaVersionsService
+
+
 ## Version 0.7.0-alpha
 
 **Documentation:**

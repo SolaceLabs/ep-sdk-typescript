@@ -28,8 +28,6 @@ export class EpSdkVersionService extends EpSdkService {
     return latestEpObjectVersion;
   }
 
-
-
 }
 
 

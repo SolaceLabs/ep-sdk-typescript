@@ -11,6 +11,7 @@ import {
   EventApiVersionResponse,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
+import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
 
 export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
@@ -52,21 +53,38 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     return found;
   }
 
-  public getVersionsForEventApiId = async ({ eventApiId }: {
+  public getVersionsForEventApiId = async ({ eventApiId, pageSize = EpApiHelpers.MaxPageSize }: {
     eventApiId: string;
+    pageSize?: number; /** for testing */
   }): Promise<Array<EventApiVersion>> => {
     const funcName = 'getVersionsForEventApiId';
     const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
 
-    // trick (EP API kaputt)
-    const params: any = {
-      eventApiId: eventApiId
-    };
-    const eventApiVersionsResponse: EventApiVersionsResponse = await EventApIsService.getEventApiVersionsForEventApi({
-      ...params
-    })
-    if(eventApiVersionsResponse.data === undefined || eventApiVersionsResponse.data.length === 0) return [];
-    return eventApiVersionsResponse.data;
+    const versionList: Array<EventApiVersion> = [];
+    let nextPage: number | null = 1;
+
+    while(nextPage !== null) {
+
+      // EP_API_KAPUTT_TRICK
+      const params: any = {
+        eventApiId: eventApiId
+      };
+      const versionsResponse: EventApiVersionsResponse = await EventApIsService.getEventApiVersionsForEventApi({
+        ...params,
+        pageSize: pageSize,
+        pageNumber: nextPage
+      });
+  
+      if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
+
+      versionList.push(...versionsResponse.data);
+
+      const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
+      EpApiHelpers.validateMeta(meta);
+      nextPage = meta.pagination.nextPage;
+
+    }
+    return versionList;
   }
 
   public getVersionsForEventApiName = async ({ eventApiName, applicationDomainId }: {
