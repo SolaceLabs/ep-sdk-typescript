@@ -101,7 +101,7 @@ jobs:
           flag-name: run-${{ matrix.node }}
           parallel: true
           path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
-          base-path: ${{EP_SDK_DIR}}
+          base-path: ${{ env.EP_SDK_DIR }}
 
       # # Send coverage report to Coveralls
       # - name: Coveralls
