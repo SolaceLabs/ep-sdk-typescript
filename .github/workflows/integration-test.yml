@@ -18,8 +18,8 @@ on:
     branches:
       - main
 env:
-  # DEBUG_FLAG: ${{ true }}
-  DEBUG_FLAG: ${{ false }}
+  DEBUG_FLAG: ${{ true }}
+  # DEBUG_FLAG: ${{ false }}
   EP_SDK_DIR: "ep-sdk"
   EP_SDK_TEST_LOGS_DIR: "ep-sdk/test/logs"
   EP_SDK_TEST_LOGS_OUTPUT_NAME: "ep-sdk-test-logs"
@@ -66,16 +66,15 @@ jobs:
           echo "bash --version: "; bash --version
           echo "node --version: "; node --version
           echo "npm --version: "; npm --version
-          echo "docker --version"; docker --version
 
       - name: "npm install"
         run: |
           cd "${EP_SDK_DIR}"
           npm install
 
-      # - name: "server:lint"
+      # - name: lint
       #   run: |
-      #     cd "${APIM_SERVER_DIR}"
+      #     cd "${EP_SDK_DIR}"
       #     npm run lint
       #
       - name: "build"
@@ -88,6 +87,11 @@ jobs:
           cd "${EP_SDK_DIR}"
           export EP_SDK_TEST_SOLACE_CLOUD_TOKEN="${{ secrets.EP_SDK_TEST_SOLACE_CLOUD_TOKEN }}"
           test/run.sh
+
+      - name: cat lcov info
+        if: env.DEBUG_FLAG == 'true'
+        run: |
+          cat "${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info"
 
       # Send coverage report to Coveralls
       - name: Coveralls
