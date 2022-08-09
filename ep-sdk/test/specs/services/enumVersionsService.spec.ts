@@ -207,5 +207,55 @@ describe(`${scriptName}`, () => {
       }
     });
 
+    it(`${scriptName}: should create 10 enum versions & get latest version string them using paging`, async () => {
+      const PagingEnumName = 'Paging-Enum';
+      const EnumVersionQuantity = 10;
+      const PageSize = 2;
+      try {
+        const enumResponse: EnumResponse = await EnumsService.createEnum({
+          requestBody: {
+            applicationDomainId: ApplicationDomainId,
+            name: PagingEnumName,
+            shared: false
+          }
+        });
+        EnumId = enumResponse.data.id;
+
+        let EnumVersionString = '';
+        for(let i=0; i<EnumVersionQuantity; i++) {
+          EnumVersionString = `3.0.${i}`;
+          const enumVersionResponse: EnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+            enumId: EnumId,
+            requestBody: {
+              description: `enum version for enum = ${EnumName}, id=${EnumId}`,
+              values: EnumValues,
+              version: EnumVersionString,
+            }
+          });
+        }
+        // // DEBUG
+        // expect(false, 'check 1000 enum versions created').to.be.true;
+        const enumVersionList: Array<EnumVersion> = await EpSdkEnumVersionsService.getVersionsForEnumId({ 
+          enumId: EnumId,
+          pageSize: PageSize
+        });
+        expect(enumVersionList.length, TestLogger.createApiTestFailMessage('failed')).to.eq(EnumVersionQuantity);
+
+        let latestEnumVersion: EnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumId({ enumId: EnumId, applicationDomainId: ApplicationDomainId });
+        expect(latestEnumVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(EnumVersionString);
+
+        latestEnumVersion = await EpSdkEnumVersionsService.getLatestVersionForEnumName({ enumName: PagingEnumName, applicationDomainId: ApplicationDomainId });
+        expect(latestEnumVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(EnumVersionString);
+
+        const latestEnumVersionString: string = await EpSdkEnumVersionsService.getLatestVersionString({ enumId: EnumId });
+        expect(latestEnumVersionString, TestLogger.createApiTestFailMessage('failed')).to.eq(EnumVersionString);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
 });
 

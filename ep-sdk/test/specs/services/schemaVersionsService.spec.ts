@@ -11,7 +11,8 @@ import {
   ApplicationDomainsService, 
   SchemaResponse, 
   SchemasService,
-  SchemaVersion
+  SchemaVersion,
+  SchemaVersionResponse
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
@@ -201,6 +202,57 @@ describe(`${scriptName}`, () => {
         expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
         const epSdkServiceError: EpSdkServiceError = e;
         expect(epSdkServiceError.toString(), TestLogger.createApiTestFailMessage(`error does not contain ${NonExistentName}`)).to.contain(NonExistentName);
+      }
+    });
+
+    it(`${scriptName}: should create 10 schema versions & get latest version string them using paging`, async () => {
+      const PagingName = 'Paging-Object';
+      const VersionQuantity = 10;
+      const PageSize = 2;
+      try {
+        const response: SchemaResponse = await SchemasService.createSchema({
+          requestBody: {
+            applicationDomainId: ApplicationDomainId,
+            name: PagingName,
+            shared: false,
+            schemaType: EEpSdkSchemaType.JSON_SCHEMA,
+            contentType: EEpSdkSchemaContentType.APPLICATION_JSON,  
+          }
+        });
+        SchemaId = response.data.id;
+
+        let VersionString = '';
+        for(let i=0; i<VersionQuantity; i++) {
+          VersionString = `3.0.${i}`;
+          const versionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
+            schemaId: SchemaId,
+            requestBody: {
+              description: 'paging version',
+              version: VersionString,
+            }
+          });
+        }
+        // // DEBUG
+        // expect(false, 'check 1000 enum versions created').to.be.true;
+        const versionList: Array<SchemaVersion> = await EpSdkSchemaVersionsService.getVersionsForSchemaId({ 
+          schemaId: SchemaId,
+          pageSize: PageSize
+        });
+        expect(versionList.length, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionQuantity);
+
+        let latestObjectVersion: SchemaVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaId({ schemaId: SchemaId, applicationDomainId: ApplicationDomainId });
+        expect(latestObjectVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+        latestObjectVersion = await EpSdkSchemaVersionsService.getLatestVersionForSchemaName({ schemaName: PagingName, applicationDomainId: ApplicationDomainId });
+        expect(latestObjectVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+        const latestObjectVersionString: string = await EpSdkSchemaVersionsService.getLatestVersionString({ schemaId: SchemaId });
+        expect(latestObjectVersionString, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
 
