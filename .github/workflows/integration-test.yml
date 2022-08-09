@@ -26,10 +26,10 @@ env:
 jobs:
   integration_test:
     runs-on: ubuntu-20.04
-    # strategy:
-    #   max-parallel: 1
-    #   matrix:
-    #     node: [ '16' ]
+    strategy:
+      max-parallel: 1
+      matrix:
+        node: [ '16' ]
     steps:
       - name: Check Auth
         if: github.event_name == 'workflow_dispatch' && github.actor != 'ricardojosegomezulmke'
@@ -58,8 +58,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
-          # node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node }}
 
       - name: env after install
         if: env.DEBUG_FLAG == 'true'
@@ -94,12 +93,20 @@ jobs:
         run: |
           cat "${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info"
 
-      # Send coverage report to Coveralls
-      - name: Coveralls
+      - name: Coveralls Parallel
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.github_token }}
+          flag-name: run-${{ matrix.node }}
+          parallel: true
           path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
+
+      # # Send coverage report to Coveralls
+      # - name: Coveralls
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
 
       - name: Archive Importer Cli Test Logs
         if: ${{ (failure() && !cancelled()) || (always() && (github.event_name=='workflow_dispatch' || env.DEBUG_FLAG=='true') ) }}
@@ -109,5 +116,14 @@ jobs:
           path: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}
           if-no-files-found: error
 
-###
+  finish:
+    needs: integration_test
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
+  ###
 # The End.
