@@ -23,7 +23,7 @@ env:
   EP_SDK_DIR: "ep-sdk"
   EP_SDK_TEST_LOGS_DIR: "ep-sdk/test/logs"
   EP_SDK_TEST_LOGS_OUTPUT_NAME: "ep-sdk-test-logs"
-  NODE_COVERALLS_DEBUG: 1
+  # NODE_COVERALLS_DEBUG: 1
 jobs:
   integration_test:
     runs-on: ubuntu-20.04
@@ -102,13 +102,6 @@ jobs:
           parallel: true
           path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
           base-path: ${{ env.EP_SDK_DIR }}
-
-      # # Send coverage report to Coveralls
-      # - name: Coveralls
-      #   uses: coverallsapp/github-action@master
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
 
       - name: Archive Importer Cli Test Logs
         if: ${{ (failure() && !cancelled()) || (always() && (github.event_name=='workflow_dispatch' || env.DEBUG_FLAG=='true') ) }}
