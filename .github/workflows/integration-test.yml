@@ -18,11 +18,12 @@ on:
     branches:
       - main
 env:
-  DEBUG_FLAG: ${{ true }}
-  # DEBUG_FLAG: ${{ false }}
+  # DEBUG_FLAG: ${{ true }}
+  DEBUG_FLAG: ${{ false }}
   EP_SDK_DIR: "ep-sdk"
   EP_SDK_TEST_LOGS_DIR: "ep-sdk/test/logs"
   EP_SDK_TEST_LOGS_OUTPUT_NAME: "ep-sdk-test-logs"
+  NODE_COVERALLS_DEBUG: 1
 jobs:
   integration_test:
     runs-on: ubuntu-20.04
@@ -100,6 +101,7 @@ jobs:
           flag-name: run-${{ matrix.node }}
           parallel: true
           path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
+          base-path: ${{EP_SDK_DIR}}
 
       # # Send coverage report to Coveralls
       # - name: Coveralls
