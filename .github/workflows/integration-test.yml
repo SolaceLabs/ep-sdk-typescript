@@ -97,5 +97,11 @@ jobs:
           path: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}
           if-no-files-found: error
 
+      # Send coverage report to Coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
 ###
 # The End.
