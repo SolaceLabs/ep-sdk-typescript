@@ -25,7 +25,7 @@ env:
   EP_SDK_TEST_LOGS_OUTPUT_NAME: "ep-sdk-test-logs"
 jobs:
   integration_test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       max-parallel: 1
       matrix:
@@ -89,6 +89,13 @@ jobs:
           export EP_SDK_TEST_SOLACE_CLOUD_TOKEN="${{ secrets.EP_SDK_TEST_SOLACE_CLOUD_TOKEN }}"
           test/run.sh
 
+      # Send coverage report to Coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
+
       - name: Archive Importer Cli Test Logs
         if: ${{ (failure() && !cancelled()) || (always() && (github.event_name=='workflow_dispatch' || env.DEBUG_FLAG=='true') ) }}
         uses: actions/upload-artifact@v2
@@ -97,11 +104,5 @@ jobs:
           path: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}
           if-no-files-found: error
 
-      # Send coverage report to Coveralls
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ${{ github.workspace }}/${{ env.EP_SDK_TEST_LOGS_DIR }}/coverage/lcov.info
 ###
 # The End.
