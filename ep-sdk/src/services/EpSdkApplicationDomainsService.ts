@@ -11,6 +11,13 @@ import { EpSdkService } from './EpSdkService';
 
 export class EpSdkApplicationDomainsService extends EpSdkService {
 
+  /**
+   * Get application domain object by name.
+   * @param object 
+   * @returns ApplicationDomain - if found
+   * @returns undefined - if not found
+   * @throws {@link utils/EpSdkErrors.EpSdkApiContentError} - if more than 1 application domain exists with the same name
+   */
   public getByName = async({ applicationDomainName }:{
     applicationDomainName: string;
   }): Promise<ApplicationDomain | undefined> => {
@@ -32,6 +39,12 @@ export class EpSdkApplicationDomainsService extends EpSdkService {
     return applicationDomain;  
   }
 
+  /**
+   * Get application domain object by id.
+   * @param object 
+   * @returns ApplicationDomain
+   * @throws {@link utils/EpSdkErrors.EpSdkApiContentError} - if api response data is undefined
+   */
   public getById = async({ applicationDomainId }:{
     applicationDomainId: string;
   }): Promise<ApplicationDomain> => {
@@ -50,6 +63,11 @@ export class EpSdkApplicationDomainsService extends EpSdkService {
     return applicationDomain;  
   }
 
+  /**
+   * Delete application domain object by id.
+   * @param object 
+   * @returns ApplicationDomain - the deleted application domain object
+   */
   public deleteById = async({ applicationDomainId }:{
     applicationDomainId: string;
   }): Promise<ApplicationDomain> => {
@@ -66,7 +84,13 @@ export class EpSdkApplicationDomainsService extends EpSdkService {
 
   }
 
-  public deleteByName = async({ applicationDomainName }: {
+  /**
+   * Delete application domain object by name.
+   * @param object 
+   * @returns ApplicationDomain - the deleted application domain object
+   * @throws {@link utils/EpSdkErrors.EpSdkServiceError} - if application domain does not exist
+   */
+   public deleteByName = async({ applicationDomainName }: {
     applicationDomainName: string;
   }): Promise<ApplicationDomain> => {
     const funcName = 'deleteByName';
