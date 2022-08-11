@@ -62,7 +62,6 @@ Solace Event Portal SDK.
   - switched to packaged ep-openapi-node and removed from repo
 
 ## Version 0.2.9-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **Enhancements:**
 - **EpSdkVersionTaskStrategyValidationError**
@@ -70,7 +69,6 @@ Solace Event Portal SDK.
 
 
 ## Version 0.2.8-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **Enhancements:**
 - **EpSdkVersionTasks**
@@ -79,13 +77,11 @@ Solace Event Portal SDK.
     - aborts with `EpSdkVersionTaskStrategyValidationError` if `versionString` is not greater than existing version
 
 ## Version 0.2.7-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **Fixes:**
 - fixed spelling mistakes in method names
 
 ## Version 0.2.6-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **New Features:**
 - **Services**
@@ -96,7 +92,6 @@ Solace Event Portal SDK.
   - added: **EpSdkEventApiVersionTask**
 
 ## Version 0.2.5-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **New Features:**
 - **Services**
@@ -108,7 +103,6 @@ Solace Event Portal SDK.
 
 
 ## Version 0.2.4-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **New Features:**
 - **Services**
@@ -119,7 +113,6 @@ Solace Event Portal SDK.
   - added: **EpSdkSchemaVersionTask**
 
 ## Version 0.2.3-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **New Features:**
 - **Services**
@@ -130,13 +123,11 @@ Solace Event Portal SDK.
   - added: **EpSdkEnumVersionTask**
 
 ## Version 0.2.2-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 - **EpTask: transaction log**
   - added object keys to transaction log
 
 ## Version 0.2.1-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **New Features:**
 - **Tasks**
@@ -148,7 +139,6 @@ Solace Event Portal SDK.
 
 
 ## Version 0.2.0-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **New Features:**
 - **Services**
@@ -162,7 +152,6 @@ Solace Event Portal SDK.
 
 
 ## Version 0.1.0-alpha
-  * [Solace Event Portal OpenAPI](https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/resources/sep-openapi-spec.2.0.0-ea.json): '2.0.0-ea'
 
 **Initial Alpha Release.**
 
