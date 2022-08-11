@@ -1,5 +1,5 @@
 {
-  "name": "@solace-labs/ep-sdk",
+  "name": "@solace-labs/ep-sdk-typescript",
   "version": "0.8.1-alpha",
   "description": "Solace Event Portal SDK",
   "type": "commonjs",
