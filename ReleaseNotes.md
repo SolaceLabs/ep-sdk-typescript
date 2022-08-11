@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.8.3-alpha
+
+**Dependencies:**
+ - updated: "@solace-labs/ep-openapi-node": "^2.0.0-alpha.2"
+
 ## Version 0.8.2-alpha
 
 **Release**
