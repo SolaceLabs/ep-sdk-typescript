@@ -2,8 +2,7 @@
 [![docs-test](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/docs-test.yml/badge.svg)](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/docs-test.yml)
 [![release](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release.yml/badge.svg)](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release.yml)
 [![release-docs](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release-docs.yml/badge.svg)](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release-docs.yml)
-[![Coverage Status](https://coveralls.io/repos/github/solace-labs/ep-sdk/badge.svg?branch=main&kill_cache=1)](https://coveralls.io/github/solace-labs/ep-sdk?branch=main)
-
+[![Coverage Status](https://coveralls.io/repos/github/SolaceLabs/ep-sdk-typescript/badge.svg?branch=main&kill_cache=1)](https://coveralls.io/github/SolaceLabs/ep-sdk-typescript?branch=main)
 
 # Solace Event Portal SDK
 
