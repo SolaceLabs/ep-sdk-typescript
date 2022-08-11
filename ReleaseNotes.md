@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.8.1-alpha
+
+**Release**
+- moved pacakge to @solace-labs npm org
+
 ## Version 0.8.0-alpha
 
 **Enhancements:**
