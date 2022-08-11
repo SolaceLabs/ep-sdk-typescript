@@ -10,7 +10,7 @@
 [Issues & Feature Requests](https://github.com/SolaceLabs/ep-sdk-typescript/issues) |
 [Discussions](https://github.com/SolaceLabs/ep-sdk-typescript/discussions) |
 [Release Notes](./ReleaseNotes.md) |
-[Documentation](https://solace-labs.github.io/ep-sdk/)
+[Documentation](https://solace-labs.github.io/ep-sdk-typescript/)
 
 
 The SDK comprises of:
