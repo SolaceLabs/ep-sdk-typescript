@@ -17,7 +17,7 @@ Repos & Links
 
 
 .. _Solace Event Portal SDK:
-  https://github.com/solace-iot-team/ep-sdk/tree/main/ep-sdk
+  https://github.com/SolaceLabs/ep-sdk-typescript/tree/main/ep-sdk
 
 .. _Release Notes:
-  https://github.com/solace-iot-team/ep-sdk/blob/main/ReleaseNotes.md
+  https://github.com/SolaceLabs/ep-sdk-typescript/blob/main/ReleaseNotes.md
