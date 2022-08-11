@@ -1,16 +1,16 @@
-[![integration-test](https://github.com/solace-iot-team/ep-sdk/actions/workflows/integration-test.yml/badge.svg)](https://github.com/solace-iot-team/ep-sdk/actions/workflows/integration-test.yml)
-[![docs-test](https://github.com/solace-iot-team/ep-sdk/actions/workflows/docs-test.yml/badge.svg)](https://github.com/solace-iot-team/ep-sdk/actions/workflows/docs-test.yml)
-[![release](https://github.com/solace-iot-team/ep-sdk/actions/workflows/release.yml/badge.svg)](https://github.com/solace-iot-team/ep-sdk/actions/workflows/release.yml)
-[![release-docs](https://github.com/solace-iot-team/ep-sdk/actions/workflows/release-docs.yml/badge.svg)](https://github.com/solace-iot-team/ep-sdk/actions/workflows/release-docs.yml)
-[![Coverage Status](https://coveralls.io/repos/github/solace-iot-team/ep-sdk/badge.svg?branch=main&kill_cache=1)](https://coveralls.io/github/solace-iot-team/ep-sdk?branch=main)
+[![integration-test](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/integration-test.yml/badge.svg)](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/integration-test.yml)
+[![docs-test](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/docs-test.yml/badge.svg)](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/docs-test.yml)
+[![release](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release.yml/badge.svg)](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release.yml)
+[![release-docs](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release-docs.yml/badge.svg)](https://github.com/SolaceLabs/ep-sdk-typescript/actions/workflows/release-docs.yml)
+[![Coverage Status](https://coveralls.io/repos/github/solace-labs/ep-sdk/badge.svg?branch=main&kill_cache=1)](https://coveralls.io/github/solace-labs/ep-sdk?branch=main)
 
 
 # Solace Event Portal SDK
 
-[Issues & Feature Requests](https://github.com/solace-iot-team/ep-sdk/issues) |
-[Discussions](https://github.com/solace-iot-team/ep-sdk/discussions) |
+[Issues & Feature Requests](https://github.com/SolaceLabs/ep-sdk-typescript/issues) |
+[Discussions](https://github.com/SolaceLabs/ep-sdk-typescript/discussions) |
 [Release Notes](./ReleaseNotes.md) |
-[Documentation](https://solace-iot-team.github.io/ep-sdk/)
+[Documentation](https://solace-labs.github.io/ep-sdk/)
 
 
 The SDK comprises of:
