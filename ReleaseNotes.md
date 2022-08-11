@@ -2,10 +2,16 @@
 
 Solace Event Portal SDK.
 
+## Version 0.8.2-alpha
+
+**Release**
+- moved package to [@solace-labs/ep-sdk](https://www.npmjs.com/package/@solace-labs/ep-sdk)
+
+
 ## Version 0.8.1-alpha
 
 **Release**
-- moved package to [@solace-labs/ep-sdk-typescript](https://www.npmjs.com/package/@solace-labs/ep-sdk-typescript)
+- moved package to [@solace-labs/ep-sdk-typescript](https://www.npmjs.com/package/@solace-labs/ep-sdk)
 
 ## Version 0.8.0-alpha
 

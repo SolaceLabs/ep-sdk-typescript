@@ -4,6 +4,6 @@
 npm install @solace-labs/ep-sdk
 ```
 
-[See Documentation for more Details](https://solace-labs.github.io/ep-sdk/).
+[See Documentation for more Details](https://solacelabs.github.io/ep-sdk-typescript/).
 
 ---
