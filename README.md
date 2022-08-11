@@ -10,18 +10,18 @@
 [Issues & Feature Requests](https://github.com/SolaceLabs/ep-sdk-typescript/issues) |
 [Discussions](https://github.com/SolaceLabs/ep-sdk-typescript/discussions) |
 [Release Notes](./ReleaseNotes.md) |
-[Documentation](https://solace-labs.github.io/ep-sdk-typescript/)
+[Documentation](https://solacelabs.github.io/ep-sdk-typescript/)
 
 
 The SDK comprises of:
 
 ## Services
 
-Services provide convenience functions for the Solace Event Portal REST API.
+A set of Services classes that provide convenience functions for the Solace Event Portal REST API.
 
 ## Tasks
 
-Idempotent CRUD tasks that allow a simple interface to assert presence or absence of an Event Portal object / version object.
+Idempotent CRUD tasks that provide a simple interface to assert presence or absence of an Event Portal object / version object.
 
 ## Utility Classes
 
