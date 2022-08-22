@@ -76,7 +76,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -109,7 +109,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -141,7 +141,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -175,7 +175,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -208,7 +208,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -240,7 +240,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -270,7 +270,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -299,7 +299,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
@@ -330,7 +330,7 @@ describe(`${scriptName}`, () => {
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });

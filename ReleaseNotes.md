@@ -2,6 +2,10 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.2-alpha
+**Typos:**
+- Fixed typo: createNotEpSdkErrorMesssage --> createNotEpSdkErrorMessage
+
 ## Version 0.9.1-alpha
 
 **New Features:**

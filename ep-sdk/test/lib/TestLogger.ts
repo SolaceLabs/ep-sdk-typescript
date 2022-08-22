@@ -85,10 +85,10 @@ export class TestLogger {
     public static createApiTestFailMessage = (message: string): string => {
       return `[${TestContext.getItId()}]: ${message}\napiRequestOptions=${TestLogger.getLoggingApiRequestOptions(TestContext.getApiRequestOptions())}\napiResult=${TestLogger.getLoggingApiResult(TestContext.getApiResult())}\napiError=${JSON.stringify(TestContext.getApiError(), null, 2)}\n`;
     }
-    public static createNotApiErrorMesssage = (message: string): string => {
+    public static createNotApiErrorMessage = (message: string): string => {
       return `[${TestContext.getItId()}]: error is not an instance of ApiError, error=${message}`;
     }
-    public static createNotEpSdkErrorMesssage = (e: Error): string => {
+    public static createNotEpSdkErrorMessage = (e: Error): string => {
       return `[${TestContext.getItId()}]: error is not an instance of EpSdkError, name=${e.name}, message=${e.message}`;
     }
     public static createEpSdkTestFailMessage = (message: string, epSdkError: EpSdkError): string => {
