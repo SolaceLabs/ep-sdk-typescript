@@ -2,6 +2,25 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.1-alpha
+
+**Enhancements:**
+- **EpSdkTask**
+  - made `execute()` public to allow for wrappers & task lists to execute any tasks
+- **EpSdk{xxx}VersionTask**
+  - for checkmode=true & versionStrategy=exact version
+    - tasks return action=`WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT` instead of throwing `EpSdkVersionTaskStrategyValidationError`
+
+**Fixes:**
+- **EpSdkSchemaVersionTask**
+  - fixed object type
+- **EpSdk{xxx}VersionTask**
+  - fixed `IEpSd{xxx}VersionTask_ExecuteReturn` to extend `IEpSdkTask_ExecuteReturn` instead of `IEpSdkEnumTask_ExecuteReturn`
+
+**Documentation:**
+- **devel/README**
+  - added notes on how to use npm link for downstream projects
+
 ## Version 0.9.0-alpha
 
 **New Features:**
