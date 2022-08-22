@@ -69,7 +69,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
   protected getDefaultEpObjectKeys(): IEpSdkVersionTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.ENUM_VERSION,
+      epObjectType: EEpSdkTask_EpObjectType.SCHEMA_VERSION,
       epVersionObjectId: 'undefined'
     };
   };
@@ -216,7 +216,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
   }
 
   /**
-   * Creates a new EnumVersion with bumped version number.
+   * Creates a new SchemaVersion with bumped version number.
    */
   protected async updateFunc(epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn): Promise<IEpSdkSchemaVersionTask_UpdateFuncReturn> {
     const funcName = 'updateFunc';

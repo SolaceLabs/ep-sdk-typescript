@@ -1,5 +1,13 @@
 # Development ep-sdk
 
+## Build
+
+```bash
+npm install
+npm run build
+```
+
+
 ## Run Tests
 
 ```bash
@@ -20,6 +28,29 @@ npx mocha --config test/.mocharc.yml test/specs/misc/pino.spec.ts | npx pino-pre
 # unset the env
 unset_source_env
 ````
+
+## Link
+
+```bash
+npm run dev:build
+npm link
+```
+
+### Consuming Link
+```bash
+cd {consuming project}
+npm link @solace-labs/ep-sdk
+npm list
+```
+
+#### Unlink Consuming Link
+```bash
+cd {consuming project}
+npm unlink --no-save @solace-labs/ep-sdk
+# NOTE: now install the released package
+npm install
+npm list
+```
 
 
 ---

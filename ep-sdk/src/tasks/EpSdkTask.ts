@@ -15,10 +15,10 @@ export enum EEpSdkTask_EpObjectType {
   ENUM_VERSION = "enumVersion",
   SCHEMA_OBJECT = "schemaObject",
   SCHEMA_VERSION = "schemaVersion",
-  EVENT = "EVENT",
-  EVENT_VERSION = "EVENT_VERSION",
-  EVENT_API = "EVENT_API",
-  EVENT_API_VERSION = "EVENT_API_VERSION"
+  EVENT = "event",
+  EVENT_VERSION = "eventVersion",
+  EVENT_API = "eventApi",
+  EVENT_API_VERSION = "eventApiVersion"
 }
 export interface IEpSdkTask_EpObjectKeys {
   epObjectType: EEpSdkTask_EpObjectType; 
@@ -301,7 +301,7 @@ export abstract class EpSdkTask {
     // do nothing, override in derived class
   }
 
-  protected async execute(): Promise<IEpSdkTask_ExecuteReturn> { 
+  public async execute(): Promise<IEpSdkTask_ExecuteReturn> { 
     const funcName = 'execute';
     const logName = `${EpSdkTask.name}.${funcName}()`;
 
