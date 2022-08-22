@@ -13,6 +13,8 @@ export enum EEpSdkTask_EpObjectType {
   APPLICATION_DOMAIN = "applicationDomain",
   ENUM = "enum",
   ENUM_VERSION = "enumVersion",
+  APPLICATION = "application",
+  APPLICATION_VERSION = "applicationVersion",
   SCHEMA_OBJECT = "schemaObject",
   SCHEMA_VERSION = "schemaVersion",
   EVENT = "EVENT",
