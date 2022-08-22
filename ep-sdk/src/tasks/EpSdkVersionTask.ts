@@ -73,8 +73,11 @@ export abstract class EpSdkVersionTask extends EpSdkTask {
     return EEpSdkTask_Action.CREATE_FIRST_VERSION;
   }
 
-  protected getUpdateFuncAction(): EEpSdkTask_Action {
-    if(this.isCheckmode()) return EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION;
+  protected getUpdateFuncAction(wouldFailOnExactVersionRequirement?: boolean): EEpSdkTask_Action {
+    if(this.isCheckmode()) {
+      if(!wouldFailOnExactVersionRequirement) return EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION;
+      else return EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT;
+    }
     return EEpSdkTask_Action.CREATE_NEW_VERSION;
   }
 

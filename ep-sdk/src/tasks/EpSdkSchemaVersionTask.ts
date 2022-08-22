@@ -1,15 +1,15 @@
 import { EpSdkConfig } from '../utils/EpSdkConfig';
-import { EpSdkApiContentError, EpSdkInternalTaskError } from '../utils/EpSdkErrors';
+import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyValidationError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   SchemaVersion, 
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemaVersionsService from '../services/EpSdkSchemaVersionsService';
-import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 
   EEpSdkTask_EpObjectType,
   IEpSdkTask_CreateFuncReturn, 
+  IEpSdkTask_ExecuteReturn, 
   IEpSdkTask_GetFuncReturn, 
   IEpSdkTask_IsUpdateRequiredFuncReturn, 
   IEpSdkTask_Keys, 
@@ -38,7 +38,7 @@ export interface IEpSdkSchemaVersionTask_CreateFuncReturn extends Omit<IEpSdkTas
 export interface IEpSdkSchemaVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: SchemaVersion;
 }
- export interface IEpSdkSchemaVersionTask_ExecuteReturn extends Omit<IEpSdkEnumTask_ExecuteReturn, "epObject"> {
+ export interface IEpSdkSchemaVersionTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: SchemaVersion;
 }
 
@@ -69,7 +69,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
   protected getDefaultEpObjectKeys(): IEpSdkVersionTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.ENUM_VERSION,
+      epObjectType: EEpSdkTask_EpObjectType.SCHEMA_VERSION,
       epVersionObjectId: 'undefined'
     };
   };
@@ -216,7 +216,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
   }
 
   /**
-   * Creates a new EnumVersion with bumped version number.
+   * Creates a new SchemaVersion with bumped version number.
    */
   protected async updateFunc(epSdkSchemaVersionTask_GetFuncReturn: IEpSdkSchemaVersionTask_GetFuncReturn): Promise<IEpSdkSchemaVersionTask_UpdateFuncReturn> {
     const funcName = 'updateFunc';
@@ -233,13 +233,34 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     });
 
     // getFuncReturn has the latest version object
+    let nextVersion: string;
+    try {
+      nextVersion = this.createNextVersionWithStrategyValidation({
+        existingObjectVersionString: epSdkSchemaVersionTask_GetFuncReturn.epObject.version,
+      });
+    } catch(e) {
+      if(this.isCheckmode() && e instanceof EpSdkVersionTaskStrategyValidationError) {
+        const update: SchemaVersion = {
+          ...this.createObjectSettings(),
+          schemaId: epSdkSchemaVersionTask_GetFuncReturn.epObject.id,
+          version: e.details.versionString
+        };    
+        const wouldBe_EpObject: SchemaVersion = {
+          ...epSdkSchemaVersionTask_GetFuncReturn.epObject,
+          ...update
+        };
+        return {
+          epSdkTask_Action: this.getUpdateFuncAction(true),
+          epObject: wouldBe_EpObject,
+          epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject)
+        };
+      } else throw e;  
+    }
 
     const update: SchemaVersion = {
       ...this.createObjectSettings(),
       schemaId: epSdkSchemaVersionTask_GetFuncReturn.epObject.id,
-      version: this.createNextVersionWithStrategyValidation({
-        existingObjectVersionString: epSdkSchemaVersionTask_GetFuncReturn.epObject.version,
-      }),
+      version: nextVersion
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {

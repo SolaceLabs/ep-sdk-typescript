@@ -17,10 +17,10 @@ export enum EEpSdkTask_EpObjectType {
   APPLICATION_VERSION = "applicationVersion",
   SCHEMA_OBJECT = "schemaObject",
   SCHEMA_VERSION = "schemaVersion",
-  EVENT = "EVENT",
-  EVENT_VERSION = "EVENT_VERSION",
-  EVENT_API = "EVENT_API",
-  EVENT_API_VERSION = "EVENT_API_VERSION"
+  EVENT = "event",
+  EVENT_VERSION = "eventVersion",
+  EVENT_API = "eventApi",
+  EVENT_API_VERSION = "eventApiVersion"
 }
 export interface IEpSdkTask_EpObjectKeys {
   epObjectType: EEpSdkTask_EpObjectType; 
@@ -37,6 +37,7 @@ export enum EEpSdkTask_Action {
   WOULD_CREATE_FIRST_VERSION = "WOULD_CREATE_FIRST_VERSION",
   CREATE_NEW_VERSION = "CREATE_NEW_VERSION",
   WOULD_CREATE_NEW_VERSION = "WOULD_CREATE_NEW_VERSION",
+  WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT = "WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT",
   UPDATE = "UPDATE",
   WOULD_UPDATE = "WOULD_UPDATE",
   DELETE = "DELETE",
@@ -303,7 +304,7 @@ export abstract class EpSdkTask {
     // do nothing, override in derived class
   }
 
-  protected async execute(): Promise<IEpSdkTask_ExecuteReturn> { 
+  public async execute(): Promise<IEpSdkTask_ExecuteReturn> { 
     const funcName = 'execute';
     const logName = `${EpSdkTask.name}.${funcName}()`;
 

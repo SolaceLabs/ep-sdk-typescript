@@ -1,14 +1,14 @@
 import { EpSdkConfig } from '../utils/EpSdkConfig';
-import { EpSdkApiContentError, EpSdkInternalTaskError } from '../utils/EpSdkErrors';
+import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyValidationError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   eventApiVersion as EventApiVersion,
 } from '@solace-labs/ep-openapi-node';
-import { IEpSdkEnumTask_ExecuteReturn } from './EpSdkEnumTask';
 import { 
   EEpSdkTask_EpObjectType,
   IEpSdkTask_CreateFuncReturn, 
+  IEpSdkTask_ExecuteReturn, 
   IEpSdkTask_GetFuncReturn, 
   IEpSdkTask_IsUpdateRequiredFuncReturn, 
   IEpSdkTask_Keys, 
@@ -38,7 +38,7 @@ export interface IEpSdkEventApiVersionTask_CreateFuncReturn extends Omit<IEpSdkT
 export interface IEpSdkEventApiVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
   epObject: EventApiVersion;
 }
- export interface IEpSdkEventApiVersionTask_ExecuteReturn extends Omit<IEpSdkEnumTask_ExecuteReturn, "epObject"> {
+ export interface IEpSdkEventApiVersionTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
   epObject: EventApiVersion;
 }
 
@@ -234,13 +234,33 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
     });
 
     // getFuncReturn has the latest version object
-
+    let nextVersion: string;
+    try {
+      nextVersion = this.createNextVersionWithStrategyValidation({
+        existingObjectVersionString: epSdkEventApiVersionTask_GetFuncReturn.epObject.version,
+      });
+    } catch(e) {
+      if(this.isCheckmode() && e instanceof EpSdkVersionTaskStrategyValidationError) {
+        const update: EventApiVersion = {
+          ...this.createObjectSettings(),
+          eventApiId: epSdkEventApiVersionTask_GetFuncReturn.epObject.id,
+          version: e.details.versionString
+        };    
+        const wouldBe_EpObject: EventApiVersion = {
+          ...epSdkEventApiVersionTask_GetFuncReturn.epObject,
+          ...update
+        };
+        return {
+          epSdkTask_Action: this.getUpdateFuncAction(true),
+          epObject: wouldBe_EpObject,
+          epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject)
+        };
+      } else throw e;  
+    }
     const update: EventApiVersion = {
       ...this.createObjectSettings(),
       eventApiId: epSdkEventApiVersionTask_GetFuncReturn.epObject.id,
-      version: this.createNextVersionWithStrategyValidation({
-        existingObjectVersionString: epSdkEventApiVersionTask_GetFuncReturn.epObject.version,
-      }),
+      version: nextVersion
     };
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {

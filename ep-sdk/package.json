@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-sdk",
-  "version": "0.9.0-alpha",
+  "version": "0.9.1-alpha",
   "description": "Solace Event Portal SDK",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -30,6 +30,7 @@
   "scripts": {
     "compile:examples": "tsc --project examples/tsconfig.json",
     "compile": "tsc -b && npm run compile:examples",
+    "dev:build": "tsc",
     "build:tsdocs": "ts-node build-tsdocs.ts",
     "build": "npm run build:tsdocs && tsc",
     "test": "npm run compile && . ./test/source.env.sh && nyc mocha --config test/.mocharc.yml test/**/**.spec.ts && unset_source_env"
