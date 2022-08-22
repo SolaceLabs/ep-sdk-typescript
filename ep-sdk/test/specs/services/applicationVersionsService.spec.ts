@@ -1,0 +1,255 @@
+import 'mocha';
+import { expect } from 'chai';
+import path from 'path';
+import { TestLogger } from '../../lib/TestLogger';
+import { TestContext } from '../../lib/TestContext';
+import TestConfig from '../../lib/TestConfig';
+import { TestUtils } from '../../lib/TestUtils';
+import { 
+  ApiError, 
+  ApplicationDomainResponse, 
+  ApplicationDomainsService, 
+  ApplicationResponse, 
+  ApplicationsService,
+  ApplicationVersion,
+  ApplicationVersionResponse
+} from '@solace-labs/ep-openapi-node';
+import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
+import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import EpSdkApplicationVersionsService from '../../../src/services/EpSdkApplicationVersionsService';
+import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
+
+const scriptName: string = path.basename(__filename);
+TestLogger.logMessage(scriptName, ">>> starting ...");
+
+const TestSpecId: string = TestUtils.getUUID();
+const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
+let ApplicationDomainId: string | undefined;
+const ApplicationName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
+let ApplicationId: string | undefined;
+const ApplicationVersionString = '1.0.0';
+let ApplicationVersionId: string | undefined;
+const ApplicationNextVersionString = '1.0.1';
+let ApplicationNextVersionId: string | undefined;
+
+
+describe(`${scriptName}`, () => {
+
+    beforeEach(() => {
+      TestContext.newItId();
+    });
+
+    before(async() => {
+      const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
+        requestBody: {
+          name: ApplicationDomainName,
+        }
+      });
+      ApplicationDomainId = applicationDomainResponse.data.id;
+
+      const applicationResponse: ApplicationResponse = await ApplicationsService.createApplication({
+        requestBody: {
+          applicationDomainId: ApplicationDomainId,
+          name: ApplicationName,
+          applicationType: "standard",
+        }
+      });
+      ApplicationId = applicationResponse.data.id;
+    });
+
+    after(async() => {
+      // delete application domain
+      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
+    });
+
+    it(`${scriptName}: should create application version`, async () => {
+      try {
+
+        const create: ApplicationVersion = {
+          description: `application version for application = ${ApplicationName}, id=${ApplicationId}`,        
+          version: ApplicationVersionString
+        };
+
+        const created: ApplicationVersion = await EpSdkApplicationVersionsService.createApplicationVersion({
+          applicationDomainId: ApplicationDomainId,
+          applicationId: ApplicationId,
+          applicationVersion: create,
+          targetLifecycleStateId: EpSdkStatesService.releasedId
+        });
+        ApplicationVersionId = created.id;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get application version by version`, async () => {
+      try {
+        const applicationVersion: ApplicationVersion = await EpSdkApplicationVersionsService.getVersionByVersion({ 
+          applicationId: ApplicationId,
+          applicationVersionString: ApplicationVersionString,
+        });
+        expect(applicationVersion.version, TestLogger.createApiTestFailMessage('version mismatch')).to.eq(ApplicationVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get application versions for application id`, async () => {
+      try {
+        const applicationVersionList: Array<ApplicationVersion> = await EpSdkApplicationVersionsService.getVersionsForApplicationId({ applicationId: ApplicationId });
+        expect(applicationVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
+        const applicationVersion: ApplicationVersion = applicationVersionList[0];
+        expect(applicationVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(ApplicationVersionId);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get application versions for application name`, async () => {
+      try {
+        const applicationVersionList: Array<ApplicationVersion> = await EpSdkApplicationVersionsService.getVersionsForApplicationName({ 
+          applicationDomainId: ApplicationDomainId,
+          applicationName: ApplicationName 
+        });
+        expect(applicationVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
+        const applicationVersion: ApplicationVersion = applicationVersionList[0];
+        expect(applicationVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(ApplicationVersionId);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should create new application version`, async () => {
+      try {
+        const create: ApplicationVersion = {
+          description: `application version for application = ${ApplicationName}, id=${ApplicationId}`,        
+          version: ApplicationNextVersionString
+        };
+        const created: ApplicationVersion = await EpSdkApplicationVersionsService.createApplicationVersion({
+          applicationDomainId: ApplicationDomainId,
+          applicationId: ApplicationId,
+          applicationVersion: create,
+          targetLifecycleStateId: EpSdkStatesService.releasedId
+        });
+        ApplicationNextVersionId = created.id;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version string`, async () => {
+      try {
+        const latestVersionString: string = await EpSdkApplicationVersionsService.getLatestVersionString({ applicationId: ApplicationId });
+        expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(ApplicationNextVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version for application id`, async () => {
+      try {
+        const applicationVersion: ApplicationVersion = await EpSdkApplicationVersionsService.getLatestVersionForApplicationId({ 
+          applicationDomainId: ApplicationDomainId,
+          applicationId: ApplicationId 
+        });
+        expect(applicationVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(ApplicationNextVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version for application name`, async () => {
+      try {
+        const applicationVersion: ApplicationVersion | undefined = await EpSdkApplicationVersionsService.getLatestVersionForApplicationName({ 
+          applicationDomainId: ApplicationDomainId,
+          applicationName: ApplicationName
+        });
+        expect(applicationVersion, TestLogger.createApiTestFailMessage('applicationVersion === undefined')).to.not.be.undefined;
+        expect(applicationVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(ApplicationNextVersionString);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get latest version for application name that doesn't exist`, async () => {
+      const NonExistentName = 'non-existent';
+      try {
+        const applicationVersion: ApplicationVersion | undefined = await EpSdkApplicationVersionsService.getLatestVersionForApplicationName({ 
+          applicationDomainId: ApplicationDomainId,
+          applicationName: NonExistentName
+        });
+        expect(applicationVersion, TestLogger.createApiTestFailMessage('applicationVersion !== undefined')).to.be.undefined;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        const epSdkServiceError: EpSdkServiceError = e;
+        expect(epSdkServiceError.toString(), TestLogger.createApiTestFailMessage(`error does not contain ${NonExistentName}`)).to.contain(NonExistentName);
+      }
+    });
+
+    it(`${scriptName}: should create 10 application versions & get latest version string them using paging`, async () => {
+      const PagingName = 'Paging-Object';
+      const VersionQuantity = 10;
+      const PageSize = 2;
+      try {
+        const response: ApplicationResponse = await ApplicationsService.createApplication({
+          requestBody: {
+            applicationDomainId: ApplicationDomainId,
+            name: PagingName,
+            applicationType: "standard",
+          }
+        });
+        ApplicationId = response.data.id;
+
+        let VersionString = '';
+        for(let i=0; i<VersionQuantity; i++) {
+          VersionString = `3.0.${i}`;
+          const versionResponse: ApplicationVersionResponse = await ApplicationsService.createApplicationVersionForApplication({
+            applicationId: ApplicationId,
+            requestBody: {
+              description: 'paging version',
+              version: VersionString,
+            }
+          });
+        }
+        // // DEBUG
+        // expect(false, 'check 1000 enum versions created').to.be.true;
+        const versionList: Array<ApplicationVersion> = await EpSdkApplicationVersionsService.getVersionsForApplicationId({ 
+          applicationId: ApplicationId,
+        });
+        expect(versionList.length, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionQuantity);
+
+        let latestObjectVersion: ApplicationVersion = await EpSdkApplicationVersionsService.getLatestVersionForApplicationId({ applicationId: ApplicationId, applicationDomainId: ApplicationDomainId });
+        expect(latestObjectVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+        latestObjectVersion = await EpSdkApplicationVersionsService.getLatestVersionForApplicationName({ applicationName: PagingName, applicationDomainId: ApplicationDomainId });
+        expect(latestObjectVersion.version, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+        const latestObjectVersionString: string = await EpSdkApplicationVersionsService.getLatestVersionString({ applicationId: ApplicationId });
+        expect(latestObjectVersionString, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+});
+

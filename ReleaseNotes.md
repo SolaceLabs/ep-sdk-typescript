@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.0-alpha
+
+**New Features:**
+ - Added support for Application and Application Version management
+
 ## Version 0.8.3-alpha
 
 **Dependencies:**
