@@ -8,12 +8,13 @@ import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError, ApplicationDomainResponse, ApplicationDomainsService, EnumResponse, EnumsService
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError } from '../../../src/utils/EpSdkErrors';
+import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError, EpSdkVersionTaskStrategyValidationError, TEpSdkVersionTaskStrategyValidationError_Details } from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
+import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
 
 
 const scriptName: string = path.basename(__filename);
@@ -274,7 +275,6 @@ describe(`${scriptName}`, () => {
 
   it(`${scriptName}: enum version absent`, async () => {
     try {
-
       const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.ABSENT,
         applicationDomainId: ApplicationDomainId,
@@ -291,15 +291,148 @@ describe(`${scriptName}`, () => {
         },
         checkmode: false
       });
-
       const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
-
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
       expect(e instanceof EpSdkFeatureNotSupportedError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
     }
   });
+
+  it(`${scriptName}: enum version present: create exact version match`, async () => {
+    const ExactVersionString = '2.0.0';
+    try {
+      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        enumId: EnumId,
+        versionString: ExactVersionString,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        enumVersionSettings: {
+          stateId: EpSdkStatesService.releasedId,
+          displayName: EnumVersionName,
+          description: 'description',
+        },
+        enumValues: [ 'one', 'two', 'three'],
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false
+      });
+      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.version, message).to.eq(ExactVersionString);
+      // // DEBUG
+      // expect(false, message).to.be.true;
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: enum version present: create exact version match: idempotency`, async () => {
+    const ExactVersionString = '2.0.0';
+    try {
+      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        enumId: EnumId,
+        versionString: ExactVersionString,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        enumVersionSettings: {
+          stateId: EpSdkStatesService.releasedId,
+          displayName: EnumVersionName,
+          description: 'description',
+        },
+        enumValues: [ 'one', 'two', 'three'],
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false
+      });
+      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      const message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.version, message).to.eq(ExactVersionString);
+      // // DEBUG
+      // expect(false, message).to.be.true;
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: enum version present: create exact version match: should catch error`, async () => {
+    const ExactVersionString = '2.0.0';
+    try {
+      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        enumId: EnumId,
+        versionString: ExactVersionString,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        enumVersionSettings: {
+          stateId: EpSdkStatesService.releasedId,
+          displayName: EnumVersionName,
+          description: 'updated description',
+        },
+        enumValues: [ 'one', 'two', 'three'],
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false
+      });
+      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkVersionTaskStrategyValidationError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      const epSdkVersionTaskStrategyValidationError: EpSdkVersionTaskStrategyValidationError = e;
+      const details: TEpSdkVersionTaskStrategyValidationError_Details = epSdkVersionTaskStrategyValidationError.details;
+      expect(details.versionString, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(ExactVersionString);
+      expect(details.existingVersionString, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(ExactVersionString);
+      const transactionLogData: IEpSdkTask_TransactionLogData = epSdkVersionTaskStrategyValidationError.details.transactionLogData;
+      expect(transactionLogData.epSdkTask_Action, TestLogger.createEpSdkTestFailMessage('failed', e)).to.eq(EEpSdkTask_Action.NO_ACTION);
+      expect(transactionLogData.epSdkTask_IsUpdateRequiredFuncReturn.isUpdateRequired, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: event api version present: create exact version match with checkmode: should return would fail`, async () => {
+    const ExactVersionString = '2.0.0';
+    try {
+      const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        enumId: EnumId,
+        versionString: ExactVersionString,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        enumVersionSettings: {
+          stateId: EpSdkStatesService.releasedId,
+          displayName: EnumVersionName,
+          description: 'updated description',
+        },
+        enumValues: [ 'one', 'two', 'three'],
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true
+      });
+      const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, TestLogger.createLogMessage('wrong action', epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData)).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
 
 });
 
