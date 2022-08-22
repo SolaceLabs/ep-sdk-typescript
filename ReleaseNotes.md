@@ -4,6 +4,9 @@ Solace Event Portal SDK.
 
 ## Version 0.9.1-alpha
 
+**New Features:**
+ - Added support for Application and Application Version management
+
 **Enhancements:**
 - **EpSdkTask**
   - made `execute()` public to allow for wrappers & task lists to execute any tasks
@@ -20,11 +23,6 @@ Solace Event Portal SDK.
 **Documentation:**
 - **devel/README**
   - added notes on how to use npm link for downstream projects
-
-## Version 0.9.0-alpha
-
-**New Features:**
- - Added support for Application and Application Version management
 
 ## Version 0.8.3-alpha
 
