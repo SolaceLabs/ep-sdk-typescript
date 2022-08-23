@@ -2,6 +2,15 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.3-alpha
+
+**Fixes:**
+- **EpSdk{xxx}VersionTask**
+  - Fixed bug in managing requested version v. created version
+    - `state=present`: if requested version is > existing version, use requested version, otherwise bump according to strategy
+    - `state=exact_version`: if requested version is > existing version, use requested version, otherwise throw error
+    - `state=exact_version, checkmode=true`: if requested version is > existing version, use requested version, otherwise return `WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT`
+
 ## Version 0.9.2-alpha
 **Typos:**
 - Fixed typo: createNotEpSdkErrorMesssage --> createNotEpSdkErrorMessage
