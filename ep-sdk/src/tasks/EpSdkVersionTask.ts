@@ -47,7 +47,7 @@ export abstract class EpSdkVersionTask extends EpSdkTask {
     const logName = `${EpSdkVersionTask.name}.${funcName}()`;
 
     if(this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
-      // check if requrest versionString > existingObjectVersionString
+      // check if requested versionString > existingObjectVersionString
       if(!EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
         newVersionString: this.versionString,
         oldVersionString: existingObjectVersionString
@@ -62,7 +62,12 @@ export abstract class EpSdkVersionTask extends EpSdkTask {
       // return requested versionString
       return this.versionString;
     }
-    return EpSdkSemVerUtils.createNextVersionByStrategy({
+    // return requested versionString or a bumped one
+    if(EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
+      newVersionString: this.versionString,
+      oldVersionString: existingObjectVersionString
+    })) return this.versionString;
+    else return EpSdkSemVerUtils.createNextVersionByStrategy({
       fromVersionString: existingObjectVersionString,
       strategy: (this.versionStrategy as unknown) as EEpSdk_VersionStrategy,
     });

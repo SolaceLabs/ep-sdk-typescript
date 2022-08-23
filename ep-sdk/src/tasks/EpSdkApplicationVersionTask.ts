@@ -17,8 +17,8 @@ import {
 } from './EpSdkTask';
 import { EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
-type TEpSdkApplicationVersionTask_Settings = Required<Pick<ApplicationVersion, "description" | "displayName" | "stateId" >>;
-type TEpSdkApplicationVersionTask_CompareObject = Partial<TEpSdkApplicationVersionTask_Settings>;
+export type TEpSdkApplicationVersionTask_Settings = Required<Pick<ApplicationVersion, "description" | "displayName" | "stateId" >>;
+type TEpSdkApplicationVersionTask_CompareObject = Partial<TEpSdkApplicationVersionTask_Settings> & Required<Pick<ApplicationVersion, "version">>;
 
 export interface IEpSdkApplicationVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
@@ -139,14 +139,20 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
     }}));
 
     if(epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined');
-
+    if(epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined', {
+      epObject: epSdkApplicationVersionTask_GetFuncReturn.epObject
+    });
     const existingObject: ApplicationVersion = epSdkApplicationVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkApplicationVersionTask_CompareObject = {
       description: existingObject.description,
       displayName: existingObject.displayName,
-      stateId: existingObject.stateId
+      stateId: existingObject.stateId,
+      version: epSdkApplicationVersionTask_GetFuncReturn.epObject.version
     };
-    const requestedCompareObject: TEpSdkApplicationVersionTask_CompareObject = this.createObjectSettings();
+    const requestedCompareObject: TEpSdkApplicationVersionTask_CompareObject = {
+      ...this.createObjectSettings(),
+      version: this.versionString
+    };
 
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 
       existingObject: existingCompareObject, 

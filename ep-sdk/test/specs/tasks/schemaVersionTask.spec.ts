@@ -20,12 +20,14 @@ import {
   TEpSdkVersionTaskStrategyValidationError_Details
 } from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaVersionTask';
+import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn, TEpSdkSchemaVersionTask_Settings } from '../../../src/tasks/EpSdkSchemaVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
 import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
 import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
+import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from '../../../src/utils/EpSdkSemVerUtils';
+import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
 
 
 const scriptName: string = path.basename(__filename);
@@ -475,5 +477,82 @@ describe(`${scriptName}`, () => {
       expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
     }
   });
+
+  it(`${scriptName}: schema version present: create version without updates to settings`, async () => {
+    const settings: TEpSdkSchemaVersionTask_Settings = {
+      stateId: EpSdkStatesService.releasedId,
+      description: 'description',
+      displayName: 'displayName',
+      content: SchemaContent
+    }
+    try {
+      // create a reference version
+      const epSdkSchemaVersionTask_Ref = new EpSdkSchemaVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        schemaId: SchemaId,
+        // versionString: newVersion,
+        // versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        schemaVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      const epSdkSchemaVersionTask_ExecuteReturn_Ref: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask_Ref.execute();
+      const referenceVersionString: string = epSdkSchemaVersionTask_ExecuteReturn_Ref.epObject.version ? epSdkSchemaVersionTask_ExecuteReturn_Ref.epObject.version : 'not-a-version';
+      // bump the version
+      const newVersion = EpSdkSemVerUtils.createNextVersionByStrategy({
+        fromVersionString: referenceVersionString,
+        strategy: EEpSdk_VersionStrategy.BUMP_MINOR,
+      });
+      // create new version even no other updates to settings
+      const epSdkSchemaVersionTask_New = new EpSdkSchemaVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        schemaId: SchemaId,
+        versionString: newVersion,
+        // versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        schemaVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      const epSdkSchemaVersionTask_ExecuteReturn_New: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask_New.execute();
+      const message_New = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn_New', epSdkSchemaVersionTask_ExecuteReturn_New);
+      // get the latest version to check
+      const latestVersionString = await EpSdkSchemaVersionsService.getLatestVersionString({ schemaId: SchemaId });
+      expect(latestVersionString, message_New).to.eq(newVersion);
+      expect(epSdkSchemaVersionTask_ExecuteReturn_New.epSdkTask_TransactionLogData.epSdkTask_Action, message_New).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+
+      // now test exact match fail in checkmode going back to referenceVersion
+      const epSdkSchemaVersionTask_WouldFail = new EpSdkSchemaVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        schemaId: SchemaId,
+        versionString: referenceVersionString,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        schemaVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      const epSdkSchemaVersionTask_ExecuteReturn_WouldFail: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask_WouldFail.execute();
+      const message_WouldFail = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn_WouldFail', epSdkSchemaVersionTask_ExecuteReturn_WouldFail);
+      expect(epSdkSchemaVersionTask_ExecuteReturn_WouldFail.epSdkTask_TransactionLogData.epSdkTask_Action, message_WouldFail).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      // DEBUG
+      // expect(false, message_WouldFail).to.be.true;
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
 });
 
