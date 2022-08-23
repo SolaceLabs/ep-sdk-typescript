@@ -35,7 +35,7 @@ describe(`${scriptName}`, () => {
         // expect(false, TestLogger.createLogMessage('check logging')).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -50,7 +50,7 @@ describe(`${scriptName}`, () => {
         ApplicationDomainId = applicationDomainResponse.data.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -62,7 +62,7 @@ describe(`${scriptName}`, () => {
         expect(applicationDomain, TestLogger.createApiTestFailMessage('applicationDomain === undefined')).to.not.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -73,7 +73,7 @@ describe(`${scriptName}`, () => {
         EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkConsoleLogger });
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -86,7 +86,7 @@ describe(`${scriptName}`, () => {
         expect(applicationDomain, TestLogger.createApiTestFailMessage('applicationDomain === undefined')).to.not.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -97,7 +97,7 @@ describe(`${scriptName}`, () => {
         expect(applicationDomain, TestLogger.createApiTestFailMessage('applicationDomain === undefined')).to.not.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });

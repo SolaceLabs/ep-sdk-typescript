@@ -79,7 +79,7 @@ describe(`${scriptName}`, () => {
         ApplicationVersionId = created.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -93,7 +93,7 @@ describe(`${scriptName}`, () => {
         expect(applicationVersion.version, TestLogger.createApiTestFailMessage('version mismatch')).to.eq(ApplicationVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -106,7 +106,7 @@ describe(`${scriptName}`, () => {
         expect(applicationVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(ApplicationVersionId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -122,7 +122,7 @@ describe(`${scriptName}`, () => {
         expect(applicationVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(ApplicationVersionId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -142,7 +142,7 @@ describe(`${scriptName}`, () => {
         ApplicationNextVersionId = created.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -153,7 +153,7 @@ describe(`${scriptName}`, () => {
         expect(latestVersionString, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(ApplicationNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -167,7 +167,7 @@ describe(`${scriptName}`, () => {
         expect(applicationVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(ApplicationNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -182,7 +182,7 @@ describe(`${scriptName}`, () => {
         expect(applicationVersion.version, TestLogger.createApiTestFailMessage('version string mismatch')).to.eq(ApplicationNextVersionString);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -197,7 +197,7 @@ describe(`${scriptName}`, () => {
         expect(applicationVersion, TestLogger.createApiTestFailMessage('applicationVersion !== undefined')).to.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         const epSdkServiceError: EpSdkServiceError = e;
         expect(epSdkServiceError.toString(), TestLogger.createApiTestFailMessage(`error does not contain ${NonExistentName}`)).to.contain(NonExistentName);
       }
@@ -246,7 +246,7 @@ describe(`${scriptName}`, () => {
 
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });

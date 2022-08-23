@@ -59,7 +59,7 @@ describe(`${scriptName}`, () => {
         SchemaId = schemaResponse.data.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -73,7 +73,7 @@ describe(`${scriptName}`, () => {
         expect(schemaObject, TestLogger.createApiTestFailMessage('schemaObject === undefined')).to.not.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -88,7 +88,7 @@ describe(`${scriptName}`, () => {
         expect(schemaObject.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -103,7 +103,7 @@ describe(`${scriptName}`, () => {
         expect(schemaObject.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -121,7 +121,7 @@ describe(`${scriptName}`, () => {
         SchemaId = schemaResponse.data.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -137,7 +137,7 @@ describe(`${scriptName}`, () => {
         expect(schemaObject.applicationDomainId, TestLogger.createApiTestFailMessage('failed')).to.eq(ApplicationDomainId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
@@ -152,7 +152,7 @@ describe(`${scriptName}`, () => {
         expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMesssage(e)).to.be.true;
+        expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         const epSdkServiceError: EpSdkServiceError = e;
         expect(epSdkServiceError.toString(), TestLogger.createApiTestFailMessage(`error does not contain ${NonExistentName}`)).to.contain(NonExistentName);
       }
