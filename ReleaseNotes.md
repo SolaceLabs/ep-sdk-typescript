@@ -4,12 +4,10 @@ Solace Event Portal SDK.
 
 ## Version 0.9.3-alpha
 
-**Fixes:**
-- **EpSdk{xxx}VersionTask**
-  - Fixed bug in managing requested version v. created version
-    - `state=present`: if requested version is > existing version, use requested version, otherwise bump according to strategy
-    - `state=exact_version`: if requested version is > existing version, use requested version, otherwise throw error
-    - `state=exact_version, checkmode=true`: if requested version is > existing version, use requested version, otherwise return `WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT`
+**Refactor:**
+- **EpSdk{xxx}VersionTask - manage versions strategy**
+  - `version_strategy=bump_patch|bump_minor`: version in task config is a starting point, tasks will create new version by bumping latest version on any settings changes
+  - `version_strategy=exact_version`: task must be able to create this exact version, which must not be lower than latest version, regardless of any settings changes
 
 ## Version 0.9.2-alpha
 **Typos:**
