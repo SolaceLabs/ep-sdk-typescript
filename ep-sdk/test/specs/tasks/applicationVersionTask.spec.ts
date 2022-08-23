@@ -476,15 +476,56 @@ describe(`${scriptName}`, () => {
         },
         checkmode: false,
       });
-      const epSdkApplicationVersionTask_ExecuteReturn_New: IEpSdkApplicationVersionTask_ExecuteReturn = await epSdkApplicationVersionTask_New.execute();
-      const message_New = TestLogger.createLogMessage('epSdkApplicationVersionTask_ExecuteReturn_New', epSdkApplicationVersionTask_ExecuteReturn_New);
+      let epSdkApplicationVersionTask_ExecuteReturn: IEpSdkApplicationVersionTask_ExecuteReturn = await epSdkApplicationVersionTask_New.execute();
+      let message = TestLogger.createLogMessage('epSdkApplicationVersionTask_ExecuteReturn', epSdkApplicationVersionTask_ExecuteReturn);
       // get the latest version to check
-      const latestVersionString = await EpSdkApplicationVersionsService.getLatestVersionString({ applicationId: ApplicationId });
-      expect(latestVersionString, message_New).to.eq(newVersion);
-      expect(epSdkApplicationVersionTask_ExecuteReturn_New.epSdkTask_TransactionLogData.epSdkTask_Action, message_New).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      let latestVersionString = await EpSdkApplicationVersionsService.getLatestVersionString({ applicationId: ApplicationId });
+      // expect no change in version
+      expect(latestVersionString, message).to.eq(referenceVersionString);
+      expect(epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
 
-      // now test exact match fail in checkmode going back to referenceVersion
-      const epSdkApplicationVersionTask_WouldFail = new EpSdkApplicationVersionTask({
+      // now test exact match, checkmode=true for newVersion: should return Would create new version
+      const epSdkApplicationVersionTask_NewCreatedCheck = new EpSdkApplicationVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        applicationId: ApplicationId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        applicationVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      epSdkApplicationVersionTask_ExecuteReturn = await epSdkApplicationVersionTask_NewCreatedCheck.execute();
+      message = TestLogger.createLogMessage('epSdkApplicationVersionTask_ExecuteReturn', epSdkApplicationVersionTask_ExecuteReturn);
+      expect(epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION);
+      expect(epSdkApplicationVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=false for newVersion: should create it
+      const epSdkApplicationVersionTask_NewCreated = new EpSdkApplicationVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        applicationId: ApplicationId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        applicationVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      epSdkApplicationVersionTask_ExecuteReturn = await epSdkApplicationVersionTask_NewCreated.execute();
+      message = TestLogger.createLogMessage('epSdkApplicationVersionTask_ExecuteReturn', epSdkApplicationVersionTask_ExecuteReturn);
+      expect(epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      expect(epSdkApplicationVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+      latestVersionString = await EpSdkApplicationVersionsService.getLatestVersionString({ applicationId: ApplicationId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=true going back to reference version: should return Would fail
+      const epSdkApplicationVersionTask_RefCheck = new EpSdkApplicationVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         applicationId: ApplicationId,
@@ -497,11 +538,16 @@ describe(`${scriptName}`, () => {
         },
         checkmode: true,
       });
-      const epSdkApplicationVersionTask_ExecuteReturn_WouldFail: IEpSdkApplicationVersionTask_ExecuteReturn = await epSdkApplicationVersionTask_WouldFail.execute();
-      const message_WouldFail = TestLogger.createLogMessage('epSdkApplicationVersionTask_ExecuteReturn_WouldFail', epSdkApplicationVersionTask_ExecuteReturn_WouldFail);
-      expect(epSdkApplicationVersionTask_ExecuteReturn_WouldFail.epSdkTask_TransactionLogData.epSdkTask_Action, message_WouldFail).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      epSdkApplicationVersionTask_ExecuteReturn = await epSdkApplicationVersionTask_RefCheck.execute();
+      message = TestLogger.createLogMessage('epSdkApplicationVersionTask_ExecuteReturn', epSdkApplicationVersionTask_ExecuteReturn);
+      expect(epSdkApplicationVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      expect(epSdkApplicationVersionTask_ExecuteReturn.epObject.version, message).to.eq(referenceVersionString);
+      latestVersionString = await EpSdkApplicationVersionsService.getLatestVersionString({ applicationId: ApplicationId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // could also check the error for checkmode = false
       // DEBUG
-      // expect(false, message_WouldFail).to.be.true;
+      // expect(false, message).to.be.true;
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

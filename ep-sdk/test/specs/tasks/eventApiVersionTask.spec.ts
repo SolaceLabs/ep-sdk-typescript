@@ -478,15 +478,56 @@ describe(`${scriptName}`, () => {
         },
         checkmode: false,
       });
-      const epSdkEventApiVersionTask_ExecuteReturn_New: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_New.execute();
-      const message_New = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn_New', epSdkEventApiVersionTask_ExecuteReturn_New);
+      let epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_New.execute();
+      let message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
       // get the latest version to check
-      const latestVersionString = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
-      expect(latestVersionString, message_New).to.eq(newVersion);
-      expect(epSdkEventApiVersionTask_ExecuteReturn_New.epSdkTask_TransactionLogData.epSdkTask_Action, message_New).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      let latestVersionString = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
+      // expect no change in version
+      expect(latestVersionString, message).to.eq(referenceVersionString);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
 
-      // now test exact match fail in checkmode going back to referenceVersion
-      const epSdkEventApiVersionTask_WouldFail = new EpSdkEventApiVersionTask({
+      // now test exact match, checkmode=true for newVersion: should return Would create new version
+      const epSdkEventApiVersionTask_NewCreatedCheck = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      epSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_NewCreatedCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=false for newVersion: should create it
+      const epSdkEventApiVersionTask_NewCreated = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      epSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_NewCreated.execute();
+      message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+      latestVersionString = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=true going back to reference version: should return Would fail
+      const epSdkEventApiVersionTask_RefCheck = new EpSdkEventApiVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventApiId: EventApiId,
@@ -499,11 +540,16 @@ describe(`${scriptName}`, () => {
         },
         checkmode: true,
       });
-      const epSdkEventApiVersionTask_ExecuteReturn_WouldFail: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_WouldFail.execute();
-      const message_WouldFail = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn_WouldFail', epSdkEventApiVersionTask_ExecuteReturn_WouldFail);
-      expect(epSdkEventApiVersionTask_ExecuteReturn_WouldFail.epSdkTask_TransactionLogData.epSdkTask_Action, message_WouldFail).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      epSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_RefCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epObject.version, message).to.eq(referenceVersionString);
+      latestVersionString = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // could also check the error for checkmode = false
       // DEBUG
-      // expect(false, message_WouldFail).to.be.true;
+      // expect(false, message).to.be.true;
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

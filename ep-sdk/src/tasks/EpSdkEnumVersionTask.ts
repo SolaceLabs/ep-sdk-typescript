@@ -16,10 +16,10 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
 export type TEpSdkEnumVersionTask_Settings = Required<Pick<EnumVersion, "displayName" | "stateId">> & Pick<EnumVersion, "description">;
-type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<EnumVersion, "values"> & Required<Pick<EnumVersion, "version">>;
+type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<EnumVersion, "values"> & Pick<EnumVersion, "version">;
 
 export interface IEpSdkEnumVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
@@ -178,12 +178,12 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       displayName: existingObject.displayName,
       stateId: existingObject.stateId,
       values: this.createCompareEnumValueList_From_EP({ epEnumValueList: existingObject.values }),
-      version: epSdkEnumVersionTask_GetFuncReturn.epObject.version
     };
-    const requestedCompareObject: TEpSdkEnumVersionTask_CompareObject = {
-      ...this.createObjectSettings(),
-      version: this.versionString
-    };
+    const requestedCompareObject: TEpSdkEnumVersionTask_CompareObject = this.createObjectSettings();
+    if(this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
+      existingCompareObject.version = epSdkEnumVersionTask_GetFuncReturn.epObject.version;
+      requestedCompareObject.version = this.versionString;
+    }
 
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 
       existingObject: existingCompareObject, 

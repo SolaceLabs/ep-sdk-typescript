@@ -14,11 +14,11 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 import EpSdkEventApiVersionsService from '../services/EpSdkEventApiVersionsService';
 
 export type TEpSdkEventApiVersionTask_Settings = Required<Pick<EventApiVersion, "description" | "displayName" | "stateId" | "producedEventVersionIds" | "consumedEventVersionIds" >>;
-type TEpSdkEventApiVersionTask_CompareObject = Partial<TEpSdkEventApiVersionTask_Settings> & Required<Pick<EventApiVersion, "version">>;
+type TEpSdkEventApiVersionTask_CompareObject = Partial<TEpSdkEventApiVersionTask_Settings> & Pick<EventApiVersion, "version">;
 
 export interface IEpSdkEventApiVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
@@ -150,13 +150,12 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
       stateId: existingObject.stateId,
       producedEventVersionIds: existingObject.producedEventVersionIds,
       consumedEventVersionIds: existingObject.consumedEventVersionIds,
-      version: epSdkEventApiVersionTask_GetFuncReturn.epObject.version
     };
-    const requestedCompareObject: TEpSdkEventApiVersionTask_CompareObject = { 
-      ...this.createObjectSettings(),
-      version: this.versionString
-    };
-
+    const requestedCompareObject: TEpSdkEventApiVersionTask_CompareObject = this.createObjectSettings();
+    if(this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
+      existingCompareObject.version = epSdkEventApiVersionTask_GetFuncReturn.epObject.version;
+      requestedCompareObject.version = this.versionString;
+    }
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 
       existingObject: existingCompareObject, 
       requestedObject: requestedCompareObject, 

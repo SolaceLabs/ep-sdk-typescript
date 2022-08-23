@@ -544,15 +544,58 @@ describe(`${scriptName}`, () => {
         },
         checkmode: false,
       });
-      const epSdkEpEventVersionTask_ExecuteReturn_New: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask_New.execute();
-      const message_New = TestLogger.createLogMessage('epSdkEpEventVersionTask_ExecuteReturn_New', epSdkEpEventVersionTask_ExecuteReturn_New);
+      let epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask_New.execute();
+      let message = TestLogger.createLogMessage('epSdkEpEventVersionTask_ExecuteReturn', epSdkEpEventVersionTask_ExecuteReturn);
       // get the latest version to check
-      const latestVersionString = await EpSdkEpEventVersionsService.getLatestVersionString({ eventId: EventId });
-      expect(latestVersionString, message_New).to.eq(newVersion);
-      expect(epSdkEpEventVersionTask_ExecuteReturn_New.epSdkTask_TransactionLogData.epSdkTask_Action, message_New).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      let latestVersionString = await EpSdkEpEventVersionsService.getLatestVersionString({ eventId: EventId });
+      // expect no change in version
+      expect(latestVersionString, message).to.eq(referenceVersionString);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
 
-      // now test exact match fail in checkmode going back to referenceVersion
-      const epSdkEpEventVersionTask_WouldFail = new EpSdkEpEventVersionTask({
+      // now test exact match, checkmode=true for newVersion: should return Would create new version
+      const epSdkEpEventVersionTask_NewCreatedCheck = new EpSdkEpEventVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventId: EventId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventVersionSettings: settings,
+        topicString: 'test/hello/world',
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      epSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask_NewCreatedCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEpEventVersionTask_ExecuteReturn', epSdkEpEventVersionTask_ExecuteReturn);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=false for newVersion: should create it
+      const epSdkEpEventVersionTask_NewCreated = new EpSdkEpEventVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventId: EventId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventVersionSettings: settings,
+        topicString: 'test/hello/world',
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      epSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask_NewCreated.execute();
+      message = TestLogger.createLogMessage('epSdkEpEventVersionTask_ExecuteReturn', epSdkEpEventVersionTask_ExecuteReturn);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+      latestVersionString = await EpSdkEpEventVersionsService.getLatestVersionString({ eventId: EventId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=true going back to reference version: should return Would fail
+      const epSdkEpEventVersionTask_RefCheck = new EpSdkEpEventVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         eventId: EventId,
@@ -566,11 +609,16 @@ describe(`${scriptName}`, () => {
         },
         checkmode: true,
       });
-      const epSdkEpEventVersionTask_ExecuteReturn_WouldFail: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask_WouldFail.execute();
-      const message_WouldFail = TestLogger.createLogMessage('epSdkEpEventVersionTask_ExecuteReturn_WouldFail', epSdkEpEventVersionTask_ExecuteReturn_WouldFail);
-      expect(epSdkEpEventVersionTask_ExecuteReturn_WouldFail.epSdkTask_TransactionLogData.epSdkTask_Action, message_WouldFail).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      epSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask_RefCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEpEventVersionTask_ExecuteReturn', epSdkEpEventVersionTask_ExecuteReturn);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epObject.version, message).to.eq(referenceVersionString);
+      latestVersionString = await EpSdkEpEventVersionsService.getLatestVersionString({ eventId: EventId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // could also check the error for checkmode = false
       // DEBUG
-      // expect(false, message_WouldFail).to.be.true;
+      // expect(false, message).to.be.true;
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

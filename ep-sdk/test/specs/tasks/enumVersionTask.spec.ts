@@ -479,15 +479,58 @@ describe(`${scriptName}`, () => {
         },
         checkmode: false,
       });
-      const epSdkEnumVersionTask_ExecuteReturn_New: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask_New.execute();
-      const message_New = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn_New', epSdkEnumVersionTask_ExecuteReturn_New);
+      let epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask_New.execute();
+      let message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
       // get the latest version to check
-      const latestVersionString = await EpSdkEnumVersionsService.getLatestVersionString({ enumId: EnumId });
-      expect(latestVersionString, message_New).to.eq(newVersion);
-      expect(epSdkEnumVersionTask_ExecuteReturn_New.epSdkTask_TransactionLogData.epSdkTask_Action, message_New).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      let latestVersionString = await EpSdkEnumVersionsService.getLatestVersionString({ enumId: EnumId });
+      // expect no change in version
+      expect(latestVersionString, message).to.eq(referenceVersionString);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
 
-      // now test exact match fail in checkmode going back to referenceVersion
-      const epSdkEnumVersionTask_WouldFail = new EpSdkEnumVersionTask({
+      // now test exact match, checkmode=true for newVersion: should return Would create new version
+      const epSdkEnumVersionTask_NewCreatedCheck = new EpSdkEnumVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        enumId: EnumId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        enumVersionSettings: settings,
+        enumValues: [ 'one', 'two', 'three'],
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      epSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask_NewCreatedCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=false for newVersion: should create it
+      const epSdkEnumVersionTask_NewCreated = new EpSdkEnumVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        enumId: EnumId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        enumVersionSettings: settings,
+        enumValues: [ 'one', 'two', 'three'],
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      epSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask_NewCreated.execute();
+      message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+      latestVersionString = await EpSdkEnumVersionsService.getLatestVersionString({ enumId: EnumId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=true going back to reference version: should return Would fail
+      const epSdkEnumVersionTask_RefCheck = new EpSdkEnumVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
         applicationDomainId: ApplicationDomainId,
         enumId: EnumId,
@@ -501,11 +544,16 @@ describe(`${scriptName}`, () => {
         },
         checkmode: true,
       });
-      const epSdkEnumVersionTask_ExecuteReturn_WouldFail: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask_WouldFail.execute();
-      const message_WouldFail = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn_WouldFail', epSdkEnumVersionTask_ExecuteReturn_WouldFail);
-      expect(epSdkEnumVersionTask_ExecuteReturn_WouldFail.epSdkTask_TransactionLogData.epSdkTask_Action, message_WouldFail).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      epSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask_RefCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEnumVersionTask_ExecuteReturn', epSdkEnumVersionTask_ExecuteReturn);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      expect(epSdkEnumVersionTask_ExecuteReturn.epObject.version, message).to.eq(referenceVersionString);
+      latestVersionString = await EpSdkEnumVersionsService.getLatestVersionString({ enumId: EnumId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // could also check the error for checkmode = false
       // DEBUG
-      // expect(false, message_WouldFail).to.be.true;
+      // expect(false, message).to.be.true;
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
