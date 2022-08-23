@@ -17,13 +17,13 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 import EpSdkEnumVersionService from '../services/EpSdkEnumVersionsService';
 import EpSdkEpEventVersionsService from '../services/EpSdkEpEventVersionsService';
 
 /** @category EpSdkEpEventVersionTask */
 export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">>;
-type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor">;
+type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Pick<EventVersion, "version">;
 
 /** @category EpSdkEpEventVersionTask */
 export interface IEpSdkEpEventVersionTask_Config extends IEpSdkVersionTask_Config {
@@ -203,6 +203,9 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     }}));
 
     if(epSdkEpEventVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkEpEventVersionTask_GetFuncReturn.epObject === undefined');
+    if(epSdkEpEventVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEpEventVersionTask_GetFuncReturn.epObject.version === undefined', {
+      epObject: epSdkEpEventVersionTask_GetFuncReturn.epObject
+    });
 
     const existingObject: EventVersion = epSdkEpEventVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEpEventVersionTask_CompareObject = {
@@ -213,6 +216,10 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       deliveryDescriptor: existingObject.deliveryDescriptor,
     };
     const requestedCompareObject: TEpSdkEpEventVersionTask_CompareObject = this.createObjectSettings();
+    if(this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
+      existingCompareObject.version = epSdkEpEventVersionTask_GetFuncReturn.epObject.version;
+      requestedCompareObject.version = this.versionString;
+    }
 
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 
       existingObject: existingCompareObject, 

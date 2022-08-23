@@ -2,6 +2,13 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.3-alpha
+
+**Refactor:**
+- **EpSdk{xxx}VersionTask - manage versions strategy**
+  - `version_strategy=bump_patch|bump_minor`: version in task config is a starting point, tasks will create new version by bumping latest version on any settings changes
+  - `version_strategy=exact_version`: task must be able to create this exact version, which must not be lower than latest version, regardless of any settings changes
+
 ## Version 0.9.2-alpha
 **Typos:**
 - Fixed typo: createNotEpSdkErrorMesssage --> createNotEpSdkErrorMessage

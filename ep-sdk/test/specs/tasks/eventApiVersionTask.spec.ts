@@ -22,9 +22,12 @@ import {
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkEventApiVersionTask, IEpSdkEventApiVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEventApiVersionTask';
+import { EpSdkEventApiVersionTask, IEpSdkEventApiVersionTask_ExecuteReturn, TEpSdkEventApiVersionTask_Settings } from '../../../src/tasks/EpSdkEventApiVersionTask';
 import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
 import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
+import EpSdkEventApiVersionsService from '../../../src/services/EpSdkEventApiVersionsService';
+import { EpSdkUtils } from '../../../src/utils/EpSdkUtils';
+import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from '../../../src/utils/EpSdkSemVerUtils';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -373,7 +376,7 @@ describe(`${scriptName}`, () => {
         versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
         eventApiVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          description: 'updated description',
+          description: 'update description',
           displayName: 'displayName',
           producedEventVersionIds: ([] as unknown) as EventApiVersion.producedEventVersionIds,
           consumedEventVersionIds: ([] as unknown) as EventApiVersion.consumedEventVersionIds,  
@@ -385,7 +388,8 @@ describe(`${scriptName}`, () => {
         checkmode: false,
       });
       const epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask.execute();
-      expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
+      const message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      expect(false, message).to.be.true;
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkVersionTaskStrategyValidationError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -400,7 +404,7 @@ describe(`${scriptName}`, () => {
   });
 
   it(`${scriptName}: event api version present: create exact version match with checkmode: should return would fail`, async () => {
-    const ExactVersionString = '2.0.0';
+    const ExactVersionString = '1.0.0';
     try {
       const epSdkEventApiVersionTask = new EpSdkEventApiVersionTask({
         epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
@@ -410,7 +414,7 @@ describe(`${scriptName}`, () => {
         versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
         eventApiVersionSettings: {
           stateId: EpSdkStatesService.releasedId,
-          description: 'updated description',
+          description: 'update description',
           displayName: 'displayName',
           producedEventVersionIds: ([] as unknown) as EventApiVersion.producedEventVersionIds,
           consumedEventVersionIds: ([] as unknown) as EventApiVersion.consumedEventVersionIds,  
@@ -423,6 +427,129 @@ describe(`${scriptName}`, () => {
       });
       const epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask.execute();
       expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, TestLogger.createLogMessage('wrong action', epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData)).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: event api version present: create version without updates to settings`, async () => {
+    const settings: TEpSdkEventApiVersionTask_Settings = {
+      stateId: EpSdkStatesService.releasedId,
+      description: 'description',
+      displayName: 'displayName',
+      producedEventVersionIds: ([] as unknown) as EventApiVersion.producedEventVersionIds,
+      consumedEventVersionIds: ([] as unknown) as EventApiVersion.consumedEventVersionIds,    
+    }
+    try {
+      // create a reference version
+      const epSdkEventApiVersionTask_Ref = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        // versionString: newVersion,
+        // versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      const epSdkEventApiVersionTask_ExecuteReturn_Ref: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_Ref.execute();
+      const referenceVersionString: string = epSdkEventApiVersionTask_ExecuteReturn_Ref.epObject.version ? epSdkEventApiVersionTask_ExecuteReturn_Ref.epObject.version : 'not-a-version';
+      // bump the version
+      const newVersion = EpSdkSemVerUtils.createNextVersionByStrategy({
+        fromVersionString: referenceVersionString,
+        strategy: EEpSdk_VersionStrategy.BUMP_MINOR,
+      });
+      // create new version even no other updates to settings
+      const epSdkEventApiVersionTask_New = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        versionString: newVersion,
+        // versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      let epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_New.execute();
+      let message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      // get the latest version to check
+      let latestVersionString = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
+      // expect no change in version
+      expect(latestVersionString, message).to.eq(referenceVersionString);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+
+      // now test exact match, checkmode=true for newVersion: should return Would create new version
+      const epSdkEventApiVersionTask_NewCreatedCheck = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      epSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_NewCreatedCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_CREATE_NEW_VERSION);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=false for newVersion: should create it
+      const epSdkEventApiVersionTask_NewCreated = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        versionString: newVersion,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false,
+      });
+      epSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_NewCreated.execute();
+      message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_NEW_VERSION);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epObject.version, message).to.eq(newVersion);
+      latestVersionString = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // now test exact match, checkmode=true going back to reference version: should return Would fail
+      const epSdkEventApiVersionTask_RefCheck = new EpSdkEventApiVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiId: EventApiId,
+        versionString: referenceVersionString,
+        versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+        eventApiVersionSettings: settings,
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: true,
+      });
+      epSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask_RefCheck.execute();
+      message = TestLogger.createLogMessage('epSdkEventApiVersionTask_ExecuteReturn', epSdkEventApiVersionTask_ExecuteReturn);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.WOULD_FAIL_CREATE_NEW_VERSION_ON_EXACT_VERSION_REQUIREMENT);
+      expect(epSdkEventApiVersionTask_ExecuteReturn.epObject.version, message).to.eq(referenceVersionString);
+      latestVersionString = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
+      expect(latestVersionString, message).to.eq(newVersion);
+
+      // could also check the error for checkmode = false
+      // DEBUG
+      // expect(false, message).to.be.true;
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
       expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
