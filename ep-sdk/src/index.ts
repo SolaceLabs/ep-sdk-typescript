@@ -18,7 +18,8 @@ export * from './tasks/EpSdkEpEventTask';
 export * from './tasks/EpSdkEpEventVersionTask';
 export * from './tasks/EpSdkEventApiTask';
 export * from './tasks/EpSdkEventApiVersionTask';
-
+export * from './tasks/EpSdkApplicationTask';
+export * from './tasks/EpSdkApplicationVersionTask';
 
 // services
 export { 
@@ -49,4 +50,10 @@ export {
 } from './services/EpSdkStatesService';
 export {
   default as EpSdkEnumVersionsService,
-} from './services/EpSdkEnumVersionsService'
+} from './services/EpSdkEnumVersionsService';
+export {
+  default as EpSdkApplicationsService
+} from './services/EpSdkApplicationsService';
+export {
+  default as EpSdkApplicationVersionsService
+} from './services/EpSdkApplicationVersionsService';

@@ -2,6 +2,15 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.4-alpha
+
+**Fixes:**
+- **index.ts**
+  - added: export * from './tasks/EpSdkApplicationTask';
+  - added: export * from './tasks/EpSdkApplicationVersionTask';
+- **EpSdkApplicationVersionTask**
+  - fixed objectType in EpSdkApplicationVersionTask
+
 ## Version 0.9.3-alpha
 
 **Refactor:**
