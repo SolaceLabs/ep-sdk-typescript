@@ -17,7 +17,7 @@ import {
 } from './EpSdkTask';
 import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
-export type TEpSdkApplicationVersionTask_Settings = Required<Pick<ApplicationVersion, "description" | "displayName" | "stateId" >>;
+export type TEpSdkApplicationVersionTask_Settings = Required<Pick<ApplicationVersion, "description" | "displayName" | "stateId" | "declaredProducedEventVersionIds" | "declaredConsumedEventVersionIds" >>;
 type TEpSdkApplicationVersionTask_CompareObject = Partial<TEpSdkApplicationVersionTask_Settings> & Pick<ApplicationVersion, "version">;
 
 export interface IEpSdkApplicationVersionTask_Config extends IEpSdkVersionTask_Config {
@@ -147,6 +147,8 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
       description: existingObject.description,
       displayName: existingObject.displayName,
       stateId: existingObject.stateId,
+      declaredConsumedEventVersionIds: existingObject.declaredConsumedEventVersionIds,
+      declaredProducedEventVersionIds: existingObject.declaredProducedEventVersionIds
     };
     const requestedCompareObject: TEpSdkApplicationVersionTask_CompareObject = this.createObjectSettings();
     if(this.versionStrategy === EEpSdk_VersionTaskStrategy.EXACT_VERSION) {
