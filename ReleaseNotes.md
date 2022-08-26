@@ -2,9 +2,15 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.6-alpha
+
+**Fixes:**
+- **EpSdkEventApiVersionTask & EpSdkApplicationVersionTask**
+  - fixed compare method to sort arrays of event version ids before comparision
+
 ## Version 0.9.5-alpha
 **New Features:**
-- Added support to define `declaredConsumedEventVersionIds` and `declaredProducedEventVersionIds` when creating a new ApplicationVersion 
+- Added support to define `declaredConsumedEventVersionIds` and `declaredProducedEventVersionIds` when creating a new ApplicationVersion
 
 
 ## Version 0.9.4-alpha
