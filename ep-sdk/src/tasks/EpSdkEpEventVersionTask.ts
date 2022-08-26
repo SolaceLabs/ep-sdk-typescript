@@ -250,7 +250,6 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       eventId: this.getTaskConfig().eventId,
       version: this.versionString,
     };
-
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkEpEventVersionTask_Config: this.getTaskConfig(),
       create: create,
@@ -316,7 +315,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
           ...this.createObjectSettings(),
           eventId: epSdkEpEventVersionTask_GetFuncReturn.epObject.id,
           version: e.details.versionString
-        };    
+        };
         const wouldBe_EpObject: EventVersion = {
           ...epSdkEpEventVersionTask_GetFuncReturn.epObject,
           ...update
@@ -334,7 +333,6 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       eventId: epSdkEpEventVersionTask_GetFuncReturn.epObject.id,
       version: nextVersion
     };
-
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       update: update,
