@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.5-alpha
+**New Features:**
+- Added support to define `declaredConsumedEventVersionIds` and `declaredProducedEventVersionIds` when creating a new ApplicationVersion 
+
+
 ## Version 0.9.4-alpha
 
 **Fixes:**
