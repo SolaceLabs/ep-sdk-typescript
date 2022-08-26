@@ -3,12 +3,14 @@ import { EEpSdkLogLevel } from "../../src/utils/EpSdkLogger";
 enum EEnvVars {
   EP_SDK_TEST_SOLACE_CLOUD_TOKEN = 'EP_SDK_TEST_SOLACE_CLOUD_TOKEN',
   EP_SDK_TEST_EP_API_BASE_URL = "EP_SDK_TEST_EP_API_BASE_URL",
-  EP_SDK_TEST_LOG_LEVEL = "EP_SDK_TEST_LOG_LEVEL"
+  EP_SDK_TEST_LOG_LEVEL = "EP_SDK_TEST_LOG_LEVEL",
+  EP_SDK_TEST_ENABLE_API_CALL_LOGGING = "EP_SDK_TEST_ENABLE_API_CALL_LOGGING"
 };
 
 export type TTestConfig = {
   epBaseUrl: string;
   logLevel: EEpSdkLogLevel;
+  enableApiLogging: boolean;
 };
 
 class TestConfig {
@@ -40,6 +42,12 @@ class TestConfig {
     return valueAsNumber;
   };
 
+  private getOptionalEnvVarValueAsBoolean = (envVarName: string, defaultValue: boolean): boolean => {
+    const value: string | undefined = process.env[envVarName];
+    if(!value) return defaultValue;
+    return value.toLowerCase() === 'true';
+  };
+  
 
   public initialize = (): void => {
     // handle solace cloud token separately
@@ -47,7 +55,8 @@ class TestConfig {
 
     this.testConfig = {
       epBaseUrl: this.getOptionalEnvVarValueAsUrlWithDefault(EEnvVars.EP_SDK_TEST_EP_API_BASE_URL, this.DEFAULT_EP_SDK_TEST_EP_API_BASE_URL),
-      logLevel: this.getMandatoryEnvVarValueAsNumber(EEnvVars.EP_SDK_TEST_LOG_LEVEL)
+      logLevel: this.getMandatoryEnvVarValueAsNumber(EEnvVars.EP_SDK_TEST_LOG_LEVEL),
+      enableApiLogging: this.getOptionalEnvVarValueAsBoolean(EEnvVars.EP_SDK_TEST_ENABLE_API_CALL_LOGGING, false),
     };
 
   }

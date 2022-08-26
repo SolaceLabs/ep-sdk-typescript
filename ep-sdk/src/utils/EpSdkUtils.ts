@@ -83,17 +83,21 @@ export class EpSdkUtils {
     if(typeof(obj) !== 'object') throw new TypeError('expected obj to be an object');
     for(const key in obj) {
       const value = obj[key];
-      if(typeof(value) === 'object') {
-        obj[key] = EpSdkUtils.deepSortStringArraysInObject(obj[key]);
-      } else if(Array.isArray(value)) {
+      // console.log(`\n\n\n\n\n\n\ndeepSortStringArraysInObject(): starting value=${JSON.stringify(value, null, 2)}`);
+      if(Array.isArray(value)) {
         if(value.length > 0 && typeof(value[0]) === 'string') {
+          // console.log(`\n\n\n\n\n\n\ndeepSortStringArraysInObject(): before sort value=${JSON.stringify(value, null, 2)}`);
           value.sort();
+          // console.log(`deepSortStringArraysInObject(): after sort value=${JSON.stringify(value, null, 2)}`);
         }
         obj[key] = value;
+      } else if(typeof(value) === 'object') {
+        obj[key] = EpSdkUtils.deepSortStringArraysInObject(obj[key]);
       }
     }
     return obj;
   }
+
 
   public static prepareCompareObject4Output(obj: any): any {
     return JSON.parse(JSON.stringify(obj, (_k,v) => {
@@ -115,6 +119,9 @@ export class EpSdkUtils {
   }): IEpSdkDeepCompareResult {
     const cleanExistingObject = EpSdkUtils.deepSortStringArraysInObject(EpSdkUtils.createCleanCompareObject(existingObject));
     const cleanRequestedObject = EpSdkUtils.deepSortStringArraysInObject(EpSdkUtils.createCleanCompareObject(requestedObject));
+    // // DEBUG
+    // console.log(`deepCompareObjects(): cleanExistingObject=${JSON.stringify(cleanExistingObject, null, 2)}`);
+    // console.log(`deepCompareObjects(): cleanRequestedObject=${JSON.stringify(cleanRequestedObject, null, 2)}`);
     const isEqual = EpSdkUtils.isEqualDeep(cleanExistingObject, cleanRequestedObject);
     let deepDiffResult: Record<string, TEpSdkDeepDiffFromTo> | undefined = undefined;
     if(!isEqual) {

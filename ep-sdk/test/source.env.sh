@@ -7,7 +7,8 @@
 unset_source_env() {
     # env vars for tests
     unset EP_SDK_TEST_EP_API_BASE_URL
-
+    unset EP_SDK_TEST_LOG_LEVEL
+    unset EP_SDK_TEST_ENABLE_API_CALL_LOGGING
     # unset this function
     unset -f unset_source_env
 }
@@ -23,6 +24,7 @@ export EP_SDK_TEST_EP_API_BASE_URL="https://ian-dev-api.mymaas.net"
 #   Trace = 6,
 # }
 export EP_SDK_TEST_LOG_LEVEL=6
+export EP_SDK_TEST_ENABLE_API_CALL_LOGGING="false"
 
 ######################################################
 

@@ -8,6 +8,7 @@ import * as __requestLib from '@solace-labs/ep-openapi-node/dist/core/request';
 import { TestContext } from "./TestContext";
 import { TestLogger } from "./TestLogger";
 import { customRequest } from "./customOpenApiRequest";
+import TestConfig from "./TestConfig";
 
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -18,7 +19,7 @@ import { customRequest } from "./customOpenApiRequest";
   stub.callsFake((config: OpenAPIConfig, options: ApiRequestOptions): CancelablePromise<ApiResult> => {
   
       TestContext.setApiRequestOptions(options);
-      TestLogger.logApiRequestOptions(TestContext.getItId(), options);
+      if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiRequestOptions(TestContext.getItId(), options);
   
       TestContext.setApiResult(undefined);
       TestContext.setApiError(undefined);
@@ -31,7 +32,7 @@ import { customRequest } from "./customOpenApiRequest";
 
       cancelablePromise.then((value: ApiResult) => {
           TestContext.setApiResult(value);
-          TestLogger.logApiResult(TestContext.getItId(), TestContext.getApiResult());
+          if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiResult(TestContext.getItId(), TestContext.getApiResult());
       }, (reason) => {
           TestContext.setApiError(reason);
           TestLogger.logApiError(TestContext.getItId(), TestContext.getApiError());

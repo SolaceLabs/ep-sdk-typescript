@@ -185,7 +185,6 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
       applicationId: this.getTaskConfig().applicationId,
       version: this.versionString,
     };
-
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkApplicationVersionTask_Config: this.getTaskConfig(),
       create: create,
@@ -268,7 +267,6 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
       applicationId: epSdkApplicationVersionTask_GetFuncReturn.epObject.id,
       version: nextVersion
     };
-
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       update: update,
