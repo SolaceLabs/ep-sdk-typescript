@@ -191,8 +191,15 @@ export class EpSdkApplicationTask extends EpSdkTask {
       };
     }
 
+    // WORKAROUND_UNTIL_EP_API_FIXED
+    const requestBody = {
+      ...create,
+      brokerType: 'solace',
+    };
+    
     const applicationResponse: ApplicationResponse = await ApplicationsService.createApplication({
-      requestBody: create
+      requestBody: requestBody
+      // requestBody: create
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {

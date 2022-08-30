@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.9.7-alpha
+
+**Workarounds:**
+  - added brokerType='solace' to Application create as a workaround
+
 ## Version 0.9.6-alpha
 
 **Fixes:**
