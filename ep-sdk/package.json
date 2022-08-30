@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-sdk",
-  "version": "0.9.6-alpha",
+  "version": "0.9.7-alpha",
   "description": "Solace Event Portal SDK",
   "type": "commonjs",
   "main": "dist/index.js",
