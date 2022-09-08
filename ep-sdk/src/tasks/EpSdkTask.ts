@@ -1,5 +1,5 @@
 
-import { EpSdkAbstractMethodError, EpSdkEpApiError, EpSdkError, EPSdkErrorFromError, EpSdkInternalTaskError } from "../utils/EpSdkErrors";
+import { EpSdkEpApiError, EpSdkError, EPSdkErrorFromError, EpSdkInternalTaskError } from "../utils/EpSdkErrors";
 import { EpSdkLogger } from "../utils/EpSdkLogger";
 import { EEpSdkLoggerCodes } from "../utils/EpSdkLoggerCodes";
 import { EpSdkUtils, IEpSdkDeepCompareResult, TEpSdkDeepDiffFromTo } from "../utils/EpSdkUtils";
@@ -145,24 +145,16 @@ export abstract class EpSdkTask {
 
   protected abstract getTaskKeys(): IEpSdkTask_Keys;
 
-  protected async getFunc(epSdkTask_Keys: IEpSdkTask_Keys): Promise<IEpSdkTask_GetFuncReturn> {
-    const funcName = 'getFunc';
-    const logName = `${EpSdkTask.name}.${funcName}()`;
-    epSdkTask_Keys;
-    throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
-  };
+  protected abstract getFunc(epSdkTask_Keys: IEpSdkTask_Keys): Promise<IEpSdkTask_GetFuncReturn>;
+
   private async getFuncCall(epSdkTask_Keys: IEpSdkTask_Keys): Promise<IEpSdkTask_GetFuncReturn> {    
     const epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn = await this.getFunc(epSdkTask_Keys);
     this.epSdkTask_TransactionLog.add_GetFuncReturn(epSdkTask_GetFuncReturn);
     return epSdkTask_GetFuncReturn;
   }
 
-  protected async isUpdateRequiredFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
-    const funcName = 'isUpdateRequiredFunc';
-    const logName = `${EpSdkTask.name}.${funcName}()`;
-    epSdkTask_GetFuncReturn;
-    throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
-  }
+  protected abstract isUpdateRequiredFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn>;
+
   private async isUpdateRequiredFuncCall({ epSdkTask_GetFuncReturn }:{
     epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn;
   }): Promise<IEpSdkTask_IsUpdateRequiredFuncReturn> {
@@ -171,11 +163,8 @@ export abstract class EpSdkTask {
     return epSdkTask_IsUpdateRequiredFuncReturn;
   }
 
-  protected async createFunc(): Promise<IEpSdkTask_CreateFuncReturn> {
-    const funcName = 'createFunc';
-    const logName = `${EpSdkTask.name}.${funcName}()`;
-    throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
-  }
+  protected abstract createFunc(): Promise<IEpSdkTask_CreateFuncReturn>;
+
   protected getCreateFuncAction(): EEpSdkTask_Action {
     if(this.isCheckmode()) return EEpSdkTask_Action.WOULD_CREATE;
     return EEpSdkTask_Action.CREATE;
@@ -186,12 +175,8 @@ export abstract class EpSdkTask {
     return epSdkTask_CreateFuncReturn;
   }
 
-  protected async updateFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_UpdateFuncReturn> {
-    const funcName = 'updateFunc';
-    const logName = `${EpSdkTask.name}.${funcName}()`;
-    epSdkTask_GetFuncReturn;
-    throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
-  }
+  protected abstract updateFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_UpdateFuncReturn>;
+
   protected getUpdateFuncAction(): EEpSdkTask_Action {
     if(this.isCheckmode()) return EEpSdkTask_Action.WOULD_UPDATE;
     return EEpSdkTask_Action.UPDATE;
@@ -202,12 +187,8 @@ export abstract class EpSdkTask {
     return epSdkTask_UpdateFuncReturn;
   }
 
-  protected async deleteFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_DeleteFuncReturn> {
-    const funcName = 'deleteFunc';
-    const logName = `${EpSdkTask.name}.${funcName}()`;
-    epSdkTask_GetFuncReturn;
-    throw new EpSdkAbstractMethodError(logName, EpSdkTask.name, funcName);
-  }
+  protected abstract deleteFunc(epSdkTask_GetFuncReturn: IEpSdkTask_GetFuncReturn): Promise<IEpSdkTask_DeleteFuncReturn>;
+
   protected getDeleteFuncAction(): EEpSdkTask_Action {
     if(this.isCheckmode()) return EEpSdkTask_Action.WOULD_DELETE;
     return EEpSdkTask_Action.DELETE;

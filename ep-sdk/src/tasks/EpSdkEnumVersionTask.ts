@@ -2,10 +2,7 @@ import { EpSdkConfig } from '../utils/EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyValidationError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
-import { 
-  EnumValue, 
-  EnumVersion, 
-} from '@solace-labs/ep-openapi-node';
+import { TopicAddressEnumValue, TopicAddressEnumVersion } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumVersionsService from '../services/EpSdkEnumVersionsService';
 import { 
   EEpSdkTask_EpObjectType,
@@ -18,8 +15,8 @@ import {
 } from './EpSdkTask';
 import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
-export type TEpSdkEnumVersionTask_Settings = Required<Pick<EnumVersion, "displayName" | "stateId">> & Pick<EnumVersion, "description">;
-type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<EnumVersion, "values"> & Pick<EnumVersion, "version">;
+export type TEpSdkEnumVersionTask_Settings = Required<Pick<TopicAddressEnumVersion, "displayName" | "stateId">> & Pick<TopicAddressEnumVersion, "description">;
+type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<TopicAddressEnumVersion, "values"> & Partial<Pick<TopicAddressEnumVersion, "version">>;
 
 export interface IEpSdkEnumVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
@@ -32,16 +29,16 @@ export interface IEpSdkEnumVersionTask_Keys extends IEpSdkTask_Keys {
   enumId: string;
 }
 export interface IEpSdkEnumVersionTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
-  epObject: EnumVersion | undefined;
+  epObject: TopicAddressEnumVersion | undefined;
 }
 export interface IEpSdkEnumVersionTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject"> {
-  epObject: EnumVersion;
+  epObject: TopicAddressEnumVersion;
 }
 export interface IEpSdkEnumVersionTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
-  epObject: EnumVersion;
+  epObject: TopicAddressEnumVersion;
 }
  export interface IEpSdkEnumVersionTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
-  epObject: EnumVersion;
+  epObject: TopicAddressEnumVersion;
 }
 
 /**
@@ -60,10 +57,10 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
   private getTaskConfig(): IEpSdkEnumVersionTask_Config { 
     return this.epSdkTask_Config as IEpSdkEnumVersionTask_Config; 
   }
-  private createEnumValueList(valueList: Array<string>): Array<EnumValue> {
-    const enumValueList: Array<EnumValue> = [];
+  private createEnumValueList(valueList: Array<string>): Array<TopicAddressEnumValue> {
+    const enumValueList: Array<TopicAddressEnumValue> = [];
     valueList.forEach( (value: string) => {
-      const enumValue: EnumValue = {
+      const enumValue: TopicAddressEnumValue = {
         label: value,
         value: value
       };
@@ -71,7 +68,8 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     });
     return enumValueList;
   }
-  private createObjectSettings(): Partial<EnumVersion> {
+
+  private createObjectSettings(): Partial<TopicAddressEnumVersion> & Pick<TopicAddressEnumVersion, "values">{
     return {
       ...this.Default_TEpSdkEnumVersionTask_Settings,
       ...this.getTaskConfig().enumVersionSettings,
@@ -91,7 +89,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     };
   };
 
-  protected getEpObjectKeys(epObject: EnumVersion | undefined): IEpSdkVersionTask_EpObjectKeys {
+  protected getEpObjectKeys(epObject: TopicAddressEnumVersion | undefined): IEpSdkVersionTask_EpObjectKeys {
     const funcName = 'getEpObjectKeys';
     const logName = `${EpSdkEnumVersionTask.name}.${funcName}()`;
     
@@ -127,7 +125,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       epSdkEnumVersionTask_Keys: epSdkEnumVersionTask_Keys
     }}));
 
-    const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
+    const enumVersion: TopicAddressEnumVersion | undefined = await EpSdkEnumVersionsService.getLatestVersionForEnumId({
       applicationDomainId: epSdkEnumVersionTask_Keys.applicationDomainId,
       enumId: epSdkEnumVersionTask_Keys.enumId,
     });
@@ -148,10 +146,10 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
   };
 
   private createCompareEnumValueList_From_EP({ epEnumValueList}:{
-    epEnumValueList?: Array<EnumValue>;
-  }): Array<EnumValue> {
+    epEnumValueList?: Array<TopicAddressEnumValue>;
+  }): Array<TopicAddressEnumValue> {
     if(epEnumValueList === undefined) return [];
-    return epEnumValueList.map( (epEnumValue: EnumValue) => {
+    return epEnumValueList.map( (epEnumValue: TopicAddressEnumValue) => {
       return {
         label: epEnumValue.label,
         value: epEnumValue.value
@@ -172,7 +170,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       epObject: epSdkEnumVersionTask_GetFuncReturn.epObject
     });
     
-    const existingObject: EnumVersion = epSdkEnumVersionTask_GetFuncReturn.epObject;
+    const existingObject: TopicAddressEnumVersion = epSdkEnumVersionTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEnumVersionTask_CompareObject = {
       description: existingObject.description,
       displayName: existingObject.displayName,
@@ -209,7 +207,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name }));
 
-    const create: EnumVersion = {
+    const create: TopicAddressEnumVersion = {
       ...this.createObjectSettings(),
       enumId: this.getTaskConfig().enumId,
       version: this.versionString,
@@ -230,23 +228,23 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const enumVersion: EnumVersion = await EpSdkEnumVersionsService.createEnumVersion({ 
+    const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({ 
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       enumId: this.getTaskConfig().enumId,
-      enumVersion: create,
+      topicAddressEnumVersion: create,
       targetLifecycleStateId: this.getTaskConfig().enumVersionSettings.stateId,
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       create: create,
-      enumVersion: enumVersion
+      topicAddressEnumVersion: topicAddressEnumVersion
     }}));
 
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
-      epObject: enumVersion,
-      epObjectKeys: this.getEpObjectKeys(enumVersion)
+      epObject: topicAddressEnumVersion,
+      epObjectKeys: this.getEpObjectKeys(topicAddressEnumVersion)
     };
   }
 
@@ -275,12 +273,12 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       });
     } catch(e) {
       if(this.isCheckmode() && e instanceof EpSdkVersionTaskStrategyValidationError) {
-        const update: EnumVersion = {
+        const update: TopicAddressEnumVersion = {
           ...this.createObjectSettings(),
           enumId: epSdkEnumVersionTask_GetFuncReturn.epObject.id,
           version: e.details.versionString
         };    
-        const wouldBe_EpObject: EnumVersion = {
+        const wouldBe_EpObject: TopicAddressEnumVersion = {
           ...epSdkEnumVersionTask_GetFuncReturn.epObject,
           ...update
         };
@@ -291,7 +289,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
         };
       } else throw e;  
     }    
-    const update: EnumVersion = {
+    const update: TopicAddressEnumVersion = {
       ...this.createObjectSettings(),
       enumId: epSdkEnumVersionTask_GetFuncReturn.epObject.id,
       version: nextVersion
@@ -302,7 +300,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     }}));
 
     if(this.isCheckmode()) {
-      const wouldBe_EpObject: EnumVersion = {
+      const wouldBe_EpObject: TopicAddressEnumVersion = {
         ...epSdkEnumVersionTask_GetFuncReturn.epObject,
         ...update
       };
@@ -313,23 +311,23 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       };
     }
 
-    const enumVersion: EnumVersion = await EpSdkEnumVersionsService.createEnumVersion({
+    const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({
       applicationDomainId: this.getTaskConfig().applicationDomainId,      
       enumId: this.getTaskConfig().enumId,
-      enumVersion: update,
+      topicAddressEnumVersion: update,
       targetLifecycleStateId: this.getTaskConfig().enumVersionSettings.stateId
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       update: update,
-      enumVersion: enumVersion,
+      topicAddressEnumVersion: topicAddressEnumVersion,
     }}));
 
     const epSdkEnumVersionTask_UpdateFuncReturn: IEpSdkEnumVersionTask_UpdateFuncReturn = {
       epSdkTask_Action: this.getUpdateFuncAction(),
-      epObject: enumVersion,
-      epObjectKeys: this.getEpObjectKeys(enumVersion)
+      epObject: topicAddressEnumVersion,
+      epObjectKeys: this.getEpObjectKeys(topicAddressEnumVersion)
     };
     return epSdkEnumVersionTask_UpdateFuncReturn;
   }

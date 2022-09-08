@@ -18,7 +18,7 @@ import {
 import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
 export type TEpSdkSchemaVersionTask_Settings = Required<Pick<SchemaVersion, "description" | "displayName" | "content" | "stateId">>;
-type TEpSdkSchemaVersionTask_CompareObject = Partial<TEpSdkSchemaVersionTask_Settings> & Pick<SchemaVersion, "version">;
+type TEpSdkSchemaVersionTask_CompareObject = Partial<TEpSdkSchemaVersionTask_Settings> & Partial<Pick<SchemaVersion, "version">>;
 
 export interface IEpSdkSchemaVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;

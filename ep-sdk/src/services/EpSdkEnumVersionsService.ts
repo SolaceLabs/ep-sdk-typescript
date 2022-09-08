@@ -1,10 +1,10 @@
 import { EpSdkApiContentError } from "../utils/EpSdkErrors";
 import {
-  Enum,
   EnumsService,
-  EnumVersion,
-  EnumVersionResponse,
-  EnumVersionsResponse,
+  TopicAddressEnum,
+  TopicAddressEnumVersion,
+  TopicAddressEnumVersionResponse,
+  TopicAddressEnumVersionsResponse,
   VersionedObjectStateChangeRequest
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumsService from "./EpSdkEnumsService";
@@ -16,44 +16,44 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
   public getVersionByVersion = async ({ enumId, enumVersionString }: {
     enumId: string;
     enumVersionString: string;
-  }): Promise<EnumVersion | undefined> => {
+  }): Promise<TopicAddressEnumVersion | undefined> => {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    const enumVersionsResponse: EnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+    const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
       enumId: enumId,
       versions: [enumVersionString]
     });
-    if (enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return undefined;
-    if (enumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionsResponse.data.length > 1', {
-      enumVersionsResponse: enumVersionsResponse
+    if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return undefined;
+    if (topicAddressEnumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionsResponse.data.length > 1', {
+      topicAddressEnumVersionsResponse: topicAddressEnumVersionsResponse
     });
-    return enumVersionsResponse.data[0];
+    return topicAddressEnumVersionsResponse.data[0];
   }
 
   public getVersionsForEnumId = async ({ enumId, pageSize = EpApiHelpers.MaxPageSize }: {
     enumId: string;
     pageSize?: number; /** for testing */
-  }): Promise<Array<EnumVersion>> => {
+  }): Promise<Array<TopicAddressEnumVersion>> => {
     const funcName = 'getVersionsForEnumId';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    const enumVersionList: Array<EnumVersion> = [];
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = [];
     let nextPage: number | null = 1;
 
     while(nextPage !== null) {
 
-      const enumVersionsResponse: EnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+      const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
         enumId: enumId,
         pageSize: pageSize,
         pageNumber: nextPage
       });
       
-      if (enumVersionsResponse.data === undefined || enumVersionsResponse.data.length === 0) return [];
+      if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return [];
 
-      enumVersionList.push(...enumVersionsResponse.data);
+      topicAddressEnumVersionList.push(...topicAddressEnumVersionsResponse.data);
 
-      const meta: T_EpMeta = enumVersionsResponse.meta as T_EpMeta;
+      const meta: T_EpMeta = topicAddressEnumVersionsResponse.meta as T_EpMeta;
       EpApiHelpers.validateMeta(meta);
       nextPage = meta.pagination.nextPage;
 
@@ -62,26 +62,26 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     // throw new EpSdkApiContentError(logName, this.constructor.name, 'testing', {
     //   enumVersionList: enumVersionList
     // });
-    return enumVersionList;
+    return topicAddressEnumVersionList;
   }
 
   public getVersionsForEnumName = async ({ enumName, applicationDomainId }: {
     applicationDomainId: string;
     enumName: string;
-  }): Promise<Array<EnumVersion>> => {
+  }): Promise<Array<TopicAddressEnumVersion>> => {
     const funcName = 'getVersionsForEnumName';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    const enumObject: Enum | undefined = await EpSdkEnumsService.getByName({
+    const topicAddressEnum: TopicAddressEnum | undefined = await EpSdkEnumsService.getByName({
       applicationDomainId: applicationDomainId,
       enumName: enumName
     });
-    if (enumObject === undefined) return [];
-    if (enumObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumObject.id === undefined', {
-      enumObject: enumObject
+    if (topicAddressEnum === undefined) return [];
+    if (topicAddressEnum.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnum.id === undefined', {
+      topicAddressEnum: topicAddressEnum
     });
-    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumId({ enumId: enumObject.id });
-    return enumVersionList;
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({ enumId: topicAddressEnum.id });
+    return topicAddressEnumVersionList;
   }
 
   public getLatestVersionString = async ({ enumId }: {
@@ -90,42 +90,42 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     const funcName = 'getLatestVersionString';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumId({ enumId: enumId });
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({ enumId: enumId });
     // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
     //   enumVersionList: enumVersionList
     // }}));
-    const latestEnumVersion: EnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: enumVersionList });
-    if (latestEnumVersion === undefined) return undefined;
-    if (latestEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestEnumVersion.version === undefined', {
-      latestEnumVersion: latestEnumVersion
+    const latestTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: topicAddressEnumVersionList });
+    if (latestTopicAddressEnumVersion === undefined) return undefined;
+    if (latestTopicAddressEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestTopicAddressEnumVersion.version === undefined', {
+      latestTopicAddressEnumVersion: latestTopicAddressEnumVersion
     });
-    return latestEnumVersion.version;
+    return latestTopicAddressEnumVersion.version;
   }
 
   public getLatestVersionForEnumId = async ({ enumId, applicationDomainId }: {
     applicationDomainId: string;
     enumId: string;
-  }): Promise<EnumVersion | undefined> => {
+  }): Promise<TopicAddressEnumVersion | undefined> => {
     const funcName = 'getLatestVersionForEnumId';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumId({
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({
       enumId: enumId,
     });
 
-    const latestEnumVersion: EnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: enumVersionList });
-    return latestEnumVersion;
+    const latestTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: topicAddressEnumVersionList });
+    return latestTopicAddressEnumVersion;
   }
 
   public getLatestVersionForEnumName = async ({ applicationDomainId, enumName }: {
     applicationDomainId: string;
     enumName: string;
-  }): Promise<EnumVersion | undefined> => {
+  }): Promise<TopicAddressEnumVersion | undefined> => {
     const funcName = 'getLatestVersionForEnumName';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    const enumVersionList: Array<EnumVersion> = await this.getVersionsForEnumName({
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumName({
       enumName: enumName,
       applicationDomainId: applicationDomainId
     });
@@ -133,55 +133,56 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     //   enumVersionList: enumVersionList
     // }}));
 
-    const latestEnumVersion: EnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: enumVersionList });
-    return latestEnumVersion;
+    const latestTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: topicAddressEnumVersionList });
+    return latestTopicAddressEnumVersion;
   }
 
-  public createEnumVersion = async({ applicationDomainId, enumId, enumVersion, targetLifecycleStateId }:{
+  public createEnumVersion = async({ applicationDomainId, enumId, topicAddressEnumVersion, targetLifecycleStateId }:{
     applicationDomainId: string;
     enumId: string;
-    enumVersion: EnumVersion;
+    topicAddressEnumVersion: TopicAddressEnumVersion;
     targetLifecycleStateId: string;
-  }): Promise<EnumVersion> => {
+  }): Promise<TopicAddressEnumVersion> => {
     const funcName = 'createEnumVersion';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const enumVersionResponse: EnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+    const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
       enumId: enumId,
-      requestBody: enumVersion
+      requestBody: topicAddressEnumVersion
     });
-    if(enumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data === undefined', {
-      enumVersionResponse: enumVersionResponse
+    if(topicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionResponse.data === undefined', {
+      topicAddressEnumVersionResponse: topicAddressEnumVersionResponse
     });
-    const createdEnumVersion: EnumVersion = enumVersionResponse.data;
-    if(createdEnumVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.id === undefined', {
-      enumVersionResponse: enumVersionResponse
+    const createdTopicAddressEnumVersion: TopicAddressEnumVersion = topicAddressEnumVersionResponse.data;
+    if(createdTopicAddressEnumVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'createdTopicAddressEnumVersion.data.id === undefined', {
+      createdTopicAddressEnumVersion: createdTopicAddressEnumVersion
     });
-    if(createdEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.stateId === undefined', {
-      enumVersionResponse: enumVersionResponse
+    if(createdTopicAddressEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'createdTopicAddressEnumVersion.data.stateId === undefined', {
+      createdTopicAddressEnumVersion: createdTopicAddressEnumVersion
     });
-    if(createdEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumVersionResponse.data.version === undefined', {
-      enumVersionResponse: enumVersionResponse
+    if(createdTopicAddressEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'createdTopicAddressEnumVersion.data.version === undefined', {
+      createdTopicAddressEnumVersion: createdTopicAddressEnumVersion
     });
-    if(createdEnumVersion.stateId !== targetLifecycleStateId) {
+    if(createdTopicAddressEnumVersion.stateId !== targetLifecycleStateId) {
       const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EnumsService.updateEnumVersionStateForEnum({
         enumId: enumId,
-        id: createdEnumVersion.id,
+        id: createdTopicAddressEnumVersion.id,
         requestBody: {
+          ...createdTopicAddressEnumVersion,
           stateId: targetLifecycleStateId
         }
       });
-      const updatedEnumVersion: EnumVersion | undefined = await this.getVersionByVersion({
+      const updatedTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = await this.getVersionByVersion({
         enumId: enumId,
-        enumVersionString: createdEnumVersion.version
+        enumVersionString: createdTopicAddressEnumVersion.version
       });
-      if(updatedEnumVersion === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'updatedEnumVersion === undefined', {
-        updatedEnumVersion: updatedEnumVersion
+      if(updatedTopicAddressEnumVersion === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'updatedTopicAddressEnumVersion === undefined', {
+        updatedTopicAddressEnumVersion: updatedTopicAddressEnumVersion
       });
-      return updatedEnumVersion;
+      return updatedTopicAddressEnumVersion;
     }
-    return createdEnumVersion;
+    return createdTopicAddressEnumVersion;
   }
 }
 

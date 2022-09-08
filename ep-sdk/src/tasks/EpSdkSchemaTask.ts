@@ -56,7 +56,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     epObject: undefined,
     epObjectExists: false  
   };
-  private readonly Default_TEpSdkSchemaTask_Settings: TEpSdkSchemaTask_Settings = {
+  private readonly Default_TEpSdkSchemaTask_Settings: Required<TEpSdkSchemaTask_Settings> = {
     shared: true,
     contentType: EEpSdkSchemaContentType.APPLICATION_JSON,
     schemaType: EEpSdkSchemaType.JSON_SCHEMA,
@@ -64,7 +64,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
   private getTaskConfig(): IEpSdkSchemaTask_Config { 
     return this.epSdkTask_Config as IEpSdkSchemaTask_Config; 
   }
-  private createObjectSettings(): Partial<SchemaObject> {
+  private createObjectSettings(): Required<TEpSdkSchemaTask_Settings> {
     return {
       ...this.Default_TEpSdkSchemaTask_Settings,
       ...this.getTaskConfig().schemaObjectSettings,

@@ -20,15 +20,9 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkApplicationVersionsService.name}.${funcName}()`;
 
-    // EP_API_KAPUTT_TRICK
-    const params: any = {
-      applicationId: applicationId
-    }
-
     const applicationVersionsResponse: ApplicationVersionsResponse = await ApplicationsService.getApplicationVersionsForApplication({
       applicationId: applicationId,
       version: applicationVersionString,
-      ...params
     });
     if (applicationVersionsResponse.data === undefined || applicationVersionsResponse.data.length === 0) return undefined;
     if (applicationVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionsResponse.data.length > 1', {
@@ -48,14 +42,8 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
 
     while(nextPage !== null) {
 
-      // EP_API_KAPUTT_TRICK
-      const params: any = {
-        applicationId: applicationId
-      }
-
       const applicationVersionsResponse: ApplicationVersionsResponse = await ApplicationsService.getApplicationVersionsForApplication({
         applicationId: applicationId,
-        ...params
       });
       
       if (applicationVersionsResponse.data === undefined || applicationVersionsResponse.data.length === 0) return [];
@@ -178,6 +166,7 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
         applicationId: applicationId,
         id: createdApplicationVersion.id,
         requestBody: {
+          ...applicationVersion,
           stateId: targetLifecycleStateId
         }
       });

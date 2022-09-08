@@ -2,74 +2,74 @@ import { EpSdkApiContentError, EpSdkServiceError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import {
-  Enum,
-  EnumResponse,
-  EnumsResponse,
-  EnumsService,
+  EnumsService, 
+  TopicAddressEnumResponse, 
+  TopicAddressEnumsResponse,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
+import { TopicAddressEnum } from '../@solace-labs/ep-openapi-node/dist';
 
 export class EpSdkEnumsService extends EpSdkService {
 
   public getByName = async ({ enumName, applicationDomainId }: {
     enumName: string;
     applicationDomainId: string;
-  }): Promise<Enum | undefined> => {
+  }): Promise<TopicAddressEnum | undefined> => {
     const funcName = 'getByName';
     const logName = `${EpSdkEnumsService.name}.${funcName}()`;
 
-    const enumsResponse: EnumsResponse = await EnumsService.getEnums({
+    const topicAddressEnumsResponse: TopicAddressEnumsResponse = await EnumsService.getEnums({
       applicationDomainId: applicationDomainId,
       names: [enumName]
     });
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
       code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-        enumsResponse: enumsResponse
+        topicAddressEnumsResponse: topicAddressEnumsResponse
       }
     }));
 
-    if (enumsResponse.data === undefined || enumsResponse.data.length === 0) return undefined;
-    if (enumsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumsResponse.data.length > 1', {
-      enumsResponse: enumsResponse
+    if (topicAddressEnumsResponse.data === undefined || topicAddressEnumsResponse.data.length === 0) return undefined;
+    if (topicAddressEnumsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumsResponse.data.length > 1', {
+      topicAddressEnumsResponse: topicAddressEnumsResponse
     });
-    const epEnum: Enum = enumsResponse.data[0];
-    return epEnum;
+    const topicAddressEnum: TopicAddressEnum = topicAddressEnumsResponse.data[0];
+    return topicAddressEnum;
   }
 
   public getById = async ({ enumId, applicationDomainId }: {
     enumId: string;
     applicationDomainId: string;
-  }): Promise<Enum> => {
+  }): Promise<TopicAddressEnum> => {
     const funcName = 'getById';
     const logName = `${EpSdkEnumsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const enumResponse: EnumResponse = await EnumsService.getEnum({
+    const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.getEnum({
       id: enumId
     });
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, {
       code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
-        enumResponse: enumResponse
+        topicAddressEnumResponse: topicAddressEnumResponse
       }
     }));
 
-    if (enumResponse.data === undefined) {
-      throw new EpSdkApiContentError(logName, this.constructor.name, "enumResponse.data === undefined", {
+    if (topicAddressEnumResponse.data === undefined) {
+      throw new EpSdkApiContentError(logName, this.constructor.name, "topicAddressEnumResponse.data === undefined", {
         enumId: enumId
       });
     }
-    const epEnum: Enum = enumResponse.data;
-    return epEnum;
+    const topicAddressEnum: TopicAddressEnum = topicAddressEnumResponse.data;
+    return topicAddressEnum;
   }
 
   public deleteById = async ({ enumId, applicationDomainId }: {
     enumId: string;
     applicationDomainId: string;
-  }): Promise<Enum> => {
+  }): Promise<TopicAddressEnum> => {
     const funcName = 'deleteById';
     const logName = `${EpSdkEnumsService.name}.${funcName}()`;
 
-    const epEnum: Enum = await this.getById({
+    const topicAddressEnum: TopicAddressEnum = await this.getById({
       applicationDomainId: applicationDomainId,
       enumId: enumId,
     });
@@ -78,32 +78,32 @@ export class EpSdkEnumsService extends EpSdkService {
       id: enumId,
     });
 
-    return epEnum;
+    return topicAddressEnum;
   }
 
   public deleteByName = async ({ applicationDomainId, enumName }: {
     enumName: string;
     applicationDomainId: string;
-  }): Promise<Enum> => {
+  }): Promise<TopicAddressEnum> => {
     const funcName = 'deleteByName';
     const logName = `${EpSdkEnumsService.name}.${funcName}()`;
 
-    const epEnum: Enum | undefined = await this.getByName({
+    const topicAddressEnum: TopicAddressEnum | undefined = await this.getByName({
       applicationDomainId: applicationDomainId,
       enumName: enumName,
     });
-    if (epEnum === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "epEnum === undefined", {
+    if (topicAddressEnum === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "topicAddressEnum === undefined", {
       applicationDomainId: applicationDomainId,
       enumName: enumName
     });
-    if (epEnum.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epEnum.id === undefined', {
-      epEnum: epEnum,
+    if (topicAddressEnum.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnum.id === undefined', {
+      topicAddressEnum: topicAddressEnum,
     });
-    const epEnumDeleted: Enum = await this.deleteById({
+    const deleted: TopicAddressEnum = await this.deleteById({
       applicationDomainId: applicationDomainId,
-      enumId: epEnum.id
+      enumId: topicAddressEnum.id
     });
-    return epEnumDeleted;
+    return deleted;
   }
 
 

@@ -3,7 +3,7 @@ import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyV
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
-  eventApiVersion as EventApiVersion,
+  EventApiVersion
 } from '@solace-labs/ep-openapi-node';
 import { 
   EEpSdkTask_EpObjectType,

@@ -68,6 +68,7 @@ describe(`${scriptName}`, () => {
       try {
 
         const create: SchemaVersion = {
+          schemaId: SchemaId,
           description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
           version: SchemaVersionString
         };
@@ -132,6 +133,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should create new schema version`, async () => {
       try {
         const create: SchemaVersion = {
+          schemaId: SchemaId,
           description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
           version: SchemaNextVersionString
         };
@@ -227,6 +229,7 @@ describe(`${scriptName}`, () => {
           const versionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
             schemaId: SchemaId,
             requestBody: {
+              schemaId: SchemaId,
               description: 'paging version',
               version: VersionString,
             }

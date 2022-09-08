@@ -21,13 +21,13 @@ import {
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
 
-export type TEpSdkApplicationTask_Settings = Partial<Pick<Application, "applicationType">>;
+export type TEpSdkApplicationTask_Settings = Partial<Pick<Application, "applicationType" | "brokerType">>;
 type TEpSdkApplicationTask_CompareObject = TEpSdkApplicationTask_Settings;
 
 export interface IEpSdkApplicationTask_Config extends IEpSdkTask_Config {
   applicationName: string;
   applicationDomainId: string;
-  applicationObjectSettings?: Required<TEpSdkApplicationTask_Settings>;
+  applicationObjectSettings?: TEpSdkApplicationTask_Settings;
 }
 export interface IEpSdkApplicationTask_Keys extends IEpSdkTask_Keys {
   applicationName: string;
@@ -59,13 +59,14 @@ export class EpSdkApplicationTask extends EpSdkTask {
     epObject: undefined,
     epObjectExists: false  
   };
-  private readonly Default_TEpSdkApplicationTask_Settings: TEpSdkApplicationTask_Settings = {
+  private readonly Default_TEpSdkApplicationTask_Settings: Required<TEpSdkApplicationTask_Settings> = {
     applicationType: "standard",
+    brokerType: Application.brokerType.SOLACE
   }
   private getTaskConfig(): IEpSdkApplicationTask_Config { 
     return this.epSdkTask_Config as IEpSdkApplicationTask_Config; 
   }
-  private createObjectSettings(): Partial<Application> {
+  private createObjectSettings(): Required<TEpSdkApplicationTask_Settings> {
     return {
       ...this.Default_TEpSdkApplicationTask_Settings,
       ...this.getTaskConfig().applicationObjectSettings,
@@ -145,6 +146,7 @@ export class EpSdkApplicationTask extends EpSdkTask {
     const existingObject: Application = epSdkApplicationTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkApplicationTask_CompareObject = {
       applicationType: existingObject.applicationType,
+      brokerType: existingObject.brokerType,
     }
     const requestedCompareObject: TEpSdkApplicationTask_CompareObject = this.createObjectSettings();
 
@@ -191,15 +193,8 @@ export class EpSdkApplicationTask extends EpSdkTask {
       };
     }
 
-    // WORKAROUND_UNTIL_EP_API_FIXED
-    const requestBody = {
-      ...create,
-      brokerType: 'solace',
-    };
-    
     const applicationResponse: ApplicationResponse = await ApplicationsService.createApplication({
-      requestBody: requestBody
-      // requestBody: create
+      requestBody: create
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
@@ -220,61 +215,61 @@ export class EpSdkApplicationTask extends EpSdkTask {
     };
   }
 
-  // protected async updateFunc(epSdkApplicationTask_GetFuncReturn: IEpSdkApplicationTask_GetFuncReturn): Promise<IEpSdkApplicationTask_UpdateFuncReturn> {
-  //   const funcName = 'updateFunc';
-  //   const logName = `${EpSdkApplicationTask.name}.${funcName}()`;
+  protected async updateFunc(epSdkApplicationTask_GetFuncReturn: IEpSdkApplicationTask_GetFuncReturn): Promise<IEpSdkApplicationTask_UpdateFuncReturn> {
+    const funcName = 'updateFunc';
+    const logName = `${EpSdkApplicationTask.name}.${funcName}()`;
 
-  //   EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
-  //   if(epSdkApplicationTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkApplicationTask_GetFuncReturn.epObject === undefined');
-  //   if(epSdkApplicationTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationTask_GetFuncReturn.epObject.id === undefined', {
-  //     epObject: epSdkApplicationTask_GetFuncReturn.epObject
-  //   });
+    if(epSdkApplicationTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkApplicationTask_GetFuncReturn.epObject === undefined');
+    if(epSdkApplicationTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationTask_GetFuncReturn.epObject.id === undefined', {
+      epObject: epSdkApplicationTask_GetFuncReturn.epObject
+    });
 
-  //   const update: Application = {
-  //     ...this.createObjectSettings(),
-  //     applicationDomainId: this.getTaskConfig().applicationDomainId,
-  //     name: this.getTaskConfig().applicationName,
-  //   };
+    const update: Application = {
+      ...this.createObjectSettings(),
+      applicationDomainId: this.getTaskConfig().applicationDomainId,
+      name: this.getTaskConfig().applicationName,
+    };
 
-  //   EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
-  //     epSdkApplicationTask_Config: this.getTaskConfig(),
-  //     update: update,
-  //   }}));
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
+      epSdkApplicationTask_Config: this.getTaskConfig(),
+      update: update,
+    }}));
 
-  //   if(this.isCheckmode()) {
-  //     const wouldBe_EpObject: Application = {
-  //       ...epSdkApplicationTask_GetFuncReturn.epObject,
-  //       ...update
-  //     };
-  //     return {
-  //       epSdkTask_Action: this.getUpdateFuncAction(),
-  //       epObject: wouldBe_EpObject,
-  //       epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject)
-  //     };
-  //   }
+    if(this.isCheckmode()) {
+      const wouldBe_EpObject: Application = {
+        ...epSdkApplicationTask_GetFuncReturn.epObject,
+        ...update
+      };
+      return {
+        epSdkTask_Action: this.getUpdateFuncAction(),
+        epObject: wouldBe_EpObject,
+        epObjectKeys: this.getEpObjectKeys(wouldBe_EpObject)
+      };
+    }
 
-  //   const applicationResponse: ApplicationResponse = await ApplicationsService.updateApplication({
-  //     id: epSdkApplicationTask_GetFuncReturn.epObject.id,
-  //     requestBody: update
-  //   });
+    const applicationResponse: ApplicationResponse = await ApplicationsService.updateApplication({
+      id: epSdkApplicationTask_GetFuncReturn.epObject.id,
+      requestBody: update
+    });
 
-  //   EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
-  //     epSdkApplicationDomainTask_Config: this.getTaskConfig(),
-  //     update: update,
-  //     applicationResponse: applicationResponse,
-  //   }}));
+    EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
+      epSdkApplicationDomainTask_Config: this.getTaskConfig(),
+      update: update,
+      applicationResponse: applicationResponse,
+    }}));
 
-  //   if(applicationResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationResponse.data === undefined', {
-  //     applicationResponse: applicationResponse
-  //   });
-  //   const epSdkApplicationTask_UpdateFuncReturn: IEpSdkApplicationTask_UpdateFuncReturn = {
-  //     epSdkTask_Action: this.getUpdateFuncAction(),
-  //     epObject: applicationResponse.data,
-  //     epObjectKeys: this.getEpObjectKeys(applicationResponse.data)
-  //   };
-  //   return epSdkApplicationTask_UpdateFuncReturn;
-  // }
+    if(applicationResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationResponse.data === undefined', {
+      applicationResponse: applicationResponse
+    });
+    const epSdkApplicationTask_UpdateFuncReturn: IEpSdkApplicationTask_UpdateFuncReturn = {
+      epSdkTask_Action: this.getUpdateFuncAction(),
+      epObject: applicationResponse.data,
+      epObjectKeys: this.getEpObjectKeys(applicationResponse.data)
+    };
+    return epSdkApplicationTask_UpdateFuncReturn;
+  }
 
   protected async deleteFunc(epSdkApplicationTask_GetFuncReturn: IEpSdkApplicationTask_GetFuncReturn): Promise<IEpSdkApplicationTask_DeleteFuncReturn> {
     const funcName = 'deleteFunc';

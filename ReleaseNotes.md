@@ -2,6 +2,17 @@
 
 Solace Event Portal SDK.
 
+## Version 0.10.0-alpha
+
+**Core:**
+
+- **Upgrade to @solace-labs/ep-openapi-node@2.3.0.beta.1**
+
+- removed **EpSdkAbstractMethodError**, declared methods as abstract instead
+
+**Breaking Changes:**
+- Release contains breaking changes.
+
 ## Version 0.9.7-alpha
 
 **Workarounds:**

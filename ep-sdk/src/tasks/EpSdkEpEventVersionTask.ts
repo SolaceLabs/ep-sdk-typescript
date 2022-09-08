@@ -5,8 +5,8 @@ import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   Address,
   AddressLevel,
-  EnumVersion,
-  EventVersion, 
+  EventVersion,
+  TopicAddressEnumVersion, 
 } from '@solace-labs/ep-openapi-node';
 import { 
   EEpSdkTask_EpObjectType,
@@ -23,7 +23,7 @@ import EpSdkEpEventVersionsService from '../services/EpSdkEpEventVersionsService
 
 /** @category EpSdkEpEventVersionTask */
 export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">>;
-type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Pick<EventVersion, "version">;
+type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category EpSdkEpEventVersionTask */
 export interface IEpSdkEpEventVersionTask_Config extends IEpSdkVersionTask_Config {
@@ -94,11 +94,11 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
         topicLevel = topicLevel.replace('}', '').replace('{', '');
         type = AddressLevel.addressLevelType.VARIABLE;
         // get the enumVersionId if it exists
-        const enumVersion: EnumVersion | undefined = await EpSdkEnumVersionService.getLatestVersionForEnumName({ 
+        const topicAddressEnumVersion: TopicAddressEnumVersion | undefined = await EpSdkEnumVersionService.getLatestVersionForEnumName({ 
           enumName: topicLevel, 
           applicationDomainId: this.getTaskConfig().applicationDomainId        
         });
-        if(enumVersion !== undefined) enumVersionId = enumVersion.id;
+        if(topicAddressEnumVersion !== undefined) enumVersionId = topicAddressEnumVersion.id;
       }
       addressLevels.push({
         name: topicLevel,

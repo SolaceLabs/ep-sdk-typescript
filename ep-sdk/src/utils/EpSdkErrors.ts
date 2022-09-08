@@ -101,17 +101,6 @@ export class EpSdkLoggerNotInitializedError extends EpSdkError {
   }
 }
 
-export class EpSdkAbstractMethodError extends EpSdkError {
-  protected static DefaultDescription = 'EP SDK abstract method call';
-  private className: string;
-  private methodName: string;
-  constructor(internalLogName: string, className: string, methodName: string) {
-    super(internalLogName, className, EpSdkAbstractMethodError.DefaultDescription);
-    this.className = className;
-    this.methodName = methodName;
-  }
-}
-
 export class EpSdkInternalTaskError extends EpSdkError {
   protected static DefaultDescription = 'EP SDK Internal Task Error';
   private epSdkCause: any;
@@ -123,7 +112,7 @@ export class EpSdkInternalTaskError extends EpSdkError {
 
 export class EpSdkEpApiError extends EpSdkError {
   protected static DefaultDescription = 'EP Api Error';
-  private apiError: ApiError;
+  public apiError: ApiError;
   constructor(internalLogName: string, internalModuleName: string, apiError: ApiError) {
     super(internalLogName, internalModuleName, EpSdkEpApiError.DefaultDescription);
     this.apiError = apiError;

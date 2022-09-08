@@ -7,6 +7,7 @@ import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError, 
+  Application, 
   ApplicationDomainResponse, 
   ApplicationDomainsService, 
   ApplicationResponse, 
@@ -52,6 +53,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           name: ApplicationName,
           applicationType: "standard",
+          brokerType: Application.brokerType.SOLACE
         }
       });
       ApplicationId = applicationResponse.data.id;
@@ -67,7 +69,8 @@ describe(`${scriptName}`, () => {
 
         const create: ApplicationVersion = {
           description: `application version for application = ${ApplicationName}, id=${ApplicationId}`,        
-          version: ApplicationVersionString
+          version: ApplicationVersionString,
+          applicationId: ApplicationId
         };
 
         const created: ApplicationVersion = await EpSdkApplicationVersionsService.createApplicationVersion({
@@ -131,7 +134,8 @@ describe(`${scriptName}`, () => {
       try {
         const create: ApplicationVersion = {
           description: `application version for application = ${ApplicationName}, id=${ApplicationId}`,        
-          version: ApplicationNextVersionString
+          version: ApplicationNextVersionString,
+          applicationId: ApplicationId
         };
         const created: ApplicationVersion = await EpSdkApplicationVersionsService.createApplicationVersion({
           applicationDomainId: ApplicationDomainId,
@@ -213,6 +217,7 @@ describe(`${scriptName}`, () => {
             applicationDomainId: ApplicationDomainId,
             name: PagingName,
             applicationType: "standard",
+            brokerType: Application.brokerType.SOLACE
           }
         });
         ApplicationId = response.data.id;
@@ -225,6 +230,7 @@ describe(`${scriptName}`, () => {
             requestBody: {
               description: 'paging version',
               version: VersionString,
+              applicationId: ApplicationId
             }
           });
         }

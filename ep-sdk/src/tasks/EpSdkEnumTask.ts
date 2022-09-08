@@ -2,9 +2,9 @@ import { EpSdkApiContentError, EpSdkInternalTaskError } from "../utils/EpSdkErro
 import { EpSdkLogger } from "../utils/EpSdkLogger";
 import { EEpSdkLoggerCodes } from "../utils/EpSdkLoggerCodes";
 import { 
-  Enum,
-  EnumResponse,
-  EnumsService
+  EnumsService, 
+  TopicAddressEnum,
+  TopicAddressEnumResponse
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumsService from "../services/EpSdkEnumsService";
 import { 
@@ -21,7 +21,7 @@ import {
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
 
-export type TEpSdkEnumTask_Settings = Partial<Pick<Enum, "shared">>;
+export type TEpSdkEnumTask_Settings = Partial<Pick<TopicAddressEnum, "shared">>;
 type TEpSdkEnumTask_CompareObject = TEpSdkEnumTask_Settings;
 
 export interface IEpSdkEnumTask_Config extends IEpSdkTask_Config {
@@ -34,19 +34,19 @@ export interface IEpSdkEnumTask_Keys extends IEpSdkTask_Keys {
   applicationDomainId: string;
 }
 export interface IEpSdkEnumTask_GetFuncReturn extends Omit<IEpSdkTask_GetFuncReturn, "epObject"> {
-  epObject: Enum | undefined;
+  epObject: TopicAddressEnum | undefined;
 }
 export interface IEpSdkEnumTask_CreateFuncReturn extends Omit<IEpSdkTask_CreateFuncReturn, "epObject" > {
-  epObject: Enum;
+  epObject: TopicAddressEnum;
 }
 export interface IEpSdkEnumTask_UpdateFuncReturn extends Omit<IEpSdkTask_UpdateFuncReturn, "epObject"> {
-  epObject: Enum;
+  epObject: TopicAddressEnum;
 }
 export interface IEpSdkEnumTask_DeleteFuncReturn extends Omit<IEpSdkTask_DeleteFuncReturn, "epObject"> {
-  epObject: Enum;
+  epObject: TopicAddressEnum;
 }
 export interface IEpSdkEnumTask_ExecuteReturn extends Omit<IEpSdkTask_ExecuteReturn, "epObject"> {
-  epObject: Enum;
+  epObject: TopicAddressEnum;
 }
 
 /**
@@ -65,7 +65,7 @@ export class EpSdkEnumTask extends EpSdkTask {
   private getTaskConfig(): IEpSdkEnumTask_Config { 
     return this.epSdkTask_Config as IEpSdkEnumTask_Config; 
   }
-  private createObjectSettings(): Partial<Enum> {
+  private createObjectSettings(): Partial<TopicAddressEnum> {
     return {
       ...this.Default_TEpSdkEnumTask_Settings,
       ...this.getTaskConfig().enumObjectSettings,
@@ -83,7 +83,7 @@ export class EpSdkEnumTask extends EpSdkTask {
     };
   };
 
-  protected getEpObjectKeys(epObject: Enum | undefined): IEpSdkTask_EpObjectKeys {
+  protected getEpObjectKeys(epObject: TopicAddressEnum | undefined): IEpSdkTask_EpObjectKeys {
     const funcName = 'getEpObjectKeys';
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
     
@@ -112,7 +112,7 @@ export class EpSdkEnumTask extends EpSdkTask {
       epSdkEnumTask_Keys: epSdkEnumTask_Keys
     }}));
 
-    const enumObject: Enum | undefined = await EpSdkEnumsService.getByName({ 
+    const enumObject: TopicAddressEnum | undefined = await EpSdkEnumsService.getByName({ 
       enumName: epSdkEnumTask_Keys.enumName,
       applicationDomainId: epSdkEnumTask_Keys.applicationDomainId
     });
@@ -142,7 +142,7 @@ export class EpSdkEnumTask extends EpSdkTask {
 
     if(epSdkEnumTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkEnumTask_GetFuncReturn.epObject === undefined');
 
-    const existingObject: Enum = epSdkEnumTask_GetFuncReturn.epObject;
+    const existingObject: TopicAddressEnum = epSdkEnumTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEnumTask_CompareObject = {
       shared: existingObject.shared,
     }
@@ -169,7 +169,7 @@ export class EpSdkEnumTask extends EpSdkTask {
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_CREATE, module: this.constructor.name }));
 
-    const create: Enum = {
+    const create: TopicAddressEnum = {
       ...this.createObjectSettings(),
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       name: this.getTaskConfig().enumName,
@@ -191,25 +191,25 @@ export class EpSdkEnumTask extends EpSdkTask {
       };
     }
 
-    const enumResponse: EnumResponse = await EnumsService.createEnum({
+    const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({
       requestBody: create
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
       epSdkEnumTask_Config: this.getTaskConfig(),
       create: create,
-      enumResponse: enumResponse
+      topicAddressEnumResponse: topicAddressEnumResponse
     }}));
 
-    if(enumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumResponse.data === undefined', {
+    if(topicAddressEnumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumResponse.data === undefined', {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       create: create,
-      enumResponse: enumResponse
+      topicAddressEnumResponse: topicAddressEnumResponse
     });
     return {
       epSdkTask_Action: this.getCreateFuncAction(),
-      epObject: enumResponse.data,
-      epObjectKeys: this.getEpObjectKeys(enumResponse.data)
+      epObject: topicAddressEnumResponse.data,
+      epObjectKeys: this.getEpObjectKeys(topicAddressEnumResponse.data)
     };
   }
 
@@ -224,7 +224,7 @@ export class EpSdkEnumTask extends EpSdkTask {
       epObject: epSdkEnumTask_GetFuncReturn.epObject
     });
 
-    const update: Enum = {
+    const update: TopicAddressEnum = {
       ...this.createObjectSettings(),
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       name: this.getTaskConfig().enumName,
@@ -236,7 +236,7 @@ export class EpSdkEnumTask extends EpSdkTask {
     }}));
 
     if(this.isCheckmode()) {
-      const wouldBe_EpObject: Enum = {
+      const wouldBe_EpObject: TopicAddressEnum = {
         ...epSdkEnumTask_GetFuncReturn.epObject,
         ...update
       };
@@ -247,7 +247,7 @@ export class EpSdkEnumTask extends EpSdkTask {
       };
     }
 
-    const enumResponse: EnumResponse = await EnumsService.updateEnum({
+    const topicAddressEnumResponse: TopicAddressEnumResponse = await EnumsService.updateEnum({
       id: epSdkEnumTask_GetFuncReturn.epObject.id,
       requestBody: update
     });
@@ -255,16 +255,16 @@ export class EpSdkEnumTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_UPDATE, module: this.constructor.name, details: {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       update: update,
-      enumResponse: enumResponse,
+      topicAddressEnumResponse: topicAddressEnumResponse,
     }}));
 
-    if(enumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'enumResponse.data === undefined', {
-      enumResponse: enumResponse
+    if(topicAddressEnumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumResponse.data === undefined', {
+      topicAddressEnumResponse: topicAddressEnumResponse
     });
     const epSdkEnumTask_UpdateFuncReturn: IEpSdkEnumTask_UpdateFuncReturn = {
       epSdkTask_Action: this.getUpdateFuncAction(),
-      epObject: enumResponse.data,
-      epObjectKeys: this.getEpObjectKeys(enumResponse.data)
+      epObject: topicAddressEnumResponse.data,
+      epObjectKeys: this.getEpObjectKeys(topicAddressEnumResponse.data)
     };
     return epSdkEnumTask_UpdateFuncReturn;
   }
@@ -288,15 +288,15 @@ export class EpSdkEnumTask extends EpSdkTask {
       };
     }
 
-    const enumObject: Enum = await EpSdkEnumsService.deleteById({ 
+    const topicAddressEnumResponse: TopicAddressEnum = await EpSdkEnumsService.deleteById({ 
       applicationDomainId: this.getTaskConfig().applicationDomainId,
       enumId: epSdkEnumTask_GetFuncReturn.epObject.id,
     })
 
     const epSdkEnumTask_DeleteFuncReturn: IEpSdkEnumTask_DeleteFuncReturn = {
       epSdkTask_Action: this.getDeleteFuncAction(),
-      epObject: enumObject,
-      epObjectKeys: this.getEpObjectKeys(enumObject)
+      epObject: topicAddressEnumResponse,
+      epObjectKeys: this.getEpObjectKeys(topicAddressEnumResponse)
     };
     return epSdkEnumTask_DeleteFuncReturn;
   }
