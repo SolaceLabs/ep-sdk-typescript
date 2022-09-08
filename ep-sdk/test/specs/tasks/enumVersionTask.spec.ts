@@ -6,7 +6,11 @@ import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
 import { 
-  ApiError, ApplicationDomainResponse, ApplicationDomainsService, EnumResponse, EnumsService
+  ApiError, 
+  ApplicationDomainResponse, 
+  ApplicationDomainsService, 
+  EnumsService,
+  TopicAddressEnumResponse
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError, EpSdkVersionTaskStrategyValidationError, TEpSdkVersionTaskStrategyValidationError_Details } from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
@@ -43,7 +47,7 @@ describe(`${scriptName}`, () => {
       }
     });
     ApplicationDomainId = applicationDomainResponse.data.id;
-    const enumResponse: EnumResponse = await EnumsService.createEnum({ 
+    const enumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({ 
       requestBody: {
         applicationDomainId: ApplicationDomainId,
         name: EnumName,

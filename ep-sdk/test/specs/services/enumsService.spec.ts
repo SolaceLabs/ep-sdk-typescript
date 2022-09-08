@@ -5,7 +5,13 @@ import { TestLogger } from '../../lib/TestLogger';
 import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
-import { ApiError, ApplicationDomainResponse, ApplicationDomainsService, Enum, EnumResponse, EnumsService } from '@solace-labs/ep-openapi-node';
+import { 
+  ApiError, 
+  ApplicationDomainResponse, 
+  ApplicationDomainsService, 
+  EnumsService, 
+  TopicAddressEnum, 
+  TopicAddressEnumResponse} from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkEnumsService from '../../../src/services/EpSdkEnumsService';
 import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
@@ -47,7 +53,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should create enum`, async () => {
       try {
-        const enumResponse: EnumResponse = await EnumsService.createEnum({
+        const enumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: EnumName,
@@ -64,7 +70,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get enum by name`, async () => {
       try {
-        const epEnum: Enum | undefined = await EpSdkEnumsService.getByName({ applicationDomainId: ApplicationDomainId, enumName: EnumName });
+        const epEnum: TopicAddressEnum | undefined = await EpSdkEnumsService.getByName({ applicationDomainId: ApplicationDomainId, enumName: EnumName });
         expect(epEnum, TestLogger.createApiTestFailMessage('epEnum === undefined')).to.not.be.undefined;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -75,7 +81,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get enum by id`, async () => {
       try {
-        const epEnum: Enum = await EpSdkEnumsService.getById({ applicationDomainId: ApplicationDomainId, enumId: EnumId });
+        const epEnum: TopicAddressEnum = await EpSdkEnumsService.getById({ applicationDomainId: ApplicationDomainId, enumId: EnumId });
         expect(epEnum.id, TestLogger.createApiTestFailMessage(`epEnum.id !== ${EnumId}`)).to.eq(EnumId);
         expect(epEnum.applicationDomainId, TestLogger.createApiTestFailMessage(`applicationDomainId !== ${ApplicationDomainId}`)).to.eq(ApplicationDomainId);
       } catch(e) {
@@ -87,7 +93,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should delete enum by id`, async () => {
       try {
-        const epEnum: Enum = await EpSdkEnumsService.deleteById({ applicationDomainId: ApplicationDomainId, enumId: EnumId });
+        const epEnum: TopicAddressEnum = await EpSdkEnumsService.deleteById({ applicationDomainId: ApplicationDomainId, enumId: EnumId });
         expect(epEnum.id, TestLogger.createApiTestFailMessage(`epEnum.id !== ${EnumId}`)).to.eq(EnumId);
         expect(epEnum.applicationDomainId, TestLogger.createApiTestFailMessage(`applicationDomainId !== ${ApplicationDomainId}`)).to.eq(ApplicationDomainId);
       } catch(e) {
@@ -99,7 +105,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should create enum`, async () => {
       try {
-        const enumResponse: EnumResponse = await EnumsService.createEnum({
+        const enumResponse: TopicAddressEnumResponse = await EnumsService.createEnum({
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: EnumName,
@@ -116,7 +122,7 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should delete enum by name`, async () => {
       try {
-        const epEnum: Enum = await EpSdkEnumsService.deleteByName({ applicationDomainId: ApplicationDomainId, enumName: EnumName });
+        const epEnum: TopicAddressEnum = await EpSdkEnumsService.deleteByName({ applicationDomainId: ApplicationDomainId, enumName: EnumName });
         expect(epEnum.name, TestLogger.createApiTestFailMessage(`epEnum.name !== ${EnumName}`)).to.eq(EnumName);
         expect(epEnum.id, TestLogger.createApiTestFailMessage(`epEnum.id !== ${EnumId}`)).to.eq(EnumId);
         expect(epEnum.applicationDomainId, TestLogger.createApiTestFailMessage(`applicationDomainId !== ${ApplicationDomainId}`)).to.eq(ApplicationDomainId);
@@ -130,7 +136,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should catch delete enum by name that doesn't exist`, async () => {
       const NonExistentName = 'non-existent';
       try {
-        const epEnum: Enum = await EpSdkEnumsService.deleteByName({ applicationDomainId: ApplicationDomainId, enumName: NonExistentName });
+        const epEnum: TopicAddressEnum = await EpSdkEnumsService.deleteByName({ applicationDomainId: ApplicationDomainId, enumName: NonExistentName });
         expect(false, TestLogger.createApiTestFailMessage('must never get here')).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;

@@ -74,6 +74,7 @@ describe(`${scriptName}`, () => {
     SchemaId = schemaResponse.data.id;
 
     const createSchemaVersion: SchemaVersion = {
+      schemaId: SchemaId,
       displayName: 'displayName',
       description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
       version: '1.0.0'

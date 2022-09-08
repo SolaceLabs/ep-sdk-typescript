@@ -85,6 +85,7 @@ describe(`${scriptName}`, () => {
       SchemaId = schemaResponse.data.id;
 
       const createSchemaVersion: SchemaVersion = {
+        schemaId: SchemaId,
         displayName: SchemaName,
         description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
         version: SchemaVersionString
@@ -116,6 +117,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should create event version`, async () => {
       try {
         const create: EventVersion = {
+          eventId: EventId,
           description: `event version for event = ${EventName}, id=${EventId}`,        
           version: EventVersionString,
           displayName: EventName,
@@ -182,6 +184,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should create new event version`, async () => {
       try {
         const create: EventVersion = {
+          eventId: EventId,
           description: `event version for event = ${EventName}, id=${EventId}`,        
           version: EventNextVersionString,
           schemaVersionId: SchemaVersionId,
@@ -277,6 +280,7 @@ describe(`${scriptName}`, () => {
           const versionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
             eventId: EventId,
             requestBody: {
+              eventId: EventId,
               description: 'paging version',
               version: VersionString,
             }

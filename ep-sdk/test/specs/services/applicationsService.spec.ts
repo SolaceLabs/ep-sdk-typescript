@@ -51,7 +51,8 @@ describe(`${scriptName}`, () => {
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: ApplicationName,
-            applicationType: "standard"
+            applicationType: "standard",
+            brokerType: Application.brokerType.SOLACE
           }
         });
         ApplicationId = applicationResponse.data.id;
@@ -103,7 +104,8 @@ describe(`${scriptName}`, () => {
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: ApplicationName,
-            applicationType: "standard"
+            applicationType: "standard",
+            brokerType: Application.brokerType.SOLACE
           }
         });
         ApplicationId = applicationResponse.data.id;

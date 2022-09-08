@@ -59,7 +59,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
     while(nextPage !== null) {
 
-      // WORKAROUND_UNTIL_EP_API_FIXED
+      // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
       const params: any = {
         pageSize: pageSize,
         pageNumber: nextPage

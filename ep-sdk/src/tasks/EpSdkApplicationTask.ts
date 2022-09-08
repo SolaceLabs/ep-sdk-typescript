@@ -27,7 +27,7 @@ type TEpSdkApplicationTask_CompareObject = TEpSdkApplicationTask_Settings;
 export interface IEpSdkApplicationTask_Config extends IEpSdkTask_Config {
   applicationName: string;
   applicationDomainId: string;
-  applicationObjectSettings?: Required<TEpSdkApplicationTask_Settings>;
+  applicationObjectSettings?: TEpSdkApplicationTask_Settings;
 }
 export interface IEpSdkApplicationTask_Keys extends IEpSdkTask_Keys {
   applicationName: string;
@@ -214,9 +214,6 @@ export class EpSdkApplicationTask extends EpSdkTask {
       epObjectKeys: this.getEpObjectKeys(applicationResponse.data)
     };
   }
-
-
-  // update of applicationType and brokerType is now possible
 
   protected async updateFunc(epSdkApplicationTask_GetFuncReturn: IEpSdkApplicationTask_GetFuncReturn): Promise<IEpSdkApplicationTask_UpdateFuncReturn> {
     const funcName = 'updateFunc';

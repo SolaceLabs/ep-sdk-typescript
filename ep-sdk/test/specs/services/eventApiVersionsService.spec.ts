@@ -11,7 +11,7 @@ import {
   ApplicationDomainsService, 
   EventApiResponse, 
   EventApIsService, 
-  eventApiVersion as EventApiVersion,
+  EventApiVersion,
   EventApiVersionResponse,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/utils/EpSdkErrors';

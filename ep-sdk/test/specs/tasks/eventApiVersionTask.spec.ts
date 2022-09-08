@@ -11,10 +11,8 @@ import {
   ApplicationDomainsService,
   EventApiResponse,
   EventApIsService, 
-  eventApiVersion as EventApiVersion,
   EventResponse,
   EventsService,
-  EventVersionResponse,
   SchemaResponse,
   SchemasService,
   SchemaVersion,
@@ -86,6 +84,7 @@ describe(`${scriptName}`, () => {
     SchemaId = schemaResponse.data.id;
 
     const createSchemaVersion: SchemaVersion = {
+      schemaId: SchemaId,
       displayName: 'displayName',
       description: `schema version for schema = ${SchemaName}, id=${SchemaId}`,        
       version: '1.0.0'
@@ -175,8 +174,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -211,8 +210,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -249,8 +248,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_2, EventVersionId_1] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_2, EventVersionId_1] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_2, EventVersionId_1],
+          consumedEventVersionIds: [EventVersionId_2, EventVersionId_1],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -286,8 +285,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'updated description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -323,8 +322,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'updated description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -363,8 +362,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'updated description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -396,8 +395,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -431,8 +430,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -466,8 +465,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'update description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -504,8 +503,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'update description',
           displayName: 'displayName',
-          producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-          consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+          producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+          consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -527,8 +526,8 @@ describe(`${scriptName}`, () => {
       stateId: EpSdkStatesService.releasedId,
       description: 'description',
       displayName: 'displayName',
-      producedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.producedEventVersionIds,
-      consumedEventVersionIds: ([EventVersionId_1, EventVersionId_2] as unknown) as EventApiVersion.consumedEventVersionIds,  
+      producedEventVersionIds: [EventVersionId_1, EventVersionId_2],
+      consumedEventVersionIds: [EventVersionId_1, EventVersionId_2],  
 }
     try {
       // create a reference version
