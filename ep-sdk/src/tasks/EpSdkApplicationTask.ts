@@ -21,7 +21,7 @@ import {
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
 
-export type TEpSdkApplicationTask_Settings = Partial<Pick<Application, "applicationType">>;
+export type TEpSdkApplicationTask_Settings = Partial<Pick<Application, "applicationType" | "brokerType">>;
 type TEpSdkApplicationTask_CompareObject = TEpSdkApplicationTask_Settings;
 
 export interface IEpSdkApplicationTask_Config extends IEpSdkTask_Config {
@@ -59,13 +59,14 @@ export class EpSdkApplicationTask extends EpSdkTask {
     epObject: undefined,
     epObjectExists: false  
   };
-  private readonly Default_TEpSdkApplicationTask_Settings: TEpSdkApplicationTask_Settings = {
+  private readonly Default_TEpSdkApplicationTask_Settings: Required<TEpSdkApplicationTask_Settings> = {
     applicationType: "standard",
+    brokerType: Application.brokerType.SOLACE
   }
   private getTaskConfig(): IEpSdkApplicationTask_Config { 
     return this.epSdkTask_Config as IEpSdkApplicationTask_Config; 
   }
-  private createObjectSettings(): Partial<Application> {
+  private createObjectSettings(): Required<TEpSdkApplicationTask_Settings> {
     return {
       ...this.Default_TEpSdkApplicationTask_Settings,
       ...this.getTaskConfig().applicationObjectSettings,
@@ -191,15 +192,8 @@ export class EpSdkApplicationTask extends EpSdkTask {
       };
     }
 
-    // WORKAROUND_UNTIL_EP_API_FIXED
-    const requestBody = {
-      ...create,
-      brokerType: 'solace',
-    };
-    
     const applicationResponse: ApplicationResponse = await ApplicationsService.createApplication({
-      requestBody: requestBody
-      // requestBody: create
+      requestBody: create
     });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_CREATE, module: this.constructor.name, details: {
@@ -219,6 +213,9 @@ export class EpSdkApplicationTask extends EpSdkTask {
       epObjectKeys: this.getEpObjectKeys(applicationResponse.data)
     };
   }
+
+
+  update of applicationType and brokerType is now possible
 
   // protected async updateFunc(epSdkApplicationTask_GetFuncReturn: IEpSdkApplicationTask_GetFuncReturn): Promise<IEpSdkApplicationTask_UpdateFuncReturn> {
   //   const funcName = 'updateFunc';

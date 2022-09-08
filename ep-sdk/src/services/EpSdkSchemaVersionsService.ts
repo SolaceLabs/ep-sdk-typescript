@@ -4,6 +4,7 @@ import {
   SchemasService,
   SchemaVersion,
   SchemaVersionResponse,
+  SchemaVersionsResponse,
   VersionedObjectStateChangeRequest
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemasService from "./EpSdkSchemasService";
@@ -18,14 +19,6 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
   }): Promise<SchemaVersion | undefined> => {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
-
-    // EP_API_KAPUTT_TRICK
-    // const schemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersionsForSchema({
-    //   schemaId: schemaId,
-    //   versions: [schemaVersionString]
-    // });
-    // if(schemaVersionResponse.data === undefined) return undefined;
-    // return schemaVersionResponse.data;
 
     const schemaVersionList: Array<SchemaVersion> = await this.getVersionsForSchemaId({ schemaId: schemaId });
     const found: SchemaVersion | undefined = schemaVersionList.find( (schemaVersion: SchemaVersion ) => {
@@ -49,18 +42,15 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
 
     while(nextPage !== null) {
 
-      const versionsResponse: SchemaVersionResponse = await SchemasService.getSchemaVersionsForSchema({
+      const versionsResponse: SchemaVersionsResponse = await SchemasService.getSchemaVersionsForSchema({
         schemaId: schemaId,
         pageSize: pageSize,
         pageNumber: nextPage
       });
   
-      // EP_API_KAPUTT_TRICK
-      // TODO: EP API is wrong, data is actually an Array<SchemaVersion>
-      const data: Array<SchemaVersion> | undefined = versionsResponse.data as Array<SchemaVersion> | undefined;
-      if (data === undefined || data.length === 0) return [];
+      if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
 
-      versionList.push(...data);
+      versionList.push(...versionsResponse.data);
 
       const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
       EpApiHelpers.validateMeta(meta);

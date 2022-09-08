@@ -20,12 +20,6 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkEpEventVersionsService.name}.${funcName}()`;
 
-    // EP API kaputt
-    // const x = await EventsService.getEventVersionForEvent({
-    //   eventId: eventId,
-      
-    // })
-
     const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ eventId: eventId });
     const found: EventVersion | undefined = eventVersionList.find( (eventVersion: EventVersion ) => {
       if(eventVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventVersion.version === undefined', {
@@ -43,19 +37,15 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionsForEventId';
     const logName = `${EpSdkEpEventVersionsService.name}.${funcName}()`;
 
+    pageSize;
     const versionList: Array<EventVersion> = [];
     let nextPage: number | null = 1;
 
     while(nextPage !== null) {
-
-      // EP_API_KAPUTT_TRICK
-      const params: any = {
-        eventId: eventId
-      }
       const versionsResponse: EventVersionsResponse = await EventsService.getEventVersionsForEvent({
-        ...params,
-        pageSize: pageSize,
-        pageNumber: nextPage
+        eventId: eventId,
+        // pageSize: pageSize,
+        // pageNumber: nextPage
       });
       
       if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
@@ -86,7 +76,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     if (epEvent.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epEvent.id === undefined', {
       epEvent: epEvent
     });
-    const eventVersionList: Array<EpEvent> = await this.getVersionsForEventId({ eventId: epEvent.id });
+    const eventVersionList: Array<EventVersion> = await this.getVersionsForEventId({ eventId: epEvent.id });
     return eventVersionList;
   }
 
@@ -175,6 +165,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
         eventId: eventId,
         id: createdEventVersion.id,
         requestBody: {
+          ...createdEventVersion,
           stateId: targetLifecycleStateId
         }
       });

@@ -2,13 +2,13 @@ import { Validator, ValidatorResult } from 'jsonschema';
 import { EpSdkVersionService } from "./EpSdkVersionService";
 import { EpSdkApiContentError, EpSdkValidationError } from "../utils/EpSdkErrors";
 import {
-  $eventApiVersion, 
+  $EventApiVersion, 
   VersionedObjectStateChangeRequest,
-  eventApiVersion as EventApiVersion,
   EventApIsService,
   EventApiVersionsResponse,
   EventApi,
   EventApiVersionResponse,
+  EventApiVersion,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
 import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
@@ -20,7 +20,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
   }): string => {
     const funcName = 'validateDisplayName';
     const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
-    const schema = $eventApiVersion.properties.displayName;
+    const schema = $EventApiVersion.properties.displayName;
 
     const v: Validator = new Validator();
     const validateResult: ValidatorResult = v.validate(displayName, schema);
@@ -36,12 +36,6 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
   }): Promise<EventApiVersion | undefined> => {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
-
-    // EP API kaputt
-    // const x = await EventApIsService.getEventApiVersionsForEventApi({
-    //   eventApiId: eventApiId,
-    //   id
-    // })
 
     const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiId({ eventApiId: eventApiId });
     const found: EventApiVersion | undefined = eventApiVersionList.find( (eventApiVersion: EventApiVersion ) => {
@@ -65,14 +59,14 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
     while(nextPage !== null) {
 
-      // EP_API_KAPUTT_TRICK
+      // WORKAROUND_UNTIL_EP_API_FIXED
       const params: any = {
-        eventApiId: eventApiId
-      };
-      const versionsResponse: EventApiVersionsResponse = await EventApIsService.getEventApiVersionsForEventApi({
-        ...params,
         pageSize: pageSize,
         pageNumber: nextPage
+      };
+      const versionsResponse: EventApiVersionsResponse = await EventApIsService.getEventApiVersionsForEventApi({
+        eventApiId: eventApiId,
+        ...params
       });
   
       if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
