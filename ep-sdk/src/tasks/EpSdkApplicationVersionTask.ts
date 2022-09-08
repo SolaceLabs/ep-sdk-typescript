@@ -18,7 +18,7 @@ import {
 import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
 
 export type TEpSdkApplicationVersionTask_Settings = Required<Pick<ApplicationVersion, "description" | "displayName" | "stateId" | "declaredProducedEventVersionIds" | "declaredConsumedEventVersionIds" >>;
-type TEpSdkApplicationVersionTask_CompareObject = Partial<TEpSdkApplicationVersionTask_Settings> & Pick<ApplicationVersion, "version">;
+type TEpSdkApplicationVersionTask_CompareObject = Partial<TEpSdkApplicationVersionTask_Settings> & Partial<Pick<ApplicationVersion, "version">>;
 
 export interface IEpSdkApplicationVersionTask_Config extends IEpSdkVersionTask_Config {
   applicationDomainId: string;
