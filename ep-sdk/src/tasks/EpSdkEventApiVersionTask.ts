@@ -3,6 +3,7 @@ import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyV
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
+  $EventApiVersion,
   EventApiVersion
 } from '@solace-labs/ep-openapi-node';
 import { 
@@ -60,6 +61,11 @@ export class EpSdkEventApiVersionTask extends EpSdkVersionTask {
       ...this.Default_TEpSdkEventApiVersionTask_Settings,
       ...this.getTaskConfig().eventApiVersionSettings,
     };
+  }
+
+  protected transform_EpSdkTask_Config(epSdkEventApiVersionTask_Config: IEpSdkEventApiVersionTask_Config): IEpSdkEventApiVersionTask_Config {
+    epSdkEventApiVersionTask_Config.eventApiVersionSettings.displayName = this.truncate(epSdkEventApiVersionTask_Config.eventApiVersionSettings.displayName, $EventApiVersion.properties.displayName.maxLength);
+    return epSdkEventApiVersionTask_Config;
   }
 
   constructor(taskConfig: IEpSdkEventApiVersionTask_Config) {

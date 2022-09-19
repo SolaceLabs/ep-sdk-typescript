@@ -4,6 +4,7 @@ import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   SchemaVersion, 
+  $SchemaVersion
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemaVersionsService from '../services/EpSdkSchemaVersionsService';
 import { 
@@ -60,6 +61,11 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
       ...this.Default_TEpSdkSchemaVersionTask_Settings,
       ...this.getTaskConfig().schemaVersionSettings,
     };
+  }
+
+  public transform_EpSdkTask_Config(epSdkSchemaVersionTask_Config: IEpSdkSchemaVersionTask_Config): IEpSdkSchemaVersionTask_Config {
+    epSdkSchemaVersionTask_Config.schemaVersionSettings.displayName = this.truncate(epSdkSchemaVersionTask_Config.schemaVersionSettings.displayName, $SchemaVersion.properties.displayName.maxLength);
+    return epSdkSchemaVersionTask_Config;
   }
 
   constructor(taskConfig: IEpSdkSchemaVersionTask_Config) {
