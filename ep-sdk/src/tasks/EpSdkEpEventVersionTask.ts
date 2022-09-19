@@ -3,6 +3,7 @@ import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyV
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
+  $EventVersion,
   Address,
   AddressLevel,
   EventVersion,
@@ -124,6 +125,11 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
 
   protected async initializeTask(): Promise<void> {
     this.topicAddressLevelList = await this.initializeTopicAddressLevels({ topicString: this.getTaskConfig().topicString });
+  }
+
+  public transform_EpSdkTask_Config(epSdkEpEventVersionTask_Config: IEpSdkEpEventVersionTask_Config): IEpSdkEpEventVersionTask_Config {
+    epSdkEpEventVersionTask_Config.eventVersionSettings.displayName = this.truncate(epSdkEpEventVersionTask_Config.eventVersionSettings.displayName, $EventVersion.properties.displayName.maxLength);
+    return epSdkEpEventVersionTask_Config;
   }
 
   constructor(taskConfig: IEpSdkEpEventVersionTask_Config) {

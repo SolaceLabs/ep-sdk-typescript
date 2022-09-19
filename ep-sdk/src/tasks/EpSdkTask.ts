@@ -132,8 +132,17 @@ export abstract class EpSdkTask {
     return epSdkTask_IsUpdateRequiredFuncReturn;
   }
 
+  protected transform_EpSdkTask_Config(epSdkTask_Config: IEpSdkTask_Config): IEpSdkTask_Config {
+    return epSdkTask_Config;
+  }
+
+  protected truncate(str: string, maxLength: number | undefined): string {
+    if(maxLength !== undefined && str.length > maxLength) return str.slice(0, maxLength-4) + '...';
+    return str;
+  }
+
   constructor(epSdkTask_Config: IEpSdkTask_Config) {
-    this.epSdkTask_Config = epSdkTask_Config;
+    this.epSdkTask_Config = this.transform_EpSdkTask_Config(epSdkTask_Config);
     this.epSdkTask_Config.checkmode = this.isCheckmode();
     this.taskTransactionId = EpSdkUtils.getUUID();
     this.epSdkTask_TransactionLog = new EpSdkTask_TransactionLog(this.taskTransactionId, this.epSdkTask_Config, this.getDefaultEpObjectKeys());

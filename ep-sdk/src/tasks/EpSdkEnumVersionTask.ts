@@ -2,7 +2,7 @@ import { EpSdkConfig } from '../utils/EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyValidationError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
-import { TopicAddressEnumValue, TopicAddressEnumVersion } from '@solace-labs/ep-openapi-node';
+import { $TopicAddressEnumVersion, TopicAddressEnumValue, TopicAddressEnumVersion } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumVersionsService from '../services/EpSdkEnumVersionsService';
 import { 
   EEpSdkTask_EpObjectType,
@@ -75,6 +75,11 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
       ...this.getTaskConfig().enumVersionSettings,
       values: this.createEnumValueList(this.getTaskConfig().enumValues)
     };
+  }
+
+  protected transform_EpSdkTask_Config(epSdkEnumVersionTask_Config: IEpSdkEnumVersionTask_Config): IEpSdkEnumVersionTask_Config {
+    epSdkEnumVersionTask_Config.enumVersionSettings.displayName = this.truncate(epSdkEnumVersionTask_Config.enumVersionSettings.displayName, $TopicAddressEnumVersion.properties.displayName.maxLength);
+    return epSdkEnumVersionTask_Config;
   }
 
   constructor(taskConfig: IEpSdkEnumVersionTask_Config) {

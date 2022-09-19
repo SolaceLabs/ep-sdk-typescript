@@ -3,6 +3,7 @@ import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyV
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
+  $ApplicationVersion,
   ApplicationVersion, 
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationVersionsService from '../services/EpSdkApplicationVersionsService';
@@ -60,6 +61,11 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
       ...this.Default_TEpSdkApplicationVersionTask_Settings,
       ...this.getTaskConfig().applicationVersionSettings,
     };
+  }
+
+  protected transform_EpSdkTask_Config(epSdkApplicationVersionTask_Config: IEpSdkApplicationVersionTask_Config): IEpSdkApplicationVersionTask_Config {
+    epSdkApplicationVersionTask_Config.applicationVersionSettings.displayName = this.truncate(epSdkApplicationVersionTask_Config.applicationVersionSettings.displayName, $ApplicationVersion.properties.displayName.maxLength);
+    return epSdkApplicationVersionTask_Config;
   }
 
   constructor(taskConfig: IEpSdkApplicationVersionTask_Config) {

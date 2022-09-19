@@ -27,6 +27,8 @@ export abstract class EpSdkVersionTask extends EpSdkTask {
   protected versionString: string = '1.0.0';
   protected versionStrategy: EEpSdk_VersionTaskStrategy = EEpSdk_VersionTaskStrategy.BUMP_PATCH;
 
+  protected abstract transform_EpSdkTask_Config(epSdkTask_Config: IEpSdkTask_Config): IEpSdkTask_Config;
+  
   constructor(epSdkVersionTask_Config: IEpSdkVersionTask_Config) {
     super(epSdkVersionTask_Config);
     if(epSdkVersionTask_Config.versionString !== undefined) this.versionString = epSdkVersionTask_Config.versionString;

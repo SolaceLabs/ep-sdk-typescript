@@ -20,7 +20,7 @@ import {
   TEpSdkVersionTaskStrategyValidationError_Details
 } from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn, TEpSdkSchemaVersionTask_Settings } from '../../../src/tasks/EpSdkSchemaVersionTask';
+import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_Config, IEpSdkSchemaVersionTask_ExecuteReturn, TEpSdkSchemaVersionTask_Settings } from '../../../src/tasks/EpSdkSchemaVersionTask';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
@@ -592,6 +592,49 @@ describe(`${scriptName}`, () => {
 
       // could also check the error for checkmode = false
       // DEBUG
+      // expect(false, message).to.be.true;
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: should use truncated version display name`, async () => {
+    const VeryLongDisplayName = "123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_";
+    const settings: TEpSdkSchemaVersionTask_Settings = {
+      stateId: EpSdkStatesService.releasedId,
+      description: 'description',
+      displayName: VeryLongDisplayName,
+      content: SchemaContent
+    };
+    const config: IEpSdkSchemaVersionTask_Config = {
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      applicationDomainId: ApplicationDomainId,
+      schemaId: SchemaId,
+      schemaVersionSettings: settings,
+      epSdkTask_TransactionConfig: {
+        parentTransactionId: 'parentTransactionId',
+        groupTransactionId: 'groupTransactionId'
+      },
+      checkmode: false,
+    };
+    try {
+      // create a reference version
+      const epSdkSchemaVersionTask_Ref = new EpSdkSchemaVersionTask(config);
+      const expectedDisplayName = epSdkSchemaVersionTask_Ref.transform_EpSdkTask_Config(config).schemaVersionSettings.displayName;
+
+      const epSdkSchemaVersionTask_ExecuteReturn_Ref: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask_Ref.execute();
+      const createdDisplayName = epSdkSchemaVersionTask_ExecuteReturn_Ref.epObject.displayName;
+      let message = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn_Ref', epSdkSchemaVersionTask_ExecuteReturn_Ref);
+      expect(createdDisplayName, message).to.equal(expectedDisplayName);
+      // check if update required
+      config.checkmode = true;
+      const epSdkSchemaVersionTask_Check = new EpSdkSchemaVersionTask(config);
+      const epSdkSchemaVersionTask_ExecuteReturn_Check: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask_Check.execute();
+      message = TestLogger.createLogMessage('epSdkSchemaVersionTask_ExecuteReturn_Check', epSdkSchemaVersionTask_ExecuteReturn_Check);
+      expect(epSdkSchemaVersionTask_ExecuteReturn_Check.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      // // DEBUG
       // expect(false, message).to.be.true;
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
