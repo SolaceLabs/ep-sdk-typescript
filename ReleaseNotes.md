@@ -2,6 +2,13 @@
 
 Solace Event Portal SDK.
 
+## Version 0.10.1-alpha
+
+**Enhancements:**
+- version tasks: **EpSdk{object}VersionTask**
+  - create truncated version display name if provided display name exceeds max length defined in EP OpenAPI spec.
+  - adds elipses (...) to indicate truncation to user
+
 ## Version 0.10.0-alpha
 
 **Core:**
