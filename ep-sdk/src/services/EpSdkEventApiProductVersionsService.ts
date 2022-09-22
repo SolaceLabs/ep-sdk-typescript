@@ -12,7 +12,7 @@ import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
 import { EpSdkBrokerType } from './EpSdkService';
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
 
-class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
+export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
   public listAll_LatestVersions = async({ applicationDomainIds, shared, brokerType, stateId }:{
     applicationDomainIds?: Array<string>;
