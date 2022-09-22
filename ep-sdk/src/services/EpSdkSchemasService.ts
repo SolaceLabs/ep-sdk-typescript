@@ -10,10 +10,11 @@ import {
 import { EpSdkService } from './EpSdkService';
 
 export enum EEpSdkSchemaType {
-  JSON_SCHEMA = "jsonSchema"
+  JSON_SCHEMA = "jsonSchema",
+  AVRO = "avro"
 }
 export enum EEpSdkSchemaContentType {
-  APPLICATION_JSON = "json"
+  APPLICATION_JSON = "json",
 }
 
 export class EpSdkSchemasService extends EpSdkService {
@@ -28,7 +29,7 @@ export class EpSdkSchemasService extends EpSdkService {
     const schemasResponse: SchemasResponse = await SchemasService.getSchemas({
       applicationDomainId: applicationDomainId,
       name: schemaName
-    })
+    });
 
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
       schemasResponse: schemasResponse
