@@ -2,6 +2,12 @@
 
 Solace Event Portal SDK.
 
+## Version 0.11.0-alpha
+
+**Enhancements:**
+- **EpSdkSchemasService**
+  - added `avro` schema type to `EEpSdkSchemaType`
+
 ## Version 0.10.1-alpha
 
 **Enhancements:**
