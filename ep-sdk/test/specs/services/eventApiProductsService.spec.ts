@@ -18,6 +18,8 @@ import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicati
 import { EpSdkError } from '../../../src/utils/EpSdkErrors';
 import EpSdkEventApiProductsService from '../../../src/services/EpSdkEventApiProductsService';
 import EpSdkEventApiProductVersionsService from '../../../src/services/EpSdkEventApiProductVersionsService';
+import { EpSdkBrokerType } from '../../../src/services/EpSdkService';
+import EpSdkStatesService, { EEpSdkStateDTONames } from '../../../src/services/EpSdkStatesService';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
@@ -126,6 +128,39 @@ describe(`${scriptName}`, () => {
         for(const eventApiProductVersion of latest_eventApiProductVersionList) {
           expect(eventApiProductVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventApiProductVersionString_2);
         }
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get complete list of latest event api product versions for any application domain`, async () => {
+      try {
+        const latest_eventApiProductVersionList: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.listAll_LatestVersions({
+          applicationDomainIds: undefined,
+          shared: true,
+          stateId: EpSdkStatesService.getEpStateIdByName({ epSdkStateDTOName: EEpSdkStateDTONames.RELEASED }),    
+          // stateId: undefined
+        });
+        expect(latest_eventApiProductVersionList.length, TestLogger.createApiTestFailMessage('no versions found')).to.be.greaterThan(0);
+        const message = TestLogger.createLogMessage('latest_eventApiProductVersionList', latest_eventApiProductVersionList);
+        TestLogger.logMessageWithId(message);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    xit(`${scriptName}: should test brokerType parameter`, async () => {
+      try {
+        const latest_eventApiProductVersionList: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.listAll_LatestVersions({
+          applicationDomainIds: ApplicationDomainIdList,
+          shared: EventApiProductShared,
+          stateId: undefined,
+          brokerType: EpSdkBrokerType.Solace,
+        });
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

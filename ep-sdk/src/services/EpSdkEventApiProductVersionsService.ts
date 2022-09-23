@@ -12,6 +12,9 @@ import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
 import { EpSdkBrokerType } from './EpSdkService';
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
 
+export type EpSdkEventApiProductVersion = Required<EventApiProductVersion>;
+export type EpSdkEventApiProductVersionList = Array<EpSdkEventApiProductVersion>;
+
 export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
   public listAll_LatestVersions = async({ applicationDomainIds, shared, brokerType, stateId }:{
@@ -19,7 +22,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     shared: boolean;
     brokerType?: EpSdkBrokerType;
     stateId?: string;
-  }): Promise<Array<EventApiProductVersion>> => {
+  }): Promise<EpSdkEventApiProductVersionList> => {
     const funcName = 'list';
     const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
 
@@ -31,7 +34,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     });
     const eventApiProductList: Array<EventApiProduct> = eventApiProductsResponse.data ? eventApiProductsResponse.data : [];
     // get latest version for each event api product
-    const latest_EventApiProductVersionList: Array<EventApiProductVersion> = [];
+    const latest_EpSdkEventApiProductVersionList: EpSdkEventApiProductVersionList = [];
     for(const eventApiProduct of eventApiProductList) {
       if(eventApiProduct.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiProduct.id === undefined', {
         eventApiProduct: eventApiProduct
@@ -41,9 +44,12 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
         eventApiProductId: eventApiProduct.id,
         stateId: stateId
       });
-      if(latest_EventApiProductVersion !== undefined) latest_EventApiProductVersionList.push(latest_EventApiProductVersion);
+      
+      const latest_EpSdkEventApiProductVersion: EpSdkEventApiProductVersion = latest_EventApiProductVersion as EpSdkEventApiProductVersion;
+
+      if(latest_EventApiProductVersion !== undefined) latest_EpSdkEventApiProductVersionList.push(latest_EpSdkEventApiProductVersion);
     }
-    return latest_EventApiProductVersionList;
+    return latest_EpSdkEventApiProductVersionList;
   }
 
   // public getVersionByVersion = async ({ eventApiId, eventApiVersionString }: {
