@@ -5,6 +5,9 @@ export * from './utils/EpSdkErrors';
 export * from './utils/EpSdkLogger';
 export { default as EpSdkSemVerUtils } from './utils/EpSdkSemVerUtils';
 
+// types
+export * from './types';
+
 // tasks
 export * from './tasks/EpSdkTask_TransactionLog';
 export * from './tasks/EpSdkTask';
@@ -67,4 +70,5 @@ export {
   EpSdkEventApiProductVersionList,
   EpSdkEventApiProductAndVersion,
   EpSdkEventApiProductAndVersionList,
+  EpSdkEventApiProductAndVersionListResponse,
 } from './services/EpSdkEventApiProductVersionsService';

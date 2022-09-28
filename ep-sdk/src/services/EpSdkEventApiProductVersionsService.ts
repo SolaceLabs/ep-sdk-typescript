@@ -11,6 +11,7 @@ import {
 import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
 import { EpSdkBrokerType } from './EpSdkService';
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
+import { EpSdkPagination } from "../types";
 
 
 export type EpSdkEventApiProduct = Required<EventApiProduct>;
@@ -24,7 +25,7 @@ export type EpSdkEventApiProductAndVersionList = Array<EpSdkEventApiProductAndVe
 export type EpSdkEventApiProductAndVersionListResponse = {
   data: EpSdkEventApiProductAndVersionList;
   meta: {
-    pagination: Pagination;
+    pagination: EpSdkPagination;
   }
 }
 
@@ -72,7 +73,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     const startIdx = (pageSize * (pageNumber-1));
     const endIdx = (startIdx + pageSize);
     const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = complete_EpSdkEventApiProductAndVersionList.slice(startIdx, endIdx);
-    const nextPage: number | undefined = endIdx < complete_EpSdkEventApiProductAndVersionList.length ? pageNumber + 1 : undefined;
+    const nextPage: number | undefined = endIdx < complete_EpSdkEventApiProductAndVersionList.length ? (pageNumber + 1) : undefined;
 
     return {
       data: epSdkEventApiProductAndVersionList,
