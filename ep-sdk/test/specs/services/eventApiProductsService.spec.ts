@@ -17,7 +17,7 @@ import {
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError } from '../../../src/utils/EpSdkErrors';
 import EpSdkEventApiProductsService from '../../../src/services/EpSdkEventApiProductsService';
-import EpSdkEventApiProductVersionsService from '../../../src/services/EpSdkEventApiProductVersionsService';
+import EpSdkEventApiProductVersionsService, { EpSdkEventApiProductAndVersionList, EpSdkEventApiProductAndVersionListResponse } from '../../../src/services/EpSdkEventApiProductVersionsService';
 import { EpSdkBrokerType } from '../../../src/services/EpSdkService';
 import EpSdkStatesService, { EEpSdkStateDTONames } from '../../../src/services/EpSdkStatesService';
 
@@ -63,9 +63,18 @@ describe(`${scriptName}`, () => {
     after(async() => {
       // delete all application domains
       // TODO: wait for EP to allow deletion of app domains which still contain event api products
-      // for(const applicationDomainId of ApplicationDomainIdList) {
-      //   await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: applicationDomainId });
-      // }
+      for(const applicationDomainId of ApplicationDomainIdList) {
+        // delete all event api products first, restriction in EP at the moment
+        const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.getEventApiProducts({
+          applicationDomainId: applicationDomainId
+        });
+        for(const eventApiProduct of eventApiProductsResponse.data) {
+          await EventApiProductsService.deleteEventApiProduct({
+            id: eventApiProduct.id
+          });
+        }
+        await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: applicationDomainId });
+      }
     });
 
     it(`${scriptName}: should create eventApiProduct & two versions in every application domain`, async () => {
@@ -119,14 +128,52 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get complete list of latest event api product versions`, async () => {
       try {
-        const latest_eventApiProductVersionList: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.listAll_LatestVersions({
+        const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
           applicationDomainIds: ApplicationDomainIdList,
-          shared: EventApiProductShared,
-          stateId: undefined
+          shared: true,
+          pageNumber: 1,
+          pageSize: 100
         });
-        expect(latest_eventApiProductVersionList.length, TestLogger.createApiTestFailMessage('wrong number')).to.equal(NumApplicationDomains);
-        for(const eventApiProductVersion of latest_eventApiProductVersionList) {
-          expect(eventApiProductVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventApiProductVersionString_2);
+        const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = epSdkEventApiProductAndVersionListResponse.data;
+
+        const message = `epSdkEventApiProductAndVersionList=\n${JSON.stringify(epSdkEventApiProductAndVersionList, null, 2)}`;        
+        expect(epSdkEventApiProductAndVersionList.length, message).to.equal(NumApplicationDomains);
+        expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.count, message).to.equal(NumApplicationDomains);
+        for(const epSdkEventApiProductAndVersion of epSdkEventApiProductAndVersionList) {
+          expect(epSdkEventApiProductAndVersion.eventApiProductVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventApiProductVersionString_2);
+        }
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should test paging of latest event api product versions`, async () => {
+      const PageSize = 1;
+      let nextPage: number | undefined | null = 1;
+      try {
+        while(nextPage !== undefined && nextPage !== null) {
+          const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
+            applicationDomainIds: ApplicationDomainIdList,
+            shared: true,
+            pageNumber: nextPage,
+            pageSize: PageSize
+          });
+          const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = epSdkEventApiProductAndVersionListResponse.data;
+  
+          const message = `epSdkEventApiProductAndVersionListResponse=\n${JSON.stringify(epSdkEventApiProductAndVersionListResponse, null, 2)}`;        
+          expect(epSdkEventApiProductAndVersionList.length, message).to.equal(PageSize);
+          expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.count, message).to.equal(NumApplicationDomains);
+          if(nextPage < NumApplicationDomains) {
+            expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.nextPage, message).to.equal(nextPage + 1);
+          } else {
+            expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.nextPage, message).to.be.undefined;
+          }
+          for(const epSdkEventApiProductAndVersion of epSdkEventApiProductAndVersionList) {
+            expect(epSdkEventApiProductAndVersion.eventApiProductVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventApiProductVersionString_2);
+          }
+          nextPage = epSdkEventApiProductAndVersionListResponse.meta.pagination.nextPage;  
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -137,30 +184,16 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get complete list of latest event api product versions for any application domain`, async () => {
       try {
-        const latest_eventApiProductVersionList: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.listAll_LatestVersions({
-          applicationDomainIds: undefined,
-          shared: true,
-          stateId: EpSdkStatesService.getEpStateIdByName({ epSdkStateDTOName: EEpSdkStateDTONames.RELEASED }),    
-          // stateId: undefined
-        });
-        expect(latest_eventApiProductVersionList.length, TestLogger.createApiTestFailMessage('no versions found')).to.be.greaterThan(0);
-        const message = TestLogger.createLogMessage('latest_eventApiProductVersionList', latest_eventApiProductVersionList);
-        TestLogger.logMessageWithId(message);
-      } catch(e) {
-        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
-        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
-        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
-      }
-    });
-
-    xit(`${scriptName}: should test brokerType parameter`, async () => {
-      try {
-        const latest_eventApiProductVersionList: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.listAll_LatestVersions({
+        const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
           applicationDomainIds: ApplicationDomainIdList,
-          shared: EventApiProductShared,
-          stateId: undefined,
-          brokerType: EpSdkBrokerType.Solace,
+          shared: true,
+          pageNumber: 1,
+          pageSize: 100
         });
+        const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = epSdkEventApiProductAndVersionListResponse.data;
+        expect(epSdkEventApiProductAndVersionList.length, TestLogger.createApiTestFailMessage('no versions found')).to.be.greaterThan(0);
+        const message = TestLogger.createLogMessage('epSdkEventApiProductAndVersionList', epSdkEventApiProductAndVersionList);
+        TestLogger.logMessageWithId(message);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

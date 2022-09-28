@@ -13,12 +13,13 @@ export class EpSdkEventApiProductsService extends EpSdkService {
    * Retrieves a list of all EventApiProducts without paging.
    * @param param0 
    */
-  public listAll = async({ applicationDomainIds, shared, brokerType }:{
+  public listAll = async({ applicationDomainIds, shared, brokerType, sortFieldName }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerType;
+    sortFieldName?: string;
   }): Promise<EventApiProductsResponse> => {
-    const funcName = 'list';
+    const funcName = 'listAll';
     const logName = `${EpSdkEventApiProductsService.name}.${funcName}()`;
 
     const eventApiProductList: Array<EventApiProduct> = [];
@@ -28,6 +29,7 @@ export class EpSdkEventApiProductsService extends EpSdkService {
       const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.getEventApiProducts({
         pageSize: 100,
         pageNumber: nextPage,
+        sort: sortFieldName,
         applicationDomainIds: applicationDomainIds,
         shared: shared,
         brokerType: brokerType

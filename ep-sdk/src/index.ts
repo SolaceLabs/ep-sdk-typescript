@@ -62,6 +62,9 @@ export {
 } from './services/EpSdkEventApiProductsService';
 export {
   default as EpSdkEventApiProductVersionsService,
+  EpSdkEventApiProduct,
   EpSdkEventApiProductVersion,
   EpSdkEventApiProductVersionList,
+  EpSdkEventApiProductAndVersion,
+  EpSdkEventApiProductAndVersionList,
 } from './services/EpSdkEventApiProductVersionsService';

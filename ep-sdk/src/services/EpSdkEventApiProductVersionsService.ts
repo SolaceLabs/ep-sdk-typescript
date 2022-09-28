@@ -12,44 +12,78 @@ import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
 import { EpSdkBrokerType } from './EpSdkService';
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
 
+
+export type EpSdkEventApiProduct = Required<EventApiProduct>;
 export type EpSdkEventApiProductVersion = Required<EventApiProductVersion>;
 export type EpSdkEventApiProductVersionList = Array<EpSdkEventApiProductVersion>;
+export type EpSdkEventApiProductAndVersion = {
+  eventApiProduct: EpSdkEventApiProduct;
+  eventApiProductVersion: EpSdkEventApiProductVersion;
+}
+export type EpSdkEventApiProductAndVersionList = Array<EpSdkEventApiProductAndVersion>;
+export type EpSdkEventApiProductAndVersionListResponse = {
+  data: EpSdkEventApiProductAndVersionList;
+  meta: {
+    pagination: Pagination;
+  }
+}
 
 export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
-  public listAll_LatestVersions = async({ applicationDomainIds, shared, brokerType, stateId }:{
+  public listLatestVersions = async({ applicationDomainIds, shared, brokerType, stateId, pageNumber = 1, pageSize = 20, sortFieldName }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerType;
     stateId?: string;
-  }): Promise<EpSdkEventApiProductVersionList> => {
-    const funcName = 'list';
+    pageNumber?: number;
+    pageSize?: number;
+    sortFieldName?: string;
+  }): Promise<EpSdkEventApiProductAndVersionListResponse> => {
+    const funcName = 'listLatestVersions';
     const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
 
-    // get a list of all event api products
+    // get all api products:
+    // - we may have eventApiProducts without a version in the state requested
     const eventApiProductsResponse: EventApiProductsResponse = await EpSdkEventApiProductsService.listAll({
       applicationDomainIds: applicationDomainIds,
       shared: shared,
-      brokerType: brokerType
+      brokerType: brokerType,
+      sortFieldName: sortFieldName,
     });
     const eventApiProductList: Array<EventApiProduct> = eventApiProductsResponse.data ? eventApiProductsResponse.data : [];
-    // get latest version for each event api product
-    const latest_EpSdkEventApiProductVersionList: EpSdkEventApiProductVersionList = [];
+
+    // crete the complete list
+    const complete_EpSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = [];
     for(const eventApiProduct of eventApiProductList) {
       if(eventApiProduct.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiProduct.id === undefined', {
         eventApiProduct: eventApiProduct
       });
-      // get the latest version
+      // get the latest version in the requested state
       const latest_EventApiProductVersion: EventApiProductVersion | undefined = await this.getLatestVersionForEventApiProductId({
         eventApiProductId: eventApiProduct.id,
         stateId: stateId
+      });      
+      if(latest_EventApiProductVersion !== undefined) complete_EpSdkEventApiProductAndVersionList.push({
+        eventApiProduct: eventApiProduct as EpSdkEventApiProduct,
+        eventApiProductVersion: latest_EventApiProductVersion as EpSdkEventApiProductVersion
       });
-      
-      const latest_EpSdkEventApiProductVersion: EpSdkEventApiProductVersion = latest_EventApiProductVersion as EpSdkEventApiProductVersion;
-
-      if(latest_EventApiProductVersion !== undefined) latest_EpSdkEventApiProductVersionList.push(latest_EpSdkEventApiProductVersion);
     }
-    return latest_EpSdkEventApiProductVersionList;
+    // extract the page
+    const startIdx = (pageSize * (pageNumber-1));
+    const endIdx = (startIdx + pageSize);
+    const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = complete_EpSdkEventApiProductAndVersionList.slice(startIdx, endIdx);
+    const nextPage: number | undefined = endIdx < complete_EpSdkEventApiProductAndVersionList.length ? pageNumber + 1 : undefined;
+
+    return {
+      data: epSdkEventApiProductAndVersionList,
+      meta: {
+        pagination: {
+          count: complete_EpSdkEventApiProductAndVersionList.length,
+          pageNumber: pageNumber,
+          nextPage: nextPage
+        }
+      } 
+    };
   }
 
   // public getVersionByVersion = async ({ eventApiId, eventApiVersionString }: {
@@ -156,7 +190,8 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
       eventApiProductId: eventApiProductId,
-      stateId: stateId
+      stateId: stateId,
+      pageSize: 100
     });
 
     const latest_EventApiProductVersion: EventApiProductVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: eventApiProductVersionList });
