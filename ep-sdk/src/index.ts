@@ -71,4 +71,5 @@ export {
   EpSdkEventApiProductAndVersion,
   EpSdkEventApiProductAndVersionList,
   EpSdkEventApiProductAndVersionListResponse,
+  EpSdkEventApiProductAndVersionResponse,
 } from './services/EpSdkEventApiProductVersionsService';
