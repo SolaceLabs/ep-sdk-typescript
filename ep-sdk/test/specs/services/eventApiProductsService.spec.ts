@@ -17,7 +17,7 @@ import {
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError } from '../../../src/utils/EpSdkErrors';
 import EpSdkEventApiProductsService from '../../../src/services/EpSdkEventApiProductsService';
-import EpSdkEventApiProductVersionsService, { EpSdkEventApiProductAndVersionList, EpSdkEventApiProductAndVersionListResponse } from '../../../src/services/EpSdkEventApiProductVersionsService';
+import EpSdkEventApiProductVersionsService, { EpSdkEventApiProductAndVersionList, EpSdkEventApiProductAndVersionListResponse, EpSdkEventApiProductAndVersionResponse } from '../../../src/services/EpSdkEventApiProductVersionsService';
 import { EpSdkBrokerType } from '../../../src/services/EpSdkService';
 import EpSdkStatesService, { EEpSdkStateDTONames } from '../../../src/services/EpSdkStatesService';
 
@@ -200,6 +200,46 @@ describe(`${scriptName}`, () => {
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
       }
     });
+
+    it(`${scriptName}: should get the latest version of for all event api products`, async () => {
+      try {
+        const eventApiProductsResponse: EventApiProductsResponse = await EpSdkEventApiProductsService.listAll({
+          applicationDomainIds: ApplicationDomainIdList,
+          shared: EventApiProductShared,
+        });
+        let message = `eventApiProductsResponse=\n${JSON.stringify(eventApiProductsResponse, null, 2)}`;        
+        expect(eventApiProductsResponse.data, message).to.not.be.undefined;
+        expect(eventApiProductsResponse.data.length, message).to.equal(NumApplicationDomains);
+        for(const eventApiProduct of eventApiProductsResponse.data) {
+          // get the latest version for each event api product
+          const latest_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getVersionForEventApiProductId({ 
+            eventApiProductId: eventApiProduct.id,
+            stateId: undefined
+          });
+          message = `latest_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse, null, 2)}`;    
+          expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProduct.id, message).to.equal(eventApiProduct.id);
+          expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.version, message).to.equal(EventApiProductVersionString_2);
+          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_1);    
+          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_2);    
+          // get the version 1 for each event api product
+          const version1_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getVersionForEventApiProductId({ 
+            eventApiProductId: eventApiProduct.id,
+            stateId: undefined,
+            versionString: EventApiProductVersionString_1
+          });
+          message = `version1_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse, null, 2)}`;    
+          expect(version1_EpSdkEventApiProductAndVersionResponse.eventApiProduct.id, message).to.equal(eventApiProduct.id);
+          expect(version1_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.version, message).to.equal(EventApiProductVersionString_1);
+          expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_1);    
+          expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_2);    
+        }
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
 
 });
 
