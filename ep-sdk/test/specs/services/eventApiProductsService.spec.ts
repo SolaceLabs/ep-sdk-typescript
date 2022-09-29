@@ -219,8 +219,8 @@ describe(`${scriptName}`, () => {
           message = `latest_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse, null, 2)}`;    
           expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProduct.id, message).to.equal(eventApiProduct.id);
           expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.version, message).to.equal(EventApiProductVersionString_2);
-          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_1);    
-          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_2);    
+          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_1);    
+          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_2);    
           // get the version 1 for each event api product
           const version1_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,
@@ -230,8 +230,8 @@ describe(`${scriptName}`, () => {
           message = `version1_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse, null, 2)}`;    
           expect(version1_EpSdkEventApiProductAndVersionResponse.eventApiProduct.id, message).to.equal(eventApiProduct.id);
           expect(version1_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.version, message).to.equal(EventApiProductVersionString_1);
-          expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_1);    
-          expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.versionStringList), message).to.include(EventApiProductVersionString_2);    
+          expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_1);    
+          expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_2);    
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;

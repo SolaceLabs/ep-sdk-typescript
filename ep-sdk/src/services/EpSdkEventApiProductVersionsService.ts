@@ -30,7 +30,9 @@ export type EpSdkEventApiProductAndVersionListResponse = {
   }
 }
 export type EpSdkEventApiProductAndVersionResponse = EpSdkEventApiProductAndVersion & {
-  versionStringList: Array<string>;
+  meta: {
+    versionStringList: Array<string>;
+  }
 }
 export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
@@ -254,7 +256,9 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     return {
       eventApiProduct: eventApiProductResponse.data as EpSdkEventApiProduct,
       eventApiProductVersion: eventApiProductVersion as EpSdkEventApiProductVersion,
-      versionStringList: versionStringList
+      meta: {
+        versionStringList: versionStringList
+      }
     }
   }
 
