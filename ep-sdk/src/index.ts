@@ -49,7 +49,8 @@ export {
   default as EpSdkEventApiVersionsService
 } from './services/EpSdkEventApiVersionsService';
 export {
-  default as EpSdkStatesService
+  default as EpSdkStatesService,
+  EEpSdkStateDTONames,
 } from './services/EpSdkStatesService';
 export {
   default as EpSdkEnumVersionsService,

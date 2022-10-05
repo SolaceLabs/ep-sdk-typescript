@@ -75,7 +75,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     });
     const eventApiProductList: Array<EventApiProduct> = eventApiProductsResponse.data ? eventApiProductsResponse.data : [];
 
-    // crete the complete list
+    // create the complete list
     const complete_EpSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = [];
     for(const eventApiProduct of eventApiProductList) {
       if(eventApiProduct.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiProduct.id === undefined', {
