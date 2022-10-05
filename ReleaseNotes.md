@@ -261,5 +261,4 @@ Solace Event Portal SDK.
 
 **Initial Alpha Release.**
 
-
 ---
