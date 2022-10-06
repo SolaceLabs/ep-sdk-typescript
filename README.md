@@ -11,7 +11,6 @@
 [Release Notes](./ReleaseNotes.md) |
 [Documentation](https://solacelabs.github.io/ep-sdk-typescript/)
 
-
 The SDK comprises of:
 
 ## Services
@@ -26,8 +25,5 @@ Idempotent CRUD tasks that provide a simple interface to assert presence or abse
 
 - Error definitions,
 - Logging interface
-
-
-
 
 ---
