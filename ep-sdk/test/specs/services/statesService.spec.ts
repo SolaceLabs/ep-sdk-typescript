@@ -43,6 +43,21 @@ describe(`${scriptName}`, () => {
       }
     });
 
+    it(`${scriptName}: should get state DTO names by Id`, async () => {
+      try {
+        let getName = EpSdkStatesService.getStateDTONameByEpStateId({ stateId: EpSdkStatesService.draftId });
+        expect(getName, TestLogger.createTestFailMessage(`getName=${getName} !== ${EEpSdkStateDTONames.DRAFT}`)).to.eq(EEpSdkStateDTONames.DRAFT);
+        getName = EpSdkStatesService.getStateDTONameByEpStateId({ stateId: EpSdkStatesService.releasedId });
+        expect(getName, TestLogger.createTestFailMessage(`getName=${getName} !== ${EEpSdkStateDTONames.RELEASED}`)).to.eq(EEpSdkStateDTONames.RELEASED);
+        getName = EpSdkStatesService.getStateDTONameByEpStateId({ stateId: EpSdkStatesService.deprecatedId });
+        expect(getName, TestLogger.createTestFailMessage(`getName=${getName} !== ${EEpSdkStateDTONames.DEPRECATED}`)).to.eq(EEpSdkStateDTONames.DEPRECATED);
+        getName = EpSdkStatesService.getStateDTONameByEpStateId({ stateId: EpSdkStatesService.retiredId });
+        expect(getName, TestLogger.createTestFailMessage(`getName=${getName} !== ${EEpSdkStateDTONames.RETIRED}`)).to.eq(EEpSdkStateDTONames.RETIRED);
+      } catch(e) {
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
     
 });
 

@@ -28,6 +28,22 @@ export class EpSdkVersionService extends EpSdkService {
     return latestEpObjectVersion;
   }
 
+  protected getEpObjectVersionFromList = ({ epObjectVersionList, versionString }: {
+    epObjectVersionList: Array<any>;
+    versionString: string;
+  }): any | undefined => {
+    const funcName = 'getEpObjectVersionFromList';
+    const logName = `${EpSdkVersionService.name}.${funcName}()`;
+    const found = epObjectVersionList.find( (epObjectVersion) => {
+      if(epObjectVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObjectVersion.version === undefined', {
+        epObjectVersion: epObjectVersion
+      });
+      return epObjectVersion.version === versionString;
+    });
+    return found;
+  }
+
+
 }
 
 

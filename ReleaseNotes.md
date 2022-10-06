@@ -2,6 +2,14 @@
 
 Solace Event Portal SDK.
 
+## Version 0.12.0-alpha
+
+**New Features:**
+- **EpSdkEventApiProductsService**
+  - services for event api products
+- **EpSdkEventApiProductVersionsService**
+  - services for event api product versions
+
 ## Version 0.11.0-alpha
 
 **Enhancements:**
@@ -252,6 +260,5 @@ Solace Event Portal SDK.
 ## Version 0.1.0-alpha
 
 **Initial Alpha Release.**
-
 
 ---

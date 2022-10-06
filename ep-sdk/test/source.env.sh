@@ -23,7 +23,7 @@ export EP_SDK_TEST_EP_API_BASE_URL="https://ian-dev-api.mymaas.net"
 #   Trace = 6,
 # }
 export EP_SDK_TEST_LOG_LEVEL=6
-export EP_SDK_TEST_ENABLE_API_CALL_LOGGING="false"
+export EP_SDK_TEST_ENABLE_API_CALL_LOGGING="true"
 
 ######################################################
 

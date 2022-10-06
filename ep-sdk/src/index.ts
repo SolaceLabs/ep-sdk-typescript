@@ -5,6 +5,9 @@ export * from './utils/EpSdkErrors';
 export * from './utils/EpSdkLogger';
 export { default as EpSdkSemVerUtils } from './utils/EpSdkSemVerUtils';
 
+// types
+export * from './types';
+
 // tasks
 export * from './tasks/EpSdkTask_TransactionLog';
 export * from './tasks/EpSdkTask';
@@ -46,7 +49,8 @@ export {
   default as EpSdkEventApiVersionsService
 } from './services/EpSdkEventApiVersionsService';
 export {
-  default as EpSdkStatesService
+  default as EpSdkStatesService,
+  EEpSdkStateDTONames,
 } from './services/EpSdkStatesService';
 export {
   default as EpSdkEnumVersionsService,
@@ -57,3 +61,16 @@ export {
 export {
   default as EpSdkApplicationVersionsService
 } from './services/EpSdkApplicationVersionsService';
+export {
+  default as EpSdkEventApiProductsService
+} from './services/EpSdkEventApiProductsService';
+export {
+  default as EpSdkEventApiProductVersionsService,
+  EpSdkEventApiProduct,
+  EpSdkEventApiProductVersion,
+  EpSdkEventApiProductVersionList,
+  EpSdkEventApiProductAndVersion,
+  EpSdkEventApiProductAndVersionList,
+  EpSdkEventApiProductAndVersionListResponse,
+  EpSdkEventApiProductAndVersionResponse,
+} from './services/EpSdkEventApiProductVersionsService';

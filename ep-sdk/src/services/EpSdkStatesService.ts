@@ -132,6 +132,23 @@ export class EpSdkStatesService {
         });
     }
   }
+
+  public getStateDTONameByEpStateId = ({ stateId}: {
+    stateId: string;
+  }): string => {
+    switch(stateId) {
+      case this._draftId:
+        return EEpSdkStateDTONames.DRAFT;
+      case this._releasedId:
+        return EEpSdkStateDTONames.RELEASED;
+      case this._deprecatedId:
+        return EEpSdkStateDTONames.DEPRECATED;
+      case this._retiredId:
+        return EEpSdkStateDTONames.RETIRED;
+      default:
+        return stateId;
+    }
+  }
 }
 
 export default new EpSdkStatesService();
