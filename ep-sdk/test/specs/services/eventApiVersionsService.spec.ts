@@ -74,7 +74,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           eventApiId: EventApiId,
           eventApiVersion: create,
-          targetLifecycleStateId: EpSdkStatesService.releasedId
+          targetLifecycleStateId: EpSdkStatesService.draftId,
         });
         EventApiVersionId = created.id;
       } catch(e) {
@@ -138,7 +138,7 @@ describe(`${scriptName}`, () => {
           applicationDomainId: ApplicationDomainId,
           eventApiId: EventApiId,
           eventApiVersion: create,
-          targetLifecycleStateId: EpSdkStatesService.releasedId
+          targetLifecycleStateId: EpSdkStatesService.draftId
         });
         EventApiNextVersionId = created.id;
       } catch(e) {
