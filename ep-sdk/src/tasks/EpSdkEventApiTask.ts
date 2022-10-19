@@ -21,7 +21,7 @@ import {
 } from "./EpSdkTask";
 import EpSdkEventApisService from "../services/EpSdkEventApisService";
 
-type TEpSdkEventApiTask_Settings = Partial<Pick<EventApi, "shared">>;
+type TEpSdkEventApiTask_Settings = Partial<Pick<EventApi, "shared" | "brokerType">>;
 type TEpSdkEventApiTask_CompareObject = TEpSdkEventApiTask_Settings;
 
 export interface IEpSdkEventApiTask_Config extends IEpSdkTask_Config {
@@ -58,6 +58,7 @@ export class EpSdkEventApiTask extends EpSdkTask {
   };
   private readonly Default_TEpSdkEventApiTask_Settings: TEpSdkEventApiTask_Settings = {
     shared: true,
+    brokerType: EventApi.brokerType.SOLACE
   }
   private getTaskConfig(): IEpSdkEventApiTask_Config { 
     return this.epSdkTask_Config as IEpSdkEventApiTask_Config; 
@@ -142,7 +143,8 @@ export class EpSdkEventApiTask extends EpSdkTask {
     const existingObject: EventApi = epSdkEventApiTask_GetFuncReturn.epObject;
     const existingCompareObject: TEpSdkEventApiTask_CompareObject = {
       shared: existingObject.shared,
-    }
+      brokerType: existingObject.brokerType
+    };
     const requestedCompareObject: TEpSdkEventApiTask_CompareObject = this.createObjectSettings();
 
     const epSdkTask_IsUpdateRequiredFuncReturn: IEpSdkTask_IsUpdateRequiredFuncReturn = this.create_IEpSdkTask_IsUpdateRequiredFuncReturn({ 

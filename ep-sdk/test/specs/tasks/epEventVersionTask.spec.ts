@@ -99,7 +99,7 @@ describe(`${scriptName}`, () => {
 
   after(async() => {
     try {
-      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
+      // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
     } catch(e) {
       // noop
     }
@@ -122,7 +122,7 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
           displayName: 'displayName',
-          schemaVersionId: SchemaVersionId
+          schemaVersionId: SchemaVersionId,
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -160,7 +160,8 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId,
           description: 'description',
           displayName: 'displayName',
-          schemaVersionId: SchemaVersionId
+          schemaVersionId: SchemaVersionId,
+          brokerType: "kafka"
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -175,8 +176,8 @@ describe(`${scriptName}`, () => {
       
       EventVersionId = epSdkEpEventVersionTask_ExecuteReturn.epObject.id;
 
-      // // DEBUG
-      // expect(false, message).to.be.true;
+      // DEBUG
+      expect(false, message).to.be.true;
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;

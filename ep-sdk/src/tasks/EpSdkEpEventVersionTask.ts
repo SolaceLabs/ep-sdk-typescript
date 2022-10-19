@@ -6,6 +6,7 @@ import {
   $EventVersion,
   Address,
   AddressLevel,
+  DeliveryDescriptor,
   EventVersion,
   TopicAddressEnumVersion, 
 } from '@solace-labs/ep-openapi-node';
@@ -23,7 +24,8 @@ import EpSdkEnumVersionService from '../services/EpSdkEnumVersionsService';
 import EpSdkEpEventVersionsService from '../services/EpSdkEpEventVersionsService';
 
 /** @category EpSdkEpEventVersionTask */
-export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">>;
+type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<DeliveryDescriptor, "brokerType" >;
+export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId" >> & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
 type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category EpSdkEpEventVersionTask */
@@ -114,7 +116,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
       ...this.Default_TEpSdkEpEventVersionTask_Settings,
       ...this.getTaskConfig().eventVersionSettings,
       deliveryDescriptor: {
-        brokerType: "solace",
+        brokerType: this.getTaskConfig().eventVersionSettings.brokerType,
         address: {
           addressLevels: this.topicAddressLevelList,
           addressType: Address.addressType.TOPIC,
