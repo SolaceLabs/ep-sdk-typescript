@@ -687,7 +687,7 @@ describe(`${scriptName}`, () => {
     }
   });
 
-  it(`${scriptName}: event version present: create with brokerType = kafka`, async () => {
+  xit(`${scriptName}: event version present: create with brokerType = kafka`, async () => {
     try {
 
       const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
