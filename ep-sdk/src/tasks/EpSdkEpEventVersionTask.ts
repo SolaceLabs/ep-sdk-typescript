@@ -77,6 +77,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   };
   private readonly Default_TEpSdkEpEventVersionTask_Settings: Partial<TEpSdkEpEventVersionTask_Settings> = {
     description: `Created by ${EpSdkConfig.getAppName()}.`,
+    brokerType: "solace"
   }
   private getTaskConfig(): IEpSdkEpEventVersionTask_Config { 
     return this.epSdkTask_Config as IEpSdkEpEventVersionTask_Config; 
@@ -112,11 +113,16 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     return addressLevels;
   }
   private createObjectSettings(): Partial<EventVersion> {
-    return {
+    const settings: TEpSdkEpEventVersionTask_Settings = {
       ...this.Default_TEpSdkEpEventVersionTask_Settings,
-      ...this.getTaskConfig().eventVersionSettings,
+      ...this.getTaskConfig().eventVersionSettings
+    };
+    delete settings.brokerType;
+    const brokerType = this.getTaskConfig().eventVersionSettings.brokerType ? this.getTaskConfig().eventVersionSettings.brokerType : this.Default_TEpSdkEpEventVersionTask_Settings.brokerType;
+    return {
+      ...settings,
       deliveryDescriptor: {
-        brokerType: this.getTaskConfig().eventVersionSettings.brokerType,
+        brokerType: brokerType,
         address: {
           addressLevels: this.topicAddressLevelList,
           addressType: Address.addressType.TOPIC,

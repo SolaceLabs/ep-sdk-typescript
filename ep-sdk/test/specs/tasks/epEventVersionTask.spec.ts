@@ -11,6 +11,7 @@ import {
   ApplicationDomainsService, 
   EventResponse, 
   EventsService,
+  EventVersion,
   SchemaResponse,
   SchemasService,
   SchemaVersion, 
@@ -99,7 +100,7 @@ describe(`${scriptName}`, () => {
 
   after(async() => {
     try {
-      // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
+      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
     } catch(e) {
       // noop
     }
@@ -161,7 +162,6 @@ describe(`${scriptName}`, () => {
           description: 'description',
           displayName: 'displayName',
           schemaVersionId: SchemaVersionId,
-          brokerType: "kafka"
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -176,8 +176,8 @@ describe(`${scriptName}`, () => {
       
       EventVersionId = epSdkEpEventVersionTask_ExecuteReturn.epObject.id;
 
-      // DEBUG
-      expect(false, message).to.be.true;
+      // // DEBUG
+      // expect(false, message).to.be.true;
 
     } catch(e) {
       if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -671,6 +671,60 @@ describe(`${scriptName}`, () => {
     }
   });
 
+  it(`${scriptName}: should delete all event version`, async () => {
+    try {
+      const eventVersionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventId({ eventId: EventId });
+      for(const eventVersion of eventVersionList) {
+        const x: void = await EventsService.deleteEventVersionForEvent({
+          eventId: EventId,
+          id: eventVersion.id
+        });
+      }
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(e instanceof EpSdkFeatureNotSupportedError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: event version present: create with brokerType = kafka`, async () => {
+    try {
+
+      const epSdkEpEventVersionTask = new EpSdkEpEventVersionTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventId: EventId,
+        versionString: '1.2.0',
+        topicString: 'test/hello/world',
+        eventVersionSettings: {
+          stateId: EpSdkStatesService.releasedId,
+          description: 'description',
+          displayName: 'displayName',
+          schemaVersionId: SchemaVersionId,
+          brokerType: "kafka"
+        },
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+      });
+
+      const epSdkEpEventVersionTask_ExecuteReturn: IEpSdkEpEventVersionTask_ExecuteReturn = await epSdkEpEventVersionTask.execute();
+
+      const message = TestLogger.createLogMessage('epSdkEpEventVersionTask_ExecuteReturn', epSdkEpEventVersionTask_ExecuteReturn);
+      expect(epSdkEpEventVersionTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE_FIRST_VERSION);
+      
+      EventVersionId = epSdkEpEventVersionTask_ExecuteReturn.epObject.id;
+
+      // DEBUG
+      expect(false, message).to.be.true;
+
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
 
 });
 
