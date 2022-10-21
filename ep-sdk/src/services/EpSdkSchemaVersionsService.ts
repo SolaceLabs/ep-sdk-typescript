@@ -1,4 +1,4 @@
-import { EpSdkApiContentError } from "../utils/EpSdkErrors";
+import { EpSdkApiContentError, EpSdkServiceError } from "../utils/EpSdkErrors";
 import {
   SchemaObject,
   SchemasService,
@@ -10,6 +10,10 @@ import {
 import EpSdkSchemasService from "./EpSdkSchemasService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
+import { EpSdkSchemaTask, IEpSdkSchemaTask_ExecuteReturn } from "../tasks/EpSdkSchemaTask";
+import { EEpSdkTask_Action, EEpSdkTask_TargetState } from "../tasks/EpSdkTask";
+import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn } from "../tasks/EpSdkSchemaVersionTask";
+import { EEpSdk_VersionTaskStrategy } from "../tasks/EpSdkVersionTask";
 
 export class EpSdkSchemaVersionsService extends EpSdkVersionService {
 
@@ -178,6 +182,73 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     }
     return createdSchemaVersion;
   }
+
+  public copyLastestVersionById_IfNotExists = async({ schemaVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+    schemaVersionId: string;
+    fromApplicationDomainId: string;
+    toApplicationDomainId: string;
+  }): Promise<SchemaVersion> => {
+    const funcName = 'copyLastestVersionById_IfNotExists';
+    const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
+
+    fromApplicationDomainId;
+    toApplicationDomainId;
+
+    // get the source schema version
+    const fromSchemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersion({ 
+      versionId: schemaVersionId
+    });
+    if(fromSchemaVersionResponse.data === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersionResponse.data === undefined", {
+      fromSchemaVersionResponse: fromSchemaVersionResponse
+    });
+    const fromSchemaVersion: SchemaVersion = fromSchemaVersionResponse.data;
+    if(fromSchemaVersion.stateId === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersion.stateId === undefined", {
+      fromSchemaVersion: fromSchemaVersion
+    });
+    if(fromSchemaVersion.content === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromSchemaVersion.content === undefined", {
+      fromSchemaVersion: fromSchemaVersion
+    });
+    // get the source schema object
+    const fromSchemaObject: SchemaObject = await EpSdkSchemasService.getById({
+      applicationDomainId: fromApplicationDomainId,
+      schemaId: fromSchemaVersion.schemaId,
+    });
+    // ensure target version object exists
+    const epSdkSchemaTask = new EpSdkSchemaTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      applicationDomainId: toApplicationDomainId,
+      schemaName: fromSchemaObject.name,
+      schemaObjectSettings: {
+        shared: fromSchemaObject.shared ? fromSchemaObject.shared : true,
+      },
+    });
+    const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
+    if(epSdkSchemaTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.NO_ACTION) {
+      // return the latest version
+      const targetSchemaVersion: SchemaVersion | undefined = await this.getLatestVersionForSchemaId({
+        applicationDomainId: toApplicationDomainId,
+        schemaId: epSdkSchemaTask_ExecuteReturn.epObjectKeys.epObjectId,
+      });
+      if(targetSchemaVersion !== undefined) return targetSchemaVersion;
+    }
+    // create target schema version
+    const epSdkSchemaVersionTask = new EpSdkSchemaVersionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      applicationDomainId: toApplicationDomainId,
+      schemaId: epSdkSchemaTask_ExecuteReturn.epObjectKeys.epObjectId,
+      versionString: fromSchemaVersion.version,
+      versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+      schemaVersionSettings: {
+        stateId: fromSchemaVersion.stateId,
+        displayName: fromSchemaVersion.displayName ? fromSchemaVersion.displayName : fromSchemaObject.name,
+        description: fromSchemaVersion.description ? fromSchemaVersion.description : '',
+        content: fromSchemaVersion.content,
+      },
+    });
+    const epSdkSchemaVersionTask_ExecuteReturn: IEpSdkSchemaVersionTask_ExecuteReturn = await epSdkSchemaVersionTask.execute();
+    return epSdkSchemaVersionTask_ExecuteReturn.epObject;
+  }
+
 }
 
 export default new EpSdkSchemaVersionsService();
