@@ -191,9 +191,6 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     const funcName = 'copyLastestVersionById_IfNotExists';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
-    fromApplicationDomainId;
-    toApplicationDomainId;
-
     // get the source schema version
     const fromSchemaVersionResponse: SchemaVersionResponse = await SchemasService.getSchemaVersion({ 
       versionId: schemaVersionId
