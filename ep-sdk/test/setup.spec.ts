@@ -8,6 +8,7 @@ import { EpSdkClient } from "../src/utils/EpSdkClient";
 import { EpSdkConsoleLogger } from "../src/utils/EpSdkConsoleLogger";
 import { EpSdkLogger } from "../src/utils/EpSdkLogger";
 import { OpenAPI } from "@solace-labs/ep-openapi-node";
+import { EpSdkConfig } from "../src/utils/EpSdkConfig";
 
 // load test stub
 const x = require('./lib/TestStub');
@@ -46,6 +47,7 @@ describe(`${scriptName}`, () => {
         TestConfig.initialize();
         const epSdkConsoleLogger: EpSdkConsoleLogger = new EpSdkConsoleLogger(TestConfig.getAppId(), TestConfig.getConfig().logLevel);
         EpSdkLogger.initialize({ epSdkLoggerInstance: epSdkConsoleLogger });
+        EpSdkConfig.initialize('Event Portal SDK');
       } catch (e) {
         expect(false, TestLogger.createTestFailMessageForError('intitializing test config failed', e)).to.be.true;
       }

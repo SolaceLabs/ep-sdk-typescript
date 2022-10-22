@@ -22,7 +22,6 @@ import { EpSdkEnumTask, IEpSdkEnumTask_ExecuteReturn } from '../../../src/tasks/
 import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumVersionTask';
 import { EpSdkEpEventTask, IEpSdkEpEventTask_ExecuteReturn } from '../../../src/tasks/EpSdkEpEventTask';
 import { EpSdkEpEventVersionTask, IEpSdkEpEventVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEpEventVersionTask';
-import EpSdkSemVerUtils from '../../../src/utils/EpSdkSemVerUtils';
 import EpSdkEpEventVersionsService from '../../../src/services/EpSdkEpEventVersionsService';
 
 const scriptName: string = path.basename(__filename);

@@ -1,10 +1,10 @@
 {
   "all": true,
   "check-coverage": true,
-  "statements": 89,
+  "statements": 90,
   "branches": 70,
-  "functions": 97,
-  "lines": 97,
+  "functions": 99,
+  "lines": 98,
   "temp-dir": "./test/logs/nyc_output",
   "reporter": ["html", "text", "text-summary", "lcov"],
   "report-dir": "./test/logs/coverage",
@@ -13,6 +13,9 @@
     "src/index.ts",
     "src/@solace-labs",
     "src/utils/EpSdkErrors.ts",
+    "src/utils/EpSdkLogger.ts",
+    "src/utils/EpSdkConsoleLogger.ts",
+    "src/internal-utils/EpApiHelpers.ts",
     "test"
   ]
 }

@@ -13,11 +13,15 @@ import {
   EventApIsService, 
   EventApiVersion,
   EventApiVersionResponse,
+  EventResponse,
+  EventsService,
+  EventVersion,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/utils/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkEventApiVersionsService from '../../../src/services/EpSdkEventApiVersionsService';
+import EpSdkEpEventVersionsService from '../../../src/services/EpSdkEpEventVersionsService';
 
 
 const scriptName: string = path.basename(__filename);
@@ -129,18 +133,25 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should create new event api version`, async () => {
       try {
+        // create an event version
+        const createdEventVersion: EventVersion = await TestUtils.createEventVersion({
+          applicationDomainId: ApplicationDomainId,
+          stateId: EpSdkStatesService.releasedId
+        });
         const create: EventApiVersion = {
           description: `event api version for event = ${EventApiName}, id=${EventApiId}`,        
           version: EventApiNextVersionString,
           displayName: EventApiName,
+          consumedEventVersionIds: [createdEventVersion.id]
         };
         const created: EventApiVersion = await EpSdkEventApiVersionsService.createEventApiVersion({
           applicationDomainId: ApplicationDomainId,
           eventApiId: EventApiId,
           eventApiVersion: create,
-          targetLifecycleStateId: EpSdkStatesService.draftId
+          targetLifecycleStateId: EpSdkStatesService.releasedId
         });
         EventApiNextVersionId = created.id;
+        expect(created.stateId, 'created.stateId failed').to.equal(EpSdkStatesService.releasedId);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

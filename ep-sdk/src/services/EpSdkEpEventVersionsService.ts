@@ -258,6 +258,14 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     return targetAddress;
   }
 
+  /**
+   * Conditional deep copy of event version from 'fromApplicationDomain' to 'toApplicationDomain'. 
+   * - copies all schemas and enums first
+   * 
+   * If an event version with the id already exists, returns that version. It still copies all schemas / enums.
+   * 
+   * @returns existing or created event version
+   */
   public deepCopyLastestVersionById_IfNotExists = async({ eventVersionId, fromApplicationDomainId, toApplicationDomainId }: {
     eventVersionId: string;
     fromApplicationDomainId: string;
@@ -270,14 +278,14 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     const fromEventVersionResponse: EventVersionResponse = await EventsService.getEventVersion({ 
       versionId: eventVersionId
     });
-    if(fromEventVersionResponse.data === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromEventVersionResponse.data === undefined", {
+    if(fromEventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersionResponse.data === undefined", {
       fromEventVersionResponse: fromEventVersionResponse
     });
     const fromEventVersion: EventVersion = fromEventVersionResponse.data;
-    if(fromEventVersion.stateId === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromEventVersion.stateId === undefined", {
+    if(fromEventVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.stateId === undefined", {
       fromEventVersion: fromEventVersion
     });
-    if(fromEventVersion.schemaVersionId === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromEventVersion.schemaVersionId === undefined", {
+    if(fromEventVersion.schemaVersionId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.schemaVersionId === undefined", {
       fromEventVersion: fromEventVersion
     });
     // get the source event object
@@ -292,15 +300,15 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
       fromApplicationDomainId: fromApplicationDomainId,
       toApplicationDomainId: toApplicationDomainId,
     });
-    if(targetSchemaVersion.id === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "targetSchemaVersion.id === undefined", {
+    if(targetSchemaVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetSchemaVersion.id === undefined", {
       targetSchemaVersion: targetSchemaVersion
     });
 
     // copy all enums in address
-    if(fromEventVersion.deliveryDescriptor === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor === undefined", {
+    if(fromEventVersion.deliveryDescriptor === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor === undefined", {
       fromEventVersion: fromEventVersion
     });
-    if(fromEventVersion.deliveryDescriptor.address === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor.address === undefined", {
+    if(fromEventVersion.deliveryDescriptor.address === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersion.deliveryDescriptor.address === undefined", {
       fromEventVersion: fromEventVersion
     });
     const fromEventVersionDeliveryDescriptorAddress: Address = fromEventVersion.deliveryDescriptor.address;
@@ -310,8 +318,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
       toApplicationDomainId: toApplicationDomainId,
     });
 
-    // copy the enum version
-    // ensure target version object exists
+    // ensure target event exists
     const epSdkEpEventTask = new EpSdkEpEventTask({
       epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
       applicationDomainId: toApplicationDomainId,

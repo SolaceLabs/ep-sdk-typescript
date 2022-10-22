@@ -36,21 +36,21 @@ export class EpSdkEnumsService extends EpSdkService {
     return topicAddressEnum;
   }
 
-  public getByIdIfExists  = async ({ enumId, applicationDomainId }: {
-    enumId: string;
-    applicationDomainId: string;
-  }): Promise<TopicAddressEnum | undefined> => {
-    const funcName = 'getByIdIfExists';
-    const logName = `${EpSdkEnumsService.name}.${funcName}()`;
-    try {
-      return this.getById({
-        applicationDomainId: applicationDomainId,
-        enumId: enumId,
-      });
-    } catch(e) {
-      return undefined;
-    }
-  }
+  // public getByIdIfExists  = async ({ enumId, applicationDomainId }: {
+  //   enumId: string;
+  //   applicationDomainId: string;
+  // }): Promise<TopicAddressEnum | undefined> => {
+  //   const funcName = 'getByIdIfExists';
+  //   const logName = `${EpSdkEnumsService.name}.${funcName}()`;
+  //   try {
+  //     return this.getById({
+  //       applicationDomainId: applicationDomainId,
+  //       enumId: enumId,
+  //     });
+  //   } catch(e) {
+  //     return undefined;
+  //   }
+  // }
   
   public getById = async ({ enumId, applicationDomainId }: {
     enumId: string;
