@@ -2,6 +2,24 @@
 
 Solace Event Portal SDK.
 
+## Version 0.13.0-alpha
+
+**New Features:**
+- **Copy latest version from / to application domain if no version exists in target application domain:**
+  - **EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists()**
+  - **EpSdkSchemaVersionsService.copyLastestVersionById_IfNotExists()**
+
+- **Deep copy of latest version from / to application domain if not version exists in target application domain**
+  - **EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists()**
+    - copies referenced schema version and enum versions for latest event version
+    - copies latest event version
+  - **EpSdkEventApiVersionsService.deepCopyLastestVersionById_IfNotExists()**
+    - deep copies referenced event versions (see above)
+    - copies latest event api version
+
+**Changes:**
+  - Tasks do not set a default description any more
+
 ## Version 0.12.0-alpha
 
 **New Features:**

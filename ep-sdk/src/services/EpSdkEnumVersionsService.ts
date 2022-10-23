@@ -10,6 +10,10 @@ import {
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
+import { EpSdkEnumTask, IEpSdkEnumTask_ExecuteReturn } from "../tasks/EpSdkEnumTask";
+import { EEpSdkTask_Action, EEpSdkTask_TargetState } from "../tasks/EpSdkTask";
+import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn } from "../tasks/EpSdkEnumVersionTask";
+import { EEpSdk_VersionTaskStrategy } from "../tasks/EpSdkVersionTask";
 
 export class EpSdkEnumVersionsService extends EpSdkVersionService {
 
@@ -184,6 +188,68 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     }
     return createdTopicAddressEnumVersion;
   }
+
+  public copyLastestVersionById_IfNotExists = async({ enumVersionId, fromApplicationDomainId, toApplicationDomainId }: {
+    enumVersionId: string;
+    fromApplicationDomainId: string;
+    toApplicationDomainId: string;
+  }): Promise<TopicAddressEnumVersion> => {
+    const funcName = 'copyLastestVersionById_IfNotExists';
+    const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
+
+    // get the source enum version
+    const fromTopicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.getEnumVersion({
+      versionId: enumVersionId,
+    });
+    if(fromTopicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromTopicAddressEnumVersionResponse.data === undefined', {
+      fromTopicAddressEnumVersionResponse: fromTopicAddressEnumVersionResponse
+    });
+    const fromTopicAddressEnumVersion: TopicAddressEnumVersion = fromTopicAddressEnumVersionResponse.data;
+    if(fromTopicAddressEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromTopicAddressEnumVersion.stateId === undefined', {
+      fromTopicAddressEnumVersion: fromTopicAddressEnumVersion
+    });
+    
+    // get the source enum
+    const fromTopicAddressEnum: TopicAddressEnum = await EpSdkEnumsService.getById({
+      applicationDomainId: fromApplicationDomainId,
+      enumId: fromTopicAddressEnumVersion.enumId
+    });
+    // ensure target enum exists
+    const epSdkEnumTask = new EpSdkEnumTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      applicationDomainId: toApplicationDomainId,
+      enumName: fromTopicAddressEnum.name,
+      enumObjectSettings: {
+        shared: fromTopicAddressEnum.shared ? fromTopicAddressEnum.shared : true,
+      },
+    });
+    const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();
+    if(epSdkEnumTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.NO_ACTION) {
+      // return the latest version
+      const targetTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = await this.getLatestVersionForEnumId({
+        enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
+        applicationDomainId: toApplicationDomainId
+      });
+      if(targetTopicAddressEnumVersion !== undefined) return targetTopicAddressEnumVersion;
+    }
+    // create target enum version
+    const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      applicationDomainId: toApplicationDomainId,
+      enumId: epSdkEnumTask_ExecuteReturn.epObjectKeys.epObjectId,
+      versionString: fromTopicAddressEnumVersion.version,
+      versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+      enumVersionSettings: {
+        stateId: fromTopicAddressEnumVersion.stateId,
+        displayName: fromTopicAddressEnumVersion.displayName ? fromTopicAddressEnumVersion.displayName : fromTopicAddressEnum.name,
+        description: fromTopicAddressEnumVersion.description
+      },
+      enumValues: fromTopicAddressEnumVersion.values.map( (x) => { return x.value; }),
+    });
+    const epSdkEnumVersionTask_ExecuteReturn: IEpSdkEnumVersionTask_ExecuteReturn = await epSdkEnumVersionTask.execute();
+    return epSdkEnumVersionTask_ExecuteReturn.epObject;
+  }
+
 }
 
 export default new EpSdkEnumVersionsService();

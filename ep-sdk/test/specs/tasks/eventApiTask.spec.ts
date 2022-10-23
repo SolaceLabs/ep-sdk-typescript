@@ -6,7 +6,7 @@ import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
 import { 
-  ApiError, ApplicationDomainResponse, ApplicationDomainsService
+  ApiError, ApplicationDomainResponse, ApplicationDomainsService, EventApi
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkError } from '../../../src/utils/EpSdkErrors';
 import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
@@ -93,6 +93,7 @@ describe(`${scriptName}`, () => {
         eventApiName: EventApiName,
         eventApiObjectSettings: {
           shared: true,
+          brokerType: EventApi.brokerType.SOLACE
         },
         epSdkTask_TransactionConfig: {
           parentTransactionId: 'parentTransactionId',
@@ -325,6 +326,42 @@ describe(`${scriptName}`, () => {
       const message = TestLogger.createLogMessage('epSdkEventApiTask_ExecuteReturn', epSdkEventApiTask_ExecuteReturn);
 
       expect(epSdkEventApiTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.NO_ACTION);
+      // // DEBUG
+      // expect(false, message).to.be.true;
+
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
+  it(`${scriptName}: event api present: create with brokerType = kafka`, async () => {
+    try {
+      const epSdkEventApiTask = new EpSdkEventApiTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        eventApiName: EventApiName,
+        eventApiObjectSettings: {
+          shared: true,
+          brokerType: EventApi.brokerType.KAFKA
+        },
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        },
+        checkmode: false
+      });
+
+      const epSdkEventApiTask_ExecuteReturn: IEpSdkEventApiTask_ExecuteReturn = await epSdkEventApiTask.execute();
+
+      const message = TestLogger.createLogMessage('epSdkEventApiTask_ExecuteReturn', epSdkEventApiTask_ExecuteReturn);
+
+      expect(epSdkEventApiTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE);
+      expect(epSdkEventApiTask_ExecuteReturn.epObject.brokerType, message).to.eq(EventApi.brokerType.KAFKA);
+      
+      EventApiId = epSdkEventApiTask_ExecuteReturn.epObject.id;
+
       // // DEBUG
       // expect(false, message).to.be.true;
 

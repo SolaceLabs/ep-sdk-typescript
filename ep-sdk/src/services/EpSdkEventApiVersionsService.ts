@@ -9,9 +9,15 @@ import {
   EventApi,
   EventApiVersionResponse,
   EventApiVersion,
+  EventVersion,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
 import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
+import EpSdkEpEventVersionsService from './EpSdkEpEventVersionsService';
+import { EpSdkEventApiTask, IEpSdkEventApiTask_ExecuteReturn } from '../tasks/EpSdkEventApiTask';
+import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../tasks/EpSdkTask';
+import { EpSdkEventApiVersionTask, IEpSdkEventApiVersionTask_ExecuteReturn } from '../tasks/EpSdkEventApiVersionTask';
+import { EEpSdk_VersionTaskStrategy } from '../tasks/EpSdkVersionTask';
 
 export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
@@ -203,6 +209,151 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     }
     return createdEvenApiVersion;
   }
+
+  /**
+   * Conditional deep copy of event api & event api latest version from 'fromApplicationDomain' to 'toApplicationDomain'. 
+   * - copies all referenced events, schemas, enums first from 'fromAssetApplicationDomainId' to 'toAssetApplicationDomainId'
+   * - sets 'fromAssetApplicationDomainId' and 'toAssetApplicationDomainId' to 'fromApplicationDomainId' and 'toApplicationDomainId' respectively if not defined.
+   * 
+   * If an event api version for the event api with 'eventApiName' already exists, returns undefined. 
+   * 
+   * @returns undefined or created event api version
+   */
+  public deepCopyLastestVersionById_IfNotExists = async({ eventApiName, fromApplicationDomainId, toApplicationDomainId, fromAssetsApplicationDomainId, toAssetsApplicationDomainId }:{
+    eventApiName: string; 
+    fromApplicationDomainId: string;
+    toApplicationDomainId: string;
+    fromAssetsApplicationDomainId?: string;
+    toAssetsApplicationDomainId?: string;
+  }): Promise<EventApiVersion | undefined> => {
+    const funcName = 'deepCopyLastestVersionById_IfNotExists';
+    const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
+
+    if(fromAssetsApplicationDomainId === undefined || toAssetsApplicationDomainId === undefined) {
+      fromAssetsApplicationDomainId = fromApplicationDomainId;
+      toAssetsApplicationDomainId = toApplicationDomainId;
+    }
+    // get the source event api by name
+    const fromEventApi: EventApi | undefined = await EpSdkEventApisService.getByName({ 
+      eventApiName: eventApiName,
+      applicationDomainId: fromApplicationDomainId
+    });
+    if(fromEventApi === undefined) return undefined;
+    if(fromEventApi.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromEventApi.id === undefined', {
+      fromEventApi: fromEventApi
+    });
+    if(fromEventApi.name === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromEventApi.name === undefined', {
+      fromEventApi: fromEventApi
+    });
+    // get the latest source event api version
+    const fromEventApiVersion = await this.getLatestVersionForEventApiId({
+      eventApiId: fromEventApi.id,
+      applicationDomainId: fromApplicationDomainId,
+    });
+    if(fromEventApiVersion === undefined) return undefined;
+    if(fromEventApiVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventApiVersion.stateId === undefined", {
+      fromEventApiVersion: fromEventApiVersion
+    });
+
+    // check if a version already exists, if it does, return undefined
+    const targetEventApiCheck: EventApi | undefined = await EpSdkEventApisService.getByName({
+      applicationDomainId: toApplicationDomainId,
+      eventApiName: eventApiName
+    });
+    if(targetEventApiCheck !== undefined) {
+      if(targetEventApiCheck.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetEventApiCheck.id === undefined", {
+        targetEventApiCheck: targetEventApiCheck
+      });
+      const existingTargetVersion: EventApiVersion | undefined = await this.getLatestVersionForEventApiId({
+        applicationDomainId: toApplicationDomainId,
+        eventApiId: targetEventApiCheck.id
+      });
+      if(existingTargetVersion !== undefined) return undefined;
+    }
+
+    // get list of consumed & produced event versions
+    const targetConsumedEventVersions: Array<EventVersion> = [];
+    const targetProducedEventVersions: Array<EventVersion> = [];
+    if(fromEventApiVersion.consumedEventVersionIds) {
+      for(const eventVersionId of fromEventApiVersion.consumedEventVersionIds) {
+        const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ 
+          eventVersionId: eventVersionId,
+          fromApplicationDomainId: fromAssetsApplicationDomainId,
+          toApplicationDomainId: toAssetsApplicationDomainId,
+        });
+        targetConsumedEventVersions.push(eventVersion);
+      }
+    }
+    if(fromEventApiVersion.producedEventVersionIds) {
+      for(const eventVersionId of fromEventApiVersion.producedEventVersionIds) {
+        const eventVersion: EventVersion | undefined = await EpSdkEpEventVersionsService.deepCopyLastestVersionById_IfNotExists({ 
+          eventVersionId: eventVersionId,
+          fromApplicationDomainId: fromAssetsApplicationDomainId,
+          toApplicationDomainId: toAssetsApplicationDomainId,
+        });
+        targetProducedEventVersions.push(eventVersion);
+      }
+    }
+    // create the target event api & version
+    // ensure target version object exists
+    const epSdkEventApiTask = new EpSdkEventApiTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      applicationDomainId: toApplicationDomainId,
+      eventApiName: fromEventApi.name,
+      eventApiObjectSettings: {
+        shared: fromEventApi.shared ? fromEventApi.shared : true,
+      },
+    });
+    const epSdkEventApiTask_ExecuteReturn: IEpSdkEventApiTask_ExecuteReturn = await epSdkEventApiTask.execute();
+    // note: not necessary, check has been done above
+    // if(epSdkEventApiTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action === EEpSdkTask_Action.NO_ACTION) {
+    //   // return the latest version
+    //   const targetEventApiVersion: EventApiVersion | undefined = await this.getLatestVersionForEventApiId({
+    //     applicationDomainId: toApplicationDomainId,
+    //     eventApiId: epSdkEventApiTask_ExecuteReturn.epObjectKeys.epObjectId,
+    //   });
+    //   if(targetEventApiVersion !== undefined) return targetEventApiVersion;
+    // }
+    // create target event api version
+    const epSdkEventApiVersionTask = new EpSdkEventApiVersionTask({
+      epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+      applicationDomainId: toApplicationDomainId,
+      eventApiId: epSdkEventApiTask_ExecuteReturn.epObjectKeys.epObjectId,
+      versionString: fromEventApiVersion.version,
+      versionStrategy: EEpSdk_VersionTaskStrategy.EXACT_VERSION,
+      eventApiVersionSettings: {
+        stateId: fromEventApiVersion.stateId,
+        displayName: fromEventApiVersion.displayName ? fromEventApiVersion.displayName : fromEventApi.name,
+        description: fromEventApiVersion.description ? fromEventApiVersion.description : '',
+        consumedEventVersionIds: targetConsumedEventVersions.map( (targetConsumedEventVersion: EventVersion) => { 
+          if(targetConsumedEventVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetConsumedEventVersion.id === undefined", {
+            targetConsumedEventVersion: targetConsumedEventVersion
+          });
+          return targetConsumedEventVersion.id; 
+        }),
+        producedEventVersionIds: targetProducedEventVersions.map( (targetProducedEventVersion: EventVersion) => { 
+          if(targetProducedEventVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetProducedEventVersion.id === undefined", {
+            targetProducedEventVersion: targetProducedEventVersion
+          });
+          return targetProducedEventVersion.id; 
+        }),
+      },
+    });
+    const epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask.execute();
+    // must get the object again, otherwise not all properties are set correctly
+    if(epSdkEventApiVersionTask_ExecuteReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEventApiVersionTask_ExecuteReturn.epObject.id === undefined', {
+      epSdkEventApiVersionTask_ExecuteReturn: epSdkEventApiVersionTask_ExecuteReturn
+    });
+    const eventApiVersionResponse: EventApiVersionResponse =  await EventApIsService.getEventApiVersion({
+      versionId: epSdkEventApiVersionTask_ExecuteReturn.epObject.id,
+      include: ''
+    });
+    if(eventApiVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data === undefined', {
+      eventApiVersionResponse: eventApiVersionResponse
+    });
+    return eventApiVersionResponse.data;
+  }
+
 }
 
 export default new EpSdkEventApiVersionsService();

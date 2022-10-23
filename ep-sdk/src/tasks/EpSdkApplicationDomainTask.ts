@@ -73,7 +73,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
   private readonly Default_TEpSdkApplicationDomainTask_Settings: TEpSdkApplicationDomainTask_Settings = {
     topicDomainEnforcementEnabled: false,
     uniqueTopicAddressEnforcementEnabled: true,
-    description: `Created by ${EpSdkConfig.getAppName()}.`,
+    // description: `Created by ${EpSdkConfig.getAppName()}.`,
   }
   private getTaskConfig(): IEpSdkApplicationDomainTask_Config { 
     return this.epSdkTask_Config as IEpSdkApplicationDomainTask_Config; 

@@ -1,4 +1,3 @@
-import { EpSdkConfig } from '../utils/EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyValidationError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
@@ -6,6 +5,7 @@ import {
   $EventVersion,
   Address,
   AddressLevel,
+  DeliveryDescriptor,
   EventVersion,
   TopicAddressEnumVersion, 
 } from '@solace-labs/ep-openapi-node';
@@ -23,7 +23,8 @@ import EpSdkEnumVersionService from '../services/EpSdkEnumVersionsService';
 import EpSdkEpEventVersionsService from '../services/EpSdkEpEventVersionsService';
 
 /** @category EpSdkEpEventVersionTask */
-export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId">>;
+export type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<DeliveryDescriptor, "brokerType" >;
+export type TEpSdkEpEventVersionTask_Settings = Required<Pick<EventVersion, "description" | "displayName" | "stateId" | "schemaVersionId" >> & TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor;
 type TEpSdkEpEventVersionTask_CompareObject = Partial<TEpSdkEpEventVersionTask_Settings> & Pick<EventVersion, "deliveryDescriptor"> & Partial<Pick<EventVersion, "version">>;
 
 /** @category EpSdkEpEventVersionTask */
@@ -74,7 +75,8 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     epObjectExists: false  
   };
   private readonly Default_TEpSdkEpEventVersionTask_Settings: Partial<TEpSdkEpEventVersionTask_Settings> = {
-    description: `Created by ${EpSdkConfig.getAppName()}.`,
+    // description: `Created by ${EpSdkConfig.getAppName()}.`,
+    brokerType: "solace"
   }
   private getTaskConfig(): IEpSdkEpEventVersionTask_Config { 
     return this.epSdkTask_Config as IEpSdkEpEventVersionTask_Config; 
@@ -110,11 +112,16 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     return addressLevels;
   }
   private createObjectSettings(): Partial<EventVersion> {
-    return {
+    const settings: TEpSdkEpEventVersionTask_Settings = {
       ...this.Default_TEpSdkEpEventVersionTask_Settings,
-      ...this.getTaskConfig().eventVersionSettings,
+      ...this.getTaskConfig().eventVersionSettings
+    };
+    delete settings.brokerType;
+    const brokerType = this.getTaskConfig().eventVersionSettings.brokerType ? this.getTaskConfig().eventVersionSettings.brokerType : this.Default_TEpSdkEpEventVersionTask_Settings.brokerType;
+    return {
+      ...settings,
       deliveryDescriptor: {
-        brokerType: "solace",
+        brokerType: brokerType,
         address: {
           addressLevels: this.topicAddressLevelList,
           addressType: Address.addressType.TOPIC,

@@ -366,5 +366,39 @@ describe(`${scriptName}`, () => {
     }
   });
 
+  it(`${scriptName}: application present: create with brokerType = kafka`, async () => {
+    try {
+
+      const epSdkApplicationTask = new EpSdkApplicationTask({
+        epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
+        applicationDomainId: ApplicationDomainId,
+        applicationName: ApplicationName,
+        applicationObjectSettings: {
+          applicationType: "standard",
+          brokerType: Application.brokerType.KAFKA
+        },
+        epSdkTask_TransactionConfig: {
+          parentTransactionId: 'parentTransactionId',
+          groupTransactionId: 'groupTransactionId'
+        }
+      });
+
+      const epSdkApplicationTask_ExecuteReturn: IEpSdkApplicationTask_ExecuteReturn = await epSdkApplicationTask.execute();
+
+      const message = TestLogger.createLogMessage('epSdkApplicationTask_ExecuteReturn', epSdkApplicationTask_ExecuteReturn);
+      expect(epSdkApplicationTask_ExecuteReturn.epSdkTask_TransactionLogData.epSdkTask_Action, message).to.eq(EEpSdkTask_Action.CREATE);
+      
+      ApplicationId = epSdkApplicationTask_ExecuteReturn.epObject.id;
+
+      // // DEBUG
+      // expect(false, message).to.be.true;
+
+    } catch(e) {
+      if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+      expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+      expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+    }
+  });
+
 });
 
