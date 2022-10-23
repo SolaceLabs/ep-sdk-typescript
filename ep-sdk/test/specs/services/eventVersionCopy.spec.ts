@@ -262,7 +262,7 @@ describe(`${scriptName}`, () => {
               applicationDomainId: SourceApplicationDomainId,
               eventId: eventInfo.sourceEventId,
               versionString: versionInfo.versionString,
-              topicString: `one/two/{${EnumInfoList[idx].enumName}}`,
+              topicString: `one/two/{${EnumInfoList[idx].enumName}}/{unboundVariable}`,
               eventVersionSettings: {
                 stateId: EpSdkStatesService.releasedId,
                 displayName: versionInfo.versionString,

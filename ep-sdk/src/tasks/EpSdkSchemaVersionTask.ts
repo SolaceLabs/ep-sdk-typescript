@@ -51,7 +51,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
     epObjectExists: false  
   };
   private readonly Default_TEpSdkSchemaVersionTask_Settings: Partial<TEpSdkSchemaVersionTask_Settings> = {
-    description: `Created by ${EpSdkConfig.getAppName()}.`,
+    // description: `Created by ${EpSdkConfig.getAppName()}.`,
   }
   private getTaskConfig(): IEpSdkSchemaVersionTask_Config { 
     return this.epSdkTask_Config as IEpSdkSchemaVersionTask_Config; 

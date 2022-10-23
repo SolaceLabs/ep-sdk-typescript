@@ -52,7 +52,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     epObjectExists: false  
   };
   private readonly Default_TEpSdkEnumVersionTask_Settings: Partial<TEpSdkEnumVersionTask_Settings> = {
-    description: `Created by ${EpSdkConfig.getAppName()}.`,
+    // description: `Created by ${EpSdkConfig.getAppName()}.`,
   }
   private getTaskConfig(): IEpSdkEnumVersionTask_Config { 
     return this.epSdkTask_Config as IEpSdkEnumVersionTask_Config; 

@@ -242,6 +242,7 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
       enumVersionSettings: {
         stateId: fromTopicAddressEnumVersion.stateId,
         displayName: fromTopicAddressEnumVersion.displayName ? fromTopicAddressEnumVersion.displayName : fromTopicAddressEnum.name,
+        description: fromTopicAddressEnumVersion.description
       },
       enumValues: fromTopicAddressEnumVersion.values.map( (x) => { return x.value; }),
     });

@@ -76,7 +76,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
     epObjectExists: false  
   };
   private readonly Default_TEpSdkEpEventVersionTask_Settings: Partial<TEpSdkEpEventVersionTask_Settings> = {
-    description: `Created by ${EpSdkConfig.getAppName()}.`,
+    // description: `Created by ${EpSdkConfig.getAppName()}.`,
     brokerType: "solace"
   }
   private getTaskConfig(): IEpSdkEpEventVersionTask_Config { 

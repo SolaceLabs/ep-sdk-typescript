@@ -232,10 +232,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     const fromAddressLevels: Array<AddressLevel> = address.addressLevels;
     const targetAddressLevels: Array<AddressLevel> = [];
     for(const fromAddressLevel of fromAddressLevels) {
-      if(fromAddressLevel.addressLevelType === AddressLevel.addressLevelType.VARIABLE) {
-        if(fromAddressLevel.enumVersionId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromAddressLevel.enumVersionId === undefined', {
-          fromAddressLevel: fromAddressLevel
-        });
+      if(fromAddressLevel.addressLevelType === AddressLevel.addressLevelType.VARIABLE && fromAddressLevel.enumVersionId !== undefined) {
         const targetEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.copyLastestVersionById_IfNotExists({
           enumVersionId: fromAddressLevel.enumVersionId,
           fromApplicationDomainId: fromApplicationDomainId,
