@@ -12,14 +12,15 @@ import {
   EventApiProductsService,
   EventApiProductResponse,
   EventApiProductsResponse,
-  EventApiProductVersion,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError } from '../../../src/utils/EpSdkErrors';
 import EpSdkEventApiProductsService from '../../../src/services/EpSdkEventApiProductsService';
-import EpSdkEventApiProductVersionsService, { EpSdkEventApiProductAndVersionList, EpSdkEventApiProductAndVersionListResponse, EpSdkEventApiProductAndVersionResponse } from '../../../src/services/EpSdkEventApiProductVersionsService';
-import { EpSdkBrokerType } from '../../../src/services/EpSdkService';
-import EpSdkStatesService, { EEpSdkStateDTONames } from '../../../src/services/EpSdkStatesService';
+import EpSdkEventApiProductVersionsService, { 
+  EpSdkEventApiProductAndVersionList, 
+  EpSdkEventApiProductAndVersionListResponse, 
+  EpSdkEventApiProductAndVersionResponse 
+} from '../../../src/services/EpSdkEventApiProductVersionsService';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
