@@ -1,4 +1,3 @@
-import { EpSdkConfig } from '../utils/EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyValidationError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
