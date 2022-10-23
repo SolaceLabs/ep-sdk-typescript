@@ -217,6 +217,8 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
       schemaName: fromSchemaObject.name,
       schemaObjectSettings: {
         shared: fromSchemaObject.shared ? fromSchemaObject.shared : true,
+        contentType: fromSchemaObject.contentType,
+        schemaType: fromSchemaObject.schemaType
       },
     });
     const epSdkSchemaTask_ExecuteReturn: IEpSdkSchemaTask_ExecuteReturn = await epSdkSchemaTask.execute();
