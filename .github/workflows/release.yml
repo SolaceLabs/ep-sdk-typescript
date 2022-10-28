@@ -27,7 +27,7 @@ jobs:
         uses: andymckay/cancel-action@0.2
 
       - name: Checkout Current Branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
 
@@ -40,7 +40,7 @@ jobs:
           echo ">>> environment: RELEASE_* "
           env | grep RELEASE
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
