@@ -40,7 +40,14 @@ export {
   default as EpSdkEpEventsService
 } from './services/EpSdkEpEventsService'
 export {
-  default as EpSdkEpEventVersionsService
+  default as EpSdkEpEventVersionsService,
+  EpSdkEpEvent,
+  EpSdkEpEventVersion,
+  EpSdkEpEventVersionList,
+  EpSdkEpEventAndVersion,
+  EpSdkEpEventAndVersionList,
+  EpSdkEpEventAndVersionListResponse,
+  EpSdkEpEventAndVersionResponse,
 } from './services/EpSdkEpEventVersionsService'
 export {
   default as EpSdkEventApisService
