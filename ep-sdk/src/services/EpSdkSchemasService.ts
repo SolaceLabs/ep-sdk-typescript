@@ -36,6 +36,7 @@ export class EpSdkSchemasService extends EpSdkService {
     }}));
 
     if(schemasResponse.data === undefined || schemasResponse.data.length === 0) return undefined;
+    /* istanbul ignore next */
     if(schemasResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name,'schemasResponse.data.length > 1', {    
       schemasResponse: schemasResponse
     });
@@ -60,6 +61,7 @@ export class EpSdkSchemasService extends EpSdkService {
     }}));
 
     if(schemaResponse.data === undefined) {
+      /* istanbul ignore next */
       throw new EpSdkApiContentError(logName, this.constructor.name, "schemaResponse.data === undefined", {
         schemaId: schemaId
       });
@@ -102,6 +104,7 @@ export class EpSdkSchemasService extends EpSdkService {
       applicationDomainId: applicationDomainId,
       schemaName: schemaName
     });
+    /* istanbul ignore next */
     if(epSchemaObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSchemaObject.id === undefined', {
       epSchemaObject: epSchemaObject,
     });

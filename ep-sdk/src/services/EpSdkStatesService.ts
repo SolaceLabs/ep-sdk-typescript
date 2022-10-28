@@ -58,16 +58,20 @@ export class EpSdkStatesService {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.SERVICE_GET, module: this.constructor.name, details: {
       stateResponse: stateResponse
     }}));
+    /* istanbul ignore next */
     if(stateResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'stateResponse.data === undefined', {
       stateResponse: stateResponse
     });
+    /* istanbul ignore next */
     if(stateResponse.data.length !== 4) throw new EpSdkApiContentError(logName, this.constructor.name,'stateResponse.data.length !== 4', {
       stateResponse: stateResponse
     });
     for(const stateDTO of stateResponse.data) {
+      /* istanbul ignore next */
       if(stateDTO.name === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'stateDTO.name === undefined', {
         stateDTO: stateDTO
       });
+      /* istanbul ignore next */
       if(stateDTO.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'stateDTO.id === undefined', {
         stateDTO: stateDTO
       });
@@ -86,6 +90,7 @@ export class EpSdkStatesService {
           this._retiredId = stateDTO.id;
           break;
         default:
+          /* istanbul ignore next */
           throw new EpSdkApiContentError(logName, this.constructor.name,'stateDTO.name is unknown', {
             stateDTO: stateDTO,
             knownNames: Object.values(EEpSdkStateDTONames)
@@ -126,6 +131,7 @@ export class EpSdkStatesService {
       case EEpSdkStateDTONames.RETIRED:
         return this._retiredId;
       default:
+        /* istanbul ignore next */
         throw new EpSdkApiContentError(logName, this.constructor.name,'unknown epSdkStateDTOName', {
           epSdkStateDTOName: epSdkStateDTOName,
           knownNames: Object.values(EEpSdkStateDTONames)

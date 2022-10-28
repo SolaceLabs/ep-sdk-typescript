@@ -26,6 +26,7 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
 
     const schemaVersionList: Array<SchemaVersion> = await this.getVersionsForSchemaId({ schemaId: schemaId });
     const found: SchemaVersion | undefined = schemaVersionList.find( (schemaVersion: SchemaVersion ) => {
+      /* istanbul ignore next */
       if(schemaVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersion.version === undefined', {
         schemaVersion: schemaVersion
       });
@@ -76,6 +77,7 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
       schemaName: schemaName
     });
     if (schemaObject === undefined) return [];
+    /* istanbul ignore next */
     if (schemaObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaObject.id === undefined', {
       schemaObject: schemaObject
     });
@@ -95,6 +97,7 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     // }}));
     const latestSchemaVersion: SchemaVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: schemaVersionList });
     if(latestSchemaVersion === undefined) return undefined;
+    /* istanbul ignore next */
     if(latestSchemaVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestSchemaVersion.version === undefined', {
       latestSchemaVersion: latestSchemaVersion
     });
@@ -150,16 +153,20 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
       schemaId: schemaId,
       requestBody: schemaVersion
     });
+    /* istanbul ignore next */
     if(schemaVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data === undefined', {
       schemaVersionResponse: schemaVersionResponse
     });
     const createdSchemaVersion: SchemaVersion = schemaVersionResponse.data;
+    /* istanbul ignore next */
     if(createdSchemaVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data.id === undefined', {
       schemaVersionResponse: schemaVersionResponse
     });
+    /* istanbul ignore next */
     if(createdSchemaVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data.stateId === undefined', {
       schemaVersionResponse: schemaVersionResponse
     });
+    /* istanbul ignore next */
     if(createdSchemaVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data.version === undefined', {
       schemaVersionResponse: schemaVersionResponse
     });
@@ -175,6 +182,7 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
         schemaId: schemaId,
         schemaVersionString: createdSchemaVersion.version
       });
+      /* istanbul ignore next */
       if(updatedSchemaVersion === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'updatedSchemaVersion === undefined', {
         updatedSchemaVersion: updatedSchemaVersion
       });

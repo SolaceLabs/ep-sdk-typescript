@@ -6,11 +6,62 @@ import {
   EventResponse, 
   EventsResponse,
   EventsService,
+  Pagination,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
 
 export class EpSdkEpEventsService extends EpSdkService {
   
+  /**
+   * Retrieves a list of all Events without paging.
+   * @param param0 
+   */
+  public listAll = async({ applicationDomainIds, shared, sortFieldName }:{
+    applicationDomainIds?: Array<string>;
+    shared: boolean;
+    sortFieldName?: string;
+  }): Promise<EventsResponse> => {
+    const funcName = 'listAll';
+    const logName = `${EpSdkEpEventsService.name}.${funcName}()`;
+
+    const eventList: Array<EPEvent> = [];
+    
+    let nextPage: number | undefined | null = 1;
+    while(nextPage !== undefined && nextPage !== null) {
+
+      const eventsResponse: EventsResponse = await EventsService.getEvents({
+        applicationDomainIds: applicationDomainIds,
+        shared: shared,
+        pageSize: 100,
+        pageNumber: nextPage,
+        sort: sortFieldName,
+      });
+      if(eventsResponse.data === undefined || eventsResponse.data.length === 0) nextPage = undefined;
+      else {
+        eventList.push(...eventsResponse.data);
+        /* istanbul ignore next */
+        if(eventsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventsResponse.meta === undefined', {
+          eventsResponse: eventsResponse
+        });
+        /* istanbul ignore next */
+        if(eventsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventsResponse.meta.pagination === undefined', {
+          eventsResponse: eventsResponse
+        });
+        const pagination: Pagination = eventsResponse.meta.pagination;
+        nextPage = pagination.nextPage;  
+      }
+    }
+    const eventsResponse: EventsResponse = {
+      data: eventList,
+      meta: {
+        pagination: {
+          count: eventList.length,
+        }
+      }
+    };
+    return eventsResponse;
+  }
+
   public getByName = async({ eventName, applicationDomainId }:{
     eventName: string;
     applicationDomainId: string;

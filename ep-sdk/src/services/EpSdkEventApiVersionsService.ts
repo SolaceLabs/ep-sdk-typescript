@@ -45,6 +45,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
     const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiId({ eventApiId: eventApiId });
     const found: EventApiVersion | undefined = eventApiVersionList.find( (eventApiVersion: EventApiVersion ) => {
+      /* istanbul ignore next */
       if(eventApiVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersion.version === undefined', {
         eventApiVersion: eventApiVersion
       });
@@ -100,6 +101,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     });
 
     if (eventApi === undefined) return [];
+    /* istanbul ignore next */
     if (eventApi.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApi.id === undefined', {
       eventApi: eventApi
     });
@@ -119,6 +121,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     // }}));
     const latestEventVersion: EventApiVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: eventApiVersionList });
     if(latestEventVersion === undefined) return undefined;
+    /* istanbul ignore next */
     if(latestEventVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestEventVersion.version === undefined', {
       latestEventVersion: latestEventVersion
     });
@@ -177,16 +180,20 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
       eventApiId: eventApiId,
       requestBody: eventApiVersion
     });
+    /* istanbul ignore next */
     if(eventApiVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data === undefined', {
       eventApiVersionResponse: eventApiVersionResponse
     });
     const createdEvenApiVersion: EventApiVersion = eventApiVersionResponse.data;
+    /* istanbul ignore next */
     if(createdEvenApiVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data.id === undefined', {
       eventApiVersionResponse: eventApiVersionResponse
     });
+    /* istanbul ignore next */
     if(createdEvenApiVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data.stateId === undefined', {
       eventApiVersionResponse: eventApiVersionResponse
     });
+    /* istanbul ignore next */
     if(createdEvenApiVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data.version === undefined', {
       eventApiVersionResponse: eventApiVersionResponse
     });
@@ -202,6 +209,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
         eventApiId: eventApiId,
         eventApiVersionString: createdEvenApiVersion.version
       });
+      /* istanbul ignore next */
       if(updatedEventApiVersion === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'updatedEventApiVersion === undefined', {
         updatedEventApiVersion: updatedEventApiVersion
       });
@@ -239,9 +247,11 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
       applicationDomainId: fromApplicationDomainId
     });
     if(fromEventApi === undefined) return undefined;
+    /* istanbul ignore next */
     if(fromEventApi.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromEventApi.id === undefined', {
       fromEventApi: fromEventApi
     });
+    /* istanbul ignore next */
     if(fromEventApi.name === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromEventApi.name === undefined', {
       fromEventApi: fromEventApi
     });
@@ -251,6 +261,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
       applicationDomainId: fromApplicationDomainId,
     });
     if(fromEventApiVersion === undefined) return undefined;
+    /* istanbul ignore next */
     if(fromEventApiVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventApiVersion.stateId === undefined", {
       fromEventApiVersion: fromEventApiVersion
     });
@@ -261,6 +272,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
       eventApiName: eventApiName
     });
     if(targetEventApiCheck !== undefined) {
+      /* istanbul ignore next */
       if(targetEventApiCheck.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetEventApiCheck.id === undefined", {
         targetEventApiCheck: targetEventApiCheck
       });
@@ -325,13 +337,15 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
         stateId: fromEventApiVersion.stateId,
         displayName: fromEventApiVersion.displayName ? fromEventApiVersion.displayName : fromEventApi.name,
         description: fromEventApiVersion.description ? fromEventApiVersion.description : '',
-        consumedEventVersionIds: targetConsumedEventVersions.map( (targetConsumedEventVersion: EventVersion) => { 
+        consumedEventVersionIds: targetConsumedEventVersions.map( (targetConsumedEventVersion: EventVersion) => {
+          /* istanbul ignore next */
           if(targetConsumedEventVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetConsumedEventVersion.id === undefined", {
             targetConsumedEventVersion: targetConsumedEventVersion
           });
           return targetConsumedEventVersion.id; 
         }),
         producedEventVersionIds: targetProducedEventVersions.map( (targetProducedEventVersion: EventVersion) => { 
+          /* istanbul ignore next */
           if(targetProducedEventVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "targetProducedEventVersion.id === undefined", {
             targetProducedEventVersion: targetProducedEventVersion
           });
@@ -341,6 +355,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     });
     const epSdkEventApiVersionTask_ExecuteReturn: IEpSdkEventApiVersionTask_ExecuteReturn = await epSdkEventApiVersionTask.execute();
     // must get the object again, otherwise not all properties are set correctly
+    /* istanbul ignore next */
     if(epSdkEventApiVersionTask_ExecuteReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEventApiVersionTask_ExecuteReturn.epObject.id === undefined', {
       epSdkEventApiVersionTask_ExecuteReturn: epSdkEventApiVersionTask_ExecuteReturn
     });
@@ -348,6 +363,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
       versionId: epSdkEventApiVersionTask_ExecuteReturn.epObject.id,
       include: ''
     });
+    /* istanbul ignore next */
     if(eventApiVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data === undefined', {
       eventApiVersionResponse: eventApiVersionResponse
     });

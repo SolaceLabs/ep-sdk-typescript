@@ -29,6 +29,7 @@ export class EpSdkEnumsService extends EpSdkService {
     }));
 
     if (topicAddressEnumsResponse.data === undefined || topicAddressEnumsResponse.data.length === 0) return undefined;
+    /* istanbul ignore next */
     if (topicAddressEnumsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumsResponse.data.length > 1', {
       topicAddressEnumsResponse: topicAddressEnumsResponse
     });
@@ -69,6 +70,7 @@ export class EpSdkEnumsService extends EpSdkService {
       }
     }));
 
+    /* istanbul ignore next */
     if (topicAddressEnumResponse.data === undefined) {
       throw new EpSdkApiContentError(logName, this.constructor.name, "topicAddressEnumResponse.data === undefined", {
         enumId: enumId
@@ -112,6 +114,7 @@ export class EpSdkEnumsService extends EpSdkService {
       applicationDomainId: applicationDomainId,
       enumName: enumName
     });
+    /* istanbul ignore next */
     if (topicAddressEnum.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnum.id === undefined', {
       topicAddressEnum: topicAddressEnum,
     });

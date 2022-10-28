@@ -78,6 +78,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     // create the complete list
     const complete_EpSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = [];
     for(const eventApiProduct of eventApiProductList) {
+      /* istanbul ignore next */
       if(eventApiProduct.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiProduct.id === undefined', {
         eventApiProduct: eventApiProduct
       });
@@ -153,9 +154,11 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       if(eventApiProductVersionsResponse.data === undefined || eventApiProductVersionsResponse.data.length === 0) nextPage = null;
       else {
         eventApiProductVersionList.push(...eventApiProductVersionsResponse.data);
+        /* istanbul ignore next */
         if(eventApiProductVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductVersionsResponse.meta === undefined', {
           eventApiProductVersionsResponse: eventApiProductVersionsResponse
         });
+        /* istanbul ignore next */
         if(eventApiProductVersionsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductVersionsResponse.meta.pagination === undefined', {
           eventApiProductVersionsResponse: eventApiProductVersionsResponse
         });
@@ -245,11 +248,13 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     if(eventApiProductVersion === undefined) return undefined;
     // create a list of all versions
     const versionStringList: Array<string> = eventApiProductVersionList.map( (eventApiProductVersion: EventApiProductVersion) => {
+      /* istanbul ignore next */
       if(eventApiProductVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductVersion.version === undefined', {
         eventApiProductVersion: eventApiProductVersion
       });
       return eventApiProductVersion.version;
     });
+    /* istanbul ignore next */
     if(eventApiProductResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductResponse.data === undefined', {
       eventApiProductResponse: eventApiProductResponse
     });

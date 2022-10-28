@@ -88,6 +88,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     const logName = `${EpSdkEpEventTask.name}.${funcName}()`;
     
     if(epObject === undefined) return this.getDefaultEpObjectKeys();
+    /* istanbul ignore next */
     if(epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObject.id === undefined', {
       epObject: epObject
     });
@@ -204,6 +205,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
       eventResponse: eventResponse
     }}));
 
+    /* istanbul ignore next */
     if(eventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventResponse.data === undefined', {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       create: create,
@@ -223,6 +225,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
     if(epSdkEpEventTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkEpEventTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkEpEventTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEpEventTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkEpEventTask_GetFuncReturn.epObject
     });
@@ -261,6 +264,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
       eventResponse: eventResponse,
     }}));
 
+    /* istanbul ignore next */
     if(eventResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventResponse.data === undefined', {
       eventResponse: eventResponse
     });
@@ -279,6 +283,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE, module: this.constructor.name }));
 
     if(epSdkEpEventTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkEpEventTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkEpEventTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEpEventTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkEpEventTask_GetFuncReturn.epObject
     });

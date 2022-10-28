@@ -87,6 +87,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     const logName = `${EpSdkSchemaTask.name}.${funcName}()`;
     
     if(epObject === undefined) return this.getDefaultEpObjectKeys();
+    /* istanbul ignore next */
     if(epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObject.id === undefined', {
       epObject: epObject
     });
@@ -224,6 +225,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
     if(epSdkSchemaTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkSchemaTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkSchemaTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkSchemaTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkSchemaTask_GetFuncReturn.epObject
     });
@@ -262,6 +264,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
       schemaResponse: schemaResponse,
     }}));
 
+    /* istanbul ignore next */
     if(schemaResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaResponse.data === undefined', {
       schemaResponse: schemaResponse
     });
@@ -280,6 +283,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE, module: this.constructor.name }));
 
     if(epSdkSchemaTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkSchemaTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkSchemaTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkSchemaTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkSchemaTask_GetFuncReturn.epObject
     });

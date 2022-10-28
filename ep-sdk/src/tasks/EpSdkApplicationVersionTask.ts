@@ -85,9 +85,11 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
     const logName = `${EpSdkApplicationVersionTask.name}.${funcName}()`;
     
     if(epObject === undefined) return this.getDefaultEpObjectKeys();
+    /* istanbul ignore next */
     if(epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObject.id === undefined', {
       epObject: epObject
     });
+    /* istanbul ignore next */
     if(epObject.applicationId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObject.applicationId === undefined', {
       epObject: epObject
     });
@@ -145,6 +147,7 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
     }}));
 
     if(epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined', {
       epObject: epSdkApplicationVersionTask_GetFuncReturn.epObject
     });
@@ -237,9 +240,11 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
     if(epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkApplicationVersionTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkApplicationVersionTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationVersionTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkApplicationVersionTask_GetFuncReturn.epObject
     });
+    /* istanbul ignore next */
     if(epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkApplicationVersionTask_GetFuncReturn.epObject.version === undefined', {
       epObject: epSdkApplicationVersionTask_GetFuncReturn.epObject
     });

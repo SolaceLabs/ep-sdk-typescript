@@ -88,6 +88,7 @@ export class EpSdkEnumTask extends EpSdkTask {
     const logName = `${EpSdkEnumTask.name}.${funcName}()`;
     
     if(epObject === undefined) return this.getDefaultEpObjectKeys();
+    /* istanbul ignore next */
     if(epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObject.id === undefined', {
       epObject: epObject
     });
@@ -200,7 +201,8 @@ export class EpSdkEnumTask extends EpSdkTask {
       create: create,
       topicAddressEnumResponse: topicAddressEnumResponse
     }}));
-
+    
+    /* istanbul ignore next */
     if(topicAddressEnumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumResponse.data === undefined', {
       epSdkApplicationDomainTask_Config: this.getTaskConfig(),
       create: create,
@@ -220,6 +222,7 @@ export class EpSdkEnumTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_UPDATE, module: this.constructor.name }));
 
     if(epSdkEnumTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkEnumTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkEnumTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEnumTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkEnumTask_GetFuncReturn.epObject
     });
@@ -258,6 +261,7 @@ export class EpSdkEnumTask extends EpSdkTask {
       topicAddressEnumResponse: topicAddressEnumResponse,
     }}));
 
+    /* istanbul ignore next */
     if(topicAddressEnumResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumResponse.data === undefined', {
       topicAddressEnumResponse: topicAddressEnumResponse
     });
@@ -276,6 +280,7 @@ export class EpSdkEnumTask extends EpSdkTask {
     EpSdkLogger.trace(EpSdkLogger.createLogEntry(logName, { code: EEpSdkLoggerCodes.TASK_EXECUTE_START_DELETE, module: this.constructor.name }));
 
     if(epSdkEnumTask_GetFuncReturn.epObject === undefined) throw new EpSdkInternalTaskError(logName, this.constructor.name, 'epSdkEnumTask_GetFuncReturn.epObject === undefined');
+    /* istanbul ignore next */
     if(epSdkEnumTask_GetFuncReturn.epObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epSdkEnumTask_GetFuncReturn.epObject.id === undefined', {
       epObject: epSdkEnumTask_GetFuncReturn.epObject
     });
