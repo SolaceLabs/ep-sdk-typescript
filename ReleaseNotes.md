@@ -2,6 +2,17 @@
 
 Solace Event Portal SDK.
 
+## Version 0.14.0-alpha
+
+**New Features:**
+- **EpSdkEpEventsService**
+  - `listAll()`: lists all events
+- **EpSdkEpEventVersionsService**
+  - `listLatestVersions()`: lists latest event versions
+
+**Fixes:**
+- added brokerType to various calls - now mandatory in EP API
+
 ## Version 0.13.0-alpha
 
 **New Features:**
