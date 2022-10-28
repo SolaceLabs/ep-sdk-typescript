@@ -13,6 +13,7 @@ export class EpSdkVersionService extends EpSdkService {
     let latestEpObjectVersion: any | undefined = undefined;
     let latestEpObjectVersionString: string = '0.0.0';
     for (const epObjectVersion of epObjectVersionList) {
+      /* istanbul ignore next */
       if(epObjectVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObjectVersion.version === undefined', {
         epObjectVersion: epObjectVersion
       });
@@ -35,6 +36,7 @@ export class EpSdkVersionService extends EpSdkService {
     const funcName = 'getEpObjectVersionFromList';
     const logName = `${EpSdkVersionService.name}.${funcName}()`;
     const found = epObjectVersionList.find( (epObjectVersion) => {
+      /* istanbul ignore next */
       if(epObjectVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObjectVersion.version === undefined', {
         epObjectVersion: epObjectVersion
       });

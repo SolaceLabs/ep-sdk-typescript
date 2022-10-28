@@ -37,9 +37,11 @@ export class EpSdkEventApiProductsService extends EpSdkService {
       if(eventApiProductsResponse.data === undefined || eventApiProductsResponse.data.length === 0) nextPage = undefined;
       else {
         eventApiProductList.push(...eventApiProductsResponse.data);
+        /* istanbul ignore next */
         if(eventApiProductsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductsResponse.meta === undefined', {
           eventApiProductsResponse: eventApiProductsResponse
         });
+        /* istanbul ignore next */
         if(eventApiProductsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductsResponse.meta.pagination === undefined', {
           eventApiProductsResponse: eventApiProductsResponse
         });

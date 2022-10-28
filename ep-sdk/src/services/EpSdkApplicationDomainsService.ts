@@ -32,6 +32,7 @@ export class EpSdkApplicationDomainsService extends EpSdkService {
     }}));
 
     if(applicationDomainsResponse.data === undefined || applicationDomainsResponse.data.length === 0) return undefined;
+    /* istanbul ignore next */
     if(applicationDomainsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name,'applicationDomainsResponse.data.length > 1', {
       applicationDomainsResponse: applicationDomainsResponse
     });
@@ -54,11 +55,10 @@ export class EpSdkApplicationDomainsService extends EpSdkService {
     const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.getApplicationDomain({ 
       id: applicationDomainId,
     });
-    if(applicationDomainResponse.data === undefined) {
-      throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomainResponse.data === undefined", {
+    /* istanbul ignore next */
+    if(applicationDomainResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "applicationDomainResponse.data === undefined", {
         applicationDomainId: applicationDomainId
       });
-    }
     const applicationDomain: ApplicationDomain = applicationDomainResponse.data;
     return applicationDomain;  
   }
@@ -100,6 +100,7 @@ export class EpSdkApplicationDomainsService extends EpSdkService {
     if(applicationDomain === undefined) throw new EpSdkServiceError(logName, this.constructor.name, "applicationDomain === undefined", {
       applicationDomainName: applicationDomainName
     });
+    /* istanbul ignore next */
     if(applicationDomain.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationDomain.id === undefined', {
       applicationDomain: applicationDomain,
     });

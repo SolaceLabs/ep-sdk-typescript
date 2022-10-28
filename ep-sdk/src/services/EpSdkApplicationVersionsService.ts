@@ -25,6 +25,7 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
       version: applicationVersionString,
     });
     if (applicationVersionsResponse.data === undefined || applicationVersionsResponse.data.length === 0) return undefined;
+    /* istanbul ignore next */
     if (applicationVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionsResponse.data.length > 1', {
       applicationVersionsResponse: applicationVersionsResponse
     });
@@ -74,6 +75,7 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
       applicationName: applicationName
     });
     if (applicationObject === undefined) return [];
+    /* istanbul ignore next */
     if (applicationObject.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationObject.id === undefined', {
       applicationObject: applicationObject
     });
@@ -93,6 +95,7 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
     // }}));
     const latestApplicationVersion: ApplicationVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: applicationVersionList });
     if (latestApplicationVersion === undefined) return undefined;
+    /* istanbul ignore next */
     if (latestApplicationVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestApplicationVersion.version === undefined', {
       latestApplicationVersion: latestApplicationVersion
     });
@@ -148,16 +151,20 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
       applicationId: applicationId,
       requestBody: applicationVersion,
     });
+    /* istanbul ignore next */
     if(applicationVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data === undefined', {
       applicationVersionResponse: applicationVersionResponse
     });
     const createdApplicationVersion: ApplicationVersion = applicationVersionResponse.data;
+    /* istanbul ignore next */
     if(createdApplicationVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data.id === undefined', {
       applicationVersionResponse: applicationVersionResponse
     });
+    /* istanbul ignore next */
     if(createdApplicationVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data.stateId === undefined', {
       applicationVersionResponse: applicationVersionResponse
     });
+    /* istanbul ignore next */
     if(createdApplicationVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data.version === undefined', {
       applicationVersionResponse: applicationVersionResponse
     });
@@ -174,6 +181,7 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
         applicationId: applicationId,
         applicationVersionString: createdApplicationVersion.version
       });
+      /* istanbul ignore next */
       if(updatedApplicationVersion === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'updatedApplicationVersion === undefined', {
         updatedApplicationVersion: updatedApplicationVersion
       });

@@ -9,6 +9,7 @@ import {
   ApiError, 
   ApplicationDomainResponse, 
   ApplicationDomainsService,
+  EventApi,
   EventApiResponse,
   EventApIsService, 
   EventResponse,
@@ -114,7 +115,7 @@ describe(`${scriptName}`, () => {
         stateId: EpSdkStatesService.releasedId,
         description: 'description',
         displayName: 'displayName',
-        schemaVersionId: SchemaVersionId
+        schemaVersionId: SchemaVersionId,
       },
       checkmode: false,
     });
@@ -149,6 +150,7 @@ describe(`${scriptName}`, () => {
       requestBody: {
         applicationDomainId: ApplicationDomainId,
         name: EventApiName,
+        brokerType: EventApi.brokerType.SOLACE
       }
     });
     EventApiId = eventApiResponse.data.id;

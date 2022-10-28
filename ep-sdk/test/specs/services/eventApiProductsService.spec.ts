@@ -12,6 +12,7 @@ import {
   EventApiProductsService,
   EventApiProductResponse,
   EventApiProductsResponse,
+  EventApiProduct,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import { EpSdkError } from '../../../src/utils/EpSdkErrors';
@@ -86,7 +87,8 @@ describe(`${scriptName}`, () => {
             requestBody: {
               applicationDomainId: applicationDomainId,
               name: EventApiProductName,
-              shared: EventApiProductShared
+              shared: EventApiProductShared,
+              brokerType: EventApiProduct.brokerType.SOLACE
             }
           });
           const eventApiProductId = eventApiProductResponse.data.id;

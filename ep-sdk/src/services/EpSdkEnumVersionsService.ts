@@ -29,6 +29,7 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
       versions: [enumVersionString]
     });
     if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return undefined;
+    /* istanbul ignore next */
     if (topicAddressEnumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionsResponse.data.length > 1', {
       topicAddressEnumVersionsResponse: topicAddressEnumVersionsResponse
     });
@@ -81,6 +82,7 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
       enumName: enumName
     });
     if (topicAddressEnum === undefined) return [];
+    /* istanbul ignore next */
     if (topicAddressEnum.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnum.id === undefined', {
       topicAddressEnum: topicAddressEnum
     });
@@ -100,6 +102,7 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     // }}));
     const latestTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: topicAddressEnumVersionList });
     if (latestTopicAddressEnumVersion === undefined) return undefined;
+    /* istanbul ignore next */
     if (latestTopicAddressEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestTopicAddressEnumVersion.version === undefined', {
       latestTopicAddressEnumVersion: latestTopicAddressEnumVersion
     });
@@ -155,16 +158,20 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
       enumId: enumId,
       requestBody: topicAddressEnumVersion
     });
+    /* istanbul ignore next */
     if(topicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionResponse.data === undefined', {
       topicAddressEnumVersionResponse: topicAddressEnumVersionResponse
     });
     const createdTopicAddressEnumVersion: TopicAddressEnumVersion = topicAddressEnumVersionResponse.data;
+    /* istanbul ignore next */
     if(createdTopicAddressEnumVersion.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'createdTopicAddressEnumVersion.data.id === undefined', {
       createdTopicAddressEnumVersion: createdTopicAddressEnumVersion
     });
+    /* istanbul ignore next */
     if(createdTopicAddressEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'createdTopicAddressEnumVersion.data.stateId === undefined', {
       createdTopicAddressEnumVersion: createdTopicAddressEnumVersion
     });
+    /* istanbul ignore next */
     if(createdTopicAddressEnumVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'createdTopicAddressEnumVersion.data.version === undefined', {
       createdTopicAddressEnumVersion: createdTopicAddressEnumVersion
     });
@@ -181,6 +188,7 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
         enumId: enumId,
         enumVersionString: createdTopicAddressEnumVersion.version
       });
+      /* istanbul ignore next */
       if(updatedTopicAddressEnumVersion === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'updatedTopicAddressEnumVersion === undefined', {
         updatedTopicAddressEnumVersion: updatedTopicAddressEnumVersion
       });
@@ -201,10 +209,12 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     const fromTopicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.getEnumVersion({
       versionId: enumVersionId,
     });
+    /* istanbul ignore next */
     if(fromTopicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromTopicAddressEnumVersionResponse.data === undefined', {
       fromTopicAddressEnumVersionResponse: fromTopicAddressEnumVersionResponse
     });
     const fromTopicAddressEnumVersion: TopicAddressEnumVersion = fromTopicAddressEnumVersionResponse.data;
+    /* istanbul ignore next */
     if(fromTopicAddressEnumVersion.stateId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'fromTopicAddressEnumVersion.stateId === undefined', {
       fromTopicAddressEnumVersion: fromTopicAddressEnumVersion
     });

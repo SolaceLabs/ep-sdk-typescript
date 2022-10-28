@@ -14,8 +14,8 @@ export class TestContext {
 
     private static itId: string;
     private static apiRequestOptions: ApiRequestOptions;
-    private static apiResult: ApiResult;
-    private static apiError: ApiError;
+    private static apiResult?: ApiResult;
+    private static apiError?: ApiError;
     private static testEnv: TTestEnv;
 
     public static newItId() {
@@ -64,13 +64,13 @@ export class TestContext {
     public static getApiRequestOptions(): ApiRequestOptions {
         return TestContext.apiRequestOptions;
     }
-    public static setApiResult(result: ApiResult) {
+    public static setApiResult(result: ApiResult | undefined) {
         TestContext.apiResult = result;
     }
     public static getApiResult(): ApiResult {
         return TestContext.apiResult;
     }
-    public static setApiError(error: ApiError) {
+    public static setApiError(error: ApiError | undefined) {
         TestContext.apiError = error;
     }
     public static getApiError(): ApiError {

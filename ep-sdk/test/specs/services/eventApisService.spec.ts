@@ -53,6 +53,7 @@ describe(`${scriptName}`, () => {
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: EventApiName,
+            brokerType: EventApi.brokerType.SOLACE
           }
         });
         EventApiId = eventApiResponse.data.id;
@@ -114,6 +115,7 @@ describe(`${scriptName}`, () => {
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: EventApiName,
+            brokerType: EventApi.brokerType.SOLACE
           }
         });
         EventApiId = eventApiResponse.data.id;

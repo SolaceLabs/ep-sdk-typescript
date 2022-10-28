@@ -28,6 +28,7 @@ export class EpSdkEventApisService extends EpSdkService {
     }}));
 
     if(eventApisResponse.data === undefined || eventApisResponse.data.length === 0) return undefined;
+    /* istanbul ignore next */
     if(eventApisResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApisResponse.data.length > 1', {    
       eventApisResponse: eventApisResponse
     });
@@ -52,6 +53,7 @@ export class EpSdkEventApisService extends EpSdkService {
     }}));
 
     if(eventApiResponse.data === undefined) {
+      /* istanbul ignore next */
       throw new EpSdkApiContentError(logName, this.constructor.name, "eventApiResponse.data === undefined", {
         eventApiId: eventApiId
       });
@@ -94,6 +96,7 @@ export class EpSdkEventApisService extends EpSdkService {
       applicationDomainId: applicationDomainId,
       eventApiName: eventApiName
     });
+    /* istanbul ignore next */
     if(eventApi.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApi.id === undefined', {
       eventApi: eventApi,
     });

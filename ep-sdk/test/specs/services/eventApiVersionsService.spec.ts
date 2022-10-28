@@ -9,19 +9,17 @@ import {
   ApiError, 
   ApplicationDomainResponse, 
   ApplicationDomainsService, 
+  EventApi, 
   EventApiResponse, 
   EventApIsService, 
   EventApiVersion,
   EventApiVersionResponse,
-  EventResponse,
-  EventsService,
   EventVersion,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/utils/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
 import EpSdkEventApiVersionsService from '../../../src/services/EpSdkEventApiVersionsService';
-import EpSdkEpEventVersionsService from '../../../src/services/EpSdkEpEventVersionsService';
 
 
 const scriptName: string = path.basename(__filename);
@@ -56,7 +54,8 @@ describe(`${scriptName}`, () => {
       const eventApiResponse: EventApiResponse = await EventApIsService.createEventApi({ 
         requestBody: {
           applicationDomainId: ApplicationDomainId,
-          name: EventApiName
+          name: EventApiName,
+          brokerType: EventApi.brokerType.SOLACE
         }
       });
       EventApiId = eventApiResponse.data.id;
@@ -215,7 +214,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should catch displayName validation`, async () => {
+    it(`${scriptName}: should catch displayName validation error`, async () => {
       const DisplayName = 'very, very, very, very, very, very, very, very, very, very, very, very, very long display name';
       try {
         const create: EventApiVersion = {
@@ -246,7 +245,8 @@ describe(`${scriptName}`, () => {
           requestBody: {
             applicationDomainId: ApplicationDomainId,
             name: PagingName,
-            shared: false
+            shared: false,
+            brokerType: EventApi.brokerType.SOLACE
           }
         });
         EventApiId = response.data.id;

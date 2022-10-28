@@ -18,26 +18,25 @@ import TestConfig from "./TestConfig";
   const stub = sinon.stub(__requestLib, 'request');
   stub.callsFake((config: OpenAPIConfig, options: ApiRequestOptions): CancelablePromise<ApiResult> => {
   
-      TestContext.setApiRequestOptions(options);
-      if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiRequestOptions(TestContext.getItId(), options);
+    TestContext.setApiRequestOptions(options);
+    if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiRequestOptions(TestContext.getItId(), options);
+
+    TestContext.setApiResult(undefined);
+    TestContext.setApiError(undefined);
+
+    // const cancelablePromise = stub.wrappedMethod(config, options) as CancelablePromise<ApiResult>;
+    // call my own request
+    
+    const cancelablePromise = customRequest(config, options) as CancelablePromise<ApiResult>;
+
+    cancelablePromise.then((value: ApiResult) => {
+      TestContext.setApiResult(value);
+      if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiResult(TestContext.getItId(), TestContext.getApiResult());
+    }, (reason) => {
+      TestContext.setApiError(reason);
+      TestLogger.logApiError(TestContext.getItId(), TestContext.getApiError());
+    });
   
-      TestContext.setApiResult(undefined);
-      TestContext.setApiError(undefined);
-
-      // const cancelablePromise = stub.wrappedMethod(config, options) as CancelablePromise<ApiResult>;
-      // call my own request
-      
-      const cancelablePromise = customRequest(config, options) as CancelablePromise<ApiResult>;
-
-
-      cancelablePromise.then((value: ApiResult) => {
-          TestContext.setApiResult(value);
-          if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiResult(TestContext.getItId(), TestContext.getApiResult());
-      }, (reason) => {
-          TestContext.setApiError(reason);
-          TestLogger.logApiError(TestContext.getItId(), TestContext.getApiError());
-      });
-  
-      return cancelablePromise;
+    return cancelablePromise;
   });
   

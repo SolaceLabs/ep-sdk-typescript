@@ -1,9 +1,19 @@
-import { Address, AddressLevel, DeliveryDescriptor, EventResponse, EventsService, EventVersion, SchemaResponse, SchemasService, SchemaVersion } from '@solace-labs/ep-openapi-node';
+import { 
+  Address, 
+  AddressLevel, 
+  DeliveryDescriptor, 
+  EventResponse, 
+  EventsService, 
+  EventVersion, 
+  SchemaResponse, 
+  SchemasService, 
+  SchemaVersion,
+  ApiError
+} from '@solace-labs/ep-openapi-node';
 import { v4 as uuidv4 } from 'uuid';
 import EpSdkEpEventVersionsService from '../../src/services/EpSdkEpEventVersionsService';
 import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../src/services/EpSdkSchemasService';
 import EpSdkSchemaVersionsService from '../../src/services/EpSdkSchemaVersionsService';
-import EpSdkStatesService from '../../src/services/EpSdkStatesService';
 
 export class TestUtils {
 
