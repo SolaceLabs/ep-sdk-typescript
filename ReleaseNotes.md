@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.14.1-alpha
+
+**Fixes:**
+- export of types in index.ts
+
 ## Version 0.14.0-alpha
 
 **New Features:**

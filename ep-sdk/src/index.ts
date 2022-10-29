@@ -38,10 +38,9 @@ export {
 } from './services/EpSdkSchemaVersionsService';
 export {
   default as EpSdkEpEventsService
-} from './services/EpSdkEpEventsService'
-export {
-  default as EpSdkEpEventVersionsService
-} from './services/EpSdkEpEventVersionsService'
+} from './services/EpSdkEpEventsService';
+export * from './services/EpSdkEpEventVersionsService';
+export { default as EpSdkEpEventVersionsService } from './services/EpSdkEpEventVersionsService';
 export {
   default as EpSdkEventApisService
 } from './services/EpSdkEventApisService';
