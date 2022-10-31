@@ -24,8 +24,12 @@ import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
 import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
 import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
 import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
-import EpSdkEpEventVersionsService from '../../../src/services/EpSdkEpEventVersionsService';
+// import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
+import { 
+  EpSdkEpEventVersionsService,
+  EEpSdkSchemaContentType,
+  EEpSdkSchemaType
+} from '../../../src';
 
 
 const scriptName: string = path.basename(__filename);

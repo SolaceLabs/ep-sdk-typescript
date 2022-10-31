@@ -5,7 +5,10 @@ import { TestLogger } from '../../lib/TestLogger';
 import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
-import { EpSdkUtils } from '../../../src/utils/EpSdkUtils';
+
+import { 
+  EpSdkUtils,
+} from '../../../src';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

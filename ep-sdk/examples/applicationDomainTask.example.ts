@@ -4,7 +4,8 @@ import {
   EEpSdkTask_TargetState,
   EpSdkApplicationDomainTask, 
   IEpSdkApplicationDomainTask_ExecuteReturn 
-} from '../dist';
+} from '../src';
+// } from "@solace-labs/ep-sdk";
 
 const ApplicationDomainName = 'foo';
 

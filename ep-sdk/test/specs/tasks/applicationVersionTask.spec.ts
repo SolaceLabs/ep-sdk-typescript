@@ -14,20 +14,24 @@ import {
   ApplicationsService,
 } from '@solace-labs/ep-openapi-node';
 import { 
-  EpSdkError, 
-  EpSdkFeatureNotSupportedError, 
-  EpSdkInvalidSemVerStringError, 
+  EpSdkError,
+  EpSdkFeatureNotSupportedError,
+  EpSdkInvalidSemVerStringError,
   EpSdkVersionTaskStrategyValidationError,
-  TEpSdkVersionTaskStrategyValidationError_Details
-} from '../../../src/utils/EpSdkErrors';
-import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EpSdkApplicationVersionTask, IEpSdkApplicationVersionTask_ExecuteReturn, TEpSdkApplicationVersionTask_Settings } from '../../../src/tasks/EpSdkApplicationVersionTask';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
-import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
-import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from '../../../src/utils/EpSdkSemVerUtils';
-import EpSdkApplicationVersionsService from '../../../src/services/EpSdkApplicationVersionsService';
+  TEpSdkVersionTaskStrategyValidationError_Details,
+  EpSdkApplicationDomainsService,
+  EpSdkApplicationVersionTask,
+  IEpSdkApplicationVersionTask_ExecuteReturn,
+  TEpSdkApplicationVersionTask_Settings,
+  EEpSdkTask_Action,
+  EEpSdkTask_TargetState,
+  EpSdkStatesService,
+  EEpSdk_VersionTaskStrategy,
+  IEpSdkTask_TransactionLogData,
+  EpSdkSemVerUtils,
+  EEpSdk_VersionStrategy,
+  EpSdkApplicationVersionsService,
+} from '../../../src';
 
 
 const scriptName: string = path.basename(__filename);

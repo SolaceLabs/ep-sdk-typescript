@@ -15,8 +15,11 @@ import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
 import { EpSdkPagination } from "../types";
 
 
-export type EpSdkEventApiProduct = Required<EventApiProduct>;
-export type EpSdkEventApiProductVersion = Required<EventApiProductVersion>;
+// export type EpSdkEventApiProduct = Required<EventApiProduct>;
+export type EpSdkEventApiProduct = Required<Pick<EventApiProduct, "applicationDomainId" | "id" | "name">> & Omit<EventApiProduct, "applicationDomainId" | "id" | "name">;
+export type EpSdkEventApiProductVersion = Required<Pick<EventApiProductVersion, "id" | "eventApiProductId" | "version">> & Omit<EventApiProductVersion, "id" | "eventApiProductId" | "version">;
+// export type EpSdkEventApiProductVersion = Required<EventApiProductVersion>;
+
 export type EpSdkEventApiProductVersionList = Array<EpSdkEventApiProductVersion>;
 export type EpSdkEventApiProductAndVersion = {
   eventApiProduct: EpSdkEventApiProduct;

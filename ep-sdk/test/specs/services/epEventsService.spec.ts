@@ -13,9 +13,13 @@ import {
   EventsService, 
   Event as EPEvent,
 } from '@solace-labs/ep-openapi-node';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
-import EpSdkEpEventsService from '../../../src/services/EpSdkEpEventsService';
+import { 
+  EpSdkError,
+  EpSdkServiceError,
+  EpSdkApplicationDomainsService,
+  EpSdkEpEventsService,
+} from '../../../src';
+
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

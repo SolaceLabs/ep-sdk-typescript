@@ -8,16 +8,23 @@ import {
   ApiError, 
   SchemaVersion, 
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError } from '../../../src/utils/EpSdkErrors';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EpSdkApplicationDomainTask, IEpSdkApplicationDomainTask_ExecuteReturn } from '../../../src/tasks/EpSdkApplicationDomainTask';
-import { EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
-import { EpSdkSchemaTask, IEpSdkSchemaTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaTask';
-import { EpSdkSchemaVersionTask, IEpSdkSchemaVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkSchemaVersionTask';
-import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
+import { 
+  EpSdkError,
+  EpSdkApplicationDomainsService,
+  EEpSdkSchemaContentType,
+  EEpSdkSchemaType,
+  EpSdkStatesService,
+  EpSdkApplicationDomainTask,
+  IEpSdkApplicationDomainTask_ExecuteReturn,
+  EEpSdkTask_TargetState,
+  EEpSdk_VersionTaskStrategy,
+  EpSdkSchemaTask, 
+  IEpSdkSchemaTask_ExecuteReturn,
+  EpSdkSchemaVersionTask,
+  IEpSdkSchemaVersionTask_ExecuteReturn,
+  EpSdkSchemaVersionsService,
+} from '../../../src';
+
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

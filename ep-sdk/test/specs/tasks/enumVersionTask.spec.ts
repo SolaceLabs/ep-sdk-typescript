@@ -12,15 +12,25 @@ import {
   EnumsService,
   TopicAddressEnumResponse
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkFeatureNotSupportedError, EpSdkInvalidSemVerStringError, EpSdkVersionTaskStrategyValidationError, TEpSdkVersionTaskStrategyValidationError_Details } from '../../../src/utils/EpSdkErrors';
-import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn, TEpSdkEnumVersionTask_Settings } from '../../../src/tasks/EpSdkEnumVersionTask';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
-import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
-import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from '../../../src/utils/EpSdkSemVerUtils';
-import EpSdkEnumVersionsService from '../../../src/services/EpSdkEnumVersionsService';
+import { 
+  EpSdkError,
+  EpSdkFeatureNotSupportedError,
+  EpSdkInvalidSemVerStringError,
+  EpSdkVersionTaskStrategyValidationError,
+  TEpSdkVersionTaskStrategyValidationError_Details,
+  EpSdkApplicationDomainsService,
+  EpSdkEnumVersionTask,
+  IEpSdkEnumVersionTask_ExecuteReturn,
+  TEpSdkEnumVersionTask_Settings,
+  EpSdkStatesService,
+  EEpSdk_VersionTaskStrategy,
+  IEpSdkTask_TransactionLogData,
+  EpSdkSemVerUtils,
+  EEpSdk_VersionStrategy,
+  EpSdkEnumVersionsService,
+  EEpSdkTask_Action,
+  EEpSdkTask_TargetState,
+} from '../../../src';
 
 
 const scriptName: string = path.basename(__filename);

@@ -16,10 +16,14 @@ import {
   EventApiVersionResponse,
   EventVersion,
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkServiceError, EpSdkValidationError } from '../../../src/utils/EpSdkErrors';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import EpSdkEventApiVersionsService from '../../../src/services/EpSdkEventApiVersionsService';
+import { 
+  EpSdkError,
+  EpSdkServiceError,
+  EpSdkValidationError,
+  EpSdkApplicationDomainsService,
+  EpSdkStatesService,
+  EpSdkEventApiVersionsService,
+} from '../../../src';
 
 
 const scriptName: string = path.basename(__filename);
