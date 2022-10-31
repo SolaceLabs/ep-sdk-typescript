@@ -15,9 +15,12 @@ import {
   TopicAddressEnumVersion,
   TopicAddressEnumVersionResponse, 
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
-import EpSdkEnumVersionsService from '../../../src/services/EpSdkEnumVersionsService';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import { 
+  EpSdkError,
+  EpSdkServiceError,
+  EpSdkApplicationDomainsService,
+  EpSdkEnumVersionsService,
+} from '../../../src';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

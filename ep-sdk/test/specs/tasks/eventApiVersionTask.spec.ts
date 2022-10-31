@@ -19,22 +19,28 @@ import {
   SchemaVersion,
 } from '@solace-labs/ep-openapi-node';
 import { 
-  EpSdkError, 
-  EpSdkFeatureNotSupportedError, 
+  EpSdkError,
+  EpSdkFeatureNotSupportedError,
   EpSdkVersionTaskStrategyValidationError,
-  TEpSdkVersionTaskStrategyValidationError_Details
-} from '../../../src/utils/EpSdkErrors';
-import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkEventApiVersionTask, IEpSdkEventApiVersionTask_ExecuteReturn, TEpSdkEventApiVersionTask_Settings } from '../../../src/tasks/EpSdkEventApiVersionTask';
-import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
-import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
-import EpSdkEventApiVersionsService from '../../../src/services/EpSdkEventApiVersionsService';
-import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from '../../../src/utils/EpSdkSemVerUtils';
-import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
-import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
-import { EpSdkEpEventVersionTask, IEpSdkEpEventVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEpEventVersionTask';
+  TEpSdkVersionTaskStrategyValidationError_Details,
+  EpSdkApplicationDomainsService,
+  EpSdkEpEventVersionTask,
+  IEpSdkEpEventVersionTask_ExecuteReturn,
+  EpSdkStatesService,
+  EEpSdk_VersionTaskStrategy,
+  IEpSdkTask_TransactionLogData,
+  EpSdkSemVerUtils,
+  EEpSdk_VersionStrategy,
+  EEpSdkSchemaContentType,
+  EEpSdkSchemaType,
+  EpSdkSchemaVersionsService,
+  EpSdkEventApiVersionTask,
+  IEpSdkEventApiVersionTask_ExecuteReturn,
+  TEpSdkEventApiVersionTask_Settings,
+  EpSdkEventApiVersionsService,
+  EEpSdkTask_Action,
+  EEpSdkTask_TargetState,
+} from '../../../src';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

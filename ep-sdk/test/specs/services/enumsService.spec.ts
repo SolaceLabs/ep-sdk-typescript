@@ -11,10 +11,15 @@ import {
   ApplicationDomainsService, 
   EnumsService, 
   TopicAddressEnum, 
-  TopicAddressEnumResponse} from '@solace-labs/ep-openapi-node';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import EpSdkEnumsService from '../../../src/services/EpSdkEnumsService';
-import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
+  TopicAddressEnumResponse
+} from '@solace-labs/ep-openapi-node';
+import { 
+  EpSdkError,
+  EpSdkServiceError,
+  EpSdkEnumsService,
+  EpSdkApplicationDomainsService,
+} from '../../../src';
+
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

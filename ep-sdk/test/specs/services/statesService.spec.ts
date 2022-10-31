@@ -6,8 +6,11 @@ import { TestContext } from '../../lib/TestContext';
 import { 
   ApiError, 
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError } from '../../../src/utils/EpSdkErrors';
-import EpSdkStatesService, { EEpSdkStateDTONames } from '../../../src/services/EpSdkStatesService';
+import { 
+  EpSdkError,
+  EpSdkStatesService,
+  EEpSdkStateDTONames,
+} from '../../../src';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

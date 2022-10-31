@@ -1,6 +1,10 @@
-
-import { EEpSdkLogLevel, IEpSdkLoggerInstance, IEpSdkLogDetails, IEpSdkLogEntry } from "../../src/utils/EpSdkLogger";
 import pino from 'pino';
+import { 
+  EEpSdkLogLevel, 
+  IEpSdkLoggerInstance, 
+  IEpSdkLogDetails, 
+  IEpSdkLogEntry 
+} from "../../src";
 
 
 export class EpSdkPinoLogger implements IEpSdkLoggerInstance {

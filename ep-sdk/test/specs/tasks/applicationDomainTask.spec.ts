@@ -8,10 +8,14 @@ import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError } from '../../../src/utils/EpSdkErrors';
-import { EpSdkApplicationDomainTask, IEpSdkApplicationDomainTask_ExecuteReturn } from '../../../src/tasks/EpSdkApplicationDomainTask';
-import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import { 
+  EpSdkError,
+  EpSdkApplicationDomainsService,
+  EpSdkApplicationDomainTask,
+  IEpSdkApplicationDomainTask_ExecuteReturn,
+  EEpSdkTask_Action,
+  EEpSdkTask_TargetState,
+} from '../../../src';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

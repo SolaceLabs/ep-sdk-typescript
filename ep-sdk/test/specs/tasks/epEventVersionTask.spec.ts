@@ -17,22 +17,29 @@ import {
   SchemaVersion, 
 } from '@solace-labs/ep-openapi-node';
 import { 
-  EpSdkError, 
-  EpSdkFeatureNotSupportedError, 
-  EpSdkInvalidSemVerStringError, 
+  EpSdkError,
+  EpSdkFeatureNotSupportedError,
+  EpSdkInvalidSemVerStringError,
   EpSdkVersionTaskStrategyValidationError,
-  TEpSdkVersionTaskStrategyValidationError_Details
-} from '../../../src/utils/EpSdkErrors';
-import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkEpEventVersionTask, IEpSdkEpEventVersionTask_Config, IEpSdkEpEventVersionTask_ExecuteReturn, TEpSdkEpEventVersionTask_Settings } from '../../../src/tasks/EpSdkEpEventVersionTask';
-import { EEpSdkSchemaContentType, EEpSdkSchemaType } from '../../../src/services/EpSdkSchemasService';
-import EpSdkSchemaVersionsService from '../../../src/services/EpSdkSchemaVersionsService';
-import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
-import { IEpSdkTask_TransactionLogData } from '../../../src/tasks/EpSdkTask_TransactionLog';
-import EpSdkSemVerUtils, { EEpSdk_VersionStrategy } from '../../../src/utils/EpSdkSemVerUtils';
-import EpSdkEpEventVersionsService from '../../../src/services/EpSdkEpEventVersionsService';
+  TEpSdkVersionTaskStrategyValidationError_Details,
+  EpSdkApplicationDomainsService,
+  EpSdkEpEventVersionTask,
+  IEpSdkEpEventVersionTask_Config,
+  IEpSdkEpEventVersionTask_ExecuteReturn,
+  TEpSdkEpEventVersionTask_Settings,
+  EpSdkStatesService,
+  EEpSdk_VersionTaskStrategy,
+  IEpSdkTask_TransactionLogData,
+  EpSdkSemVerUtils,
+  EEpSdk_VersionStrategy,
+  EEpSdkSchemaContentType,
+  EEpSdkSchemaType,
+  EpSdkSchemaVersionsService,
+  EpSdkEpEventVersionsService,
+  EEpSdkTask_Action,
+  EEpSdkTask_TargetState,
+} from '../../../src';
+
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

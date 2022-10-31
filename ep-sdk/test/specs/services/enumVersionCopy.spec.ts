@@ -8,15 +8,21 @@ import {
   ApiError, 
   TopicAddressEnumVersion,
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError } from '../../../src/utils/EpSdkErrors';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
-import { EpSdkApplicationDomainTask, IEpSdkApplicationDomainTask_ExecuteReturn } from '../../../src/tasks/EpSdkApplicationDomainTask';
-import { EEpSdkTask_TargetState } from '../../../src/tasks/EpSdkTask';
-import { EpSdkEnumTask, IEpSdkEnumTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumTask';
-import { EpSdkEnumVersionTask, IEpSdkEnumVersionTask_ExecuteReturn } from '../../../src/tasks/EpSdkEnumVersionTask';
-import EpSdkEnumVersionsService from '../../../src/services/EpSdkEnumVersionsService';
-import { EEpSdk_VersionTaskStrategy } from '../../../src/tasks/EpSdkVersionTask';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
+import { 
+  EpSdkError,
+  EpSdkApplicationDomainsService,
+  EpSdkStatesService,
+  EpSdkApplicationDomainTask,
+  IEpSdkApplicationDomainTask_ExecuteReturn,
+  EEpSdkTask_TargetState,
+  EpSdkEnumTask,
+  IEpSdkEnumTask_ExecuteReturn,
+  EpSdkEnumVersionTask,
+  IEpSdkEnumVersionTask_ExecuteReturn,
+  EpSdkEnumVersionsService,
+  EEpSdk_VersionTaskStrategy,
+} from '../../../src';
+
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

@@ -5,9 +5,17 @@ import { TestLogger } from '../../lib/TestLogger';
 import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
 import { TestUtils } from '../../lib/TestUtils';
-import { ApiError, ApplicationDomain, ApplicationDomainResponse, ApplicationDomainsService } from '@solace-labs/ep-openapi-node';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
+import { 
+  ApiError, 
+  ApplicationDomain, 
+  ApplicationDomainResponse, 
+  ApplicationDomainsService 
+} from '@solace-labs/ep-openapi-node';
+import { 
+  EpSdkError,
+  EpSdkServiceError,
+  EpSdkApplicationDomainsService,
+} from '../../../src';
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

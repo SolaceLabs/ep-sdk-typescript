@@ -16,7 +16,7 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEpEventsService from "./EpSdkEpEventsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
-import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
+import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
 import EpSdkSchemaVersionsService from "./EpSdkSchemaVersionsService";
 import EpSdkEnumVersionsService from "./EpSdkEnumVersionsService";
 import { EpSdkEpEventTask, IEpSdkEpEventTask_ExecuteReturn } from "../tasks/EpSdkEpEventTask";
@@ -26,8 +26,10 @@ import { EEpSdk_VersionTaskStrategy } from "../tasks/EpSdkVersionTask";
 import { EpSdkUtils } from "../utils/EpSdkUtils";
 import { EpSdkPagination } from "../types";
 
-export type EpSdkEpEvent = Required<EpEvent>;
-export type EpSdkEpEventVersion = Required<EventVersion>;
+// export type EpSdkEpEvent = Required<EpEvent>;
+export type EpSdkEpEvent = Required<Pick<EpEvent, "applicationDomainId" | "id" | "name">> & Omit<EpEvent, "applicationDomainId" | "id" | "name">;
+// export type EpSdkEpEventVersion = Required<EventVersion>;
+export type EpSdkEpEventVersion = Required<Pick<EventVersion, "id" | "eventId" | "version">> & Omit<EventVersion, "id" | "eventId" | "version">;
 export type EpSdkEpEventVersionList = Array<EpSdkEpEventVersion>;
 export type EpSdkEpEventAndVersion = {
   event: EpSdkEpEvent;

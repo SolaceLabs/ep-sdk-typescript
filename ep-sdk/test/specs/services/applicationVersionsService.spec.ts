@@ -15,10 +15,14 @@ import {
   ApplicationVersion,
   ApplicationVersionResponse
 } from '@solace-labs/ep-openapi-node';
-import { EpSdkError, EpSdkServiceError } from '../../../src/utils/EpSdkErrors';
-import EpSdkApplicationDomainsService from '../../../src/services/EpSdkApplicationDomainsService';
-import EpSdkApplicationVersionsService from '../../../src/services/EpSdkApplicationVersionsService';
-import EpSdkStatesService from '../../../src/services/EpSdkStatesService';
+import { 
+  EpSdkError,
+  EpSdkServiceError,
+  EpSdkApplicationVersionsService,
+  EpSdkApplicationDomainsService,
+  EpSdkStatesService
+} from '../../../src';
+
 
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");

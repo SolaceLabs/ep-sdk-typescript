@@ -10,7 +10,6 @@
   "report-dir": "./test/logs/coverage",
   "exclude": [
     "examples",
-    "src/index.ts",
     "src/@solace-labs",
     "src/utils/EpSdkErrors.ts",
     "src/utils/EpSdkLogger.ts",
