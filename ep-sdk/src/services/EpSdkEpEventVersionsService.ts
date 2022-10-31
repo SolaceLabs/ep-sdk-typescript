@@ -26,10 +26,8 @@ import { EEpSdk_VersionTaskStrategy } from "../tasks/EpSdkVersionTask";
 import { EpSdkUtils } from "../utils/EpSdkUtils";
 import { EpSdkPagination } from "../types";
 
-// export type EpSdkEpEvent = Required<EpEvent>;
 export type EpSdkEpEvent = Required<Pick<EpEvent, "applicationDomainId" | "id" | "name">> & Omit<EpEvent, "applicationDomainId" | "id" | "name">;
-// export type EpSdkEpEventVersion = Required<EventVersion>;
-export type EpSdkEpEventVersion = Required<Pick<EventVersion, "id" | "eventId" | "version">> & Omit<EventVersion, "id" | "eventId" | "version">;
+export type EpSdkEpEventVersion = Required<Pick<EventVersion, "id" | "eventId" | "version" | "stateId">> & Omit<EventVersion, "id" | "eventId" | "version" | "stateId">;
 export type EpSdkEpEventVersionList = Array<EpSdkEpEventVersion>;
 export type EpSdkEpEventAndVersion = {
   event: EpSdkEpEvent;

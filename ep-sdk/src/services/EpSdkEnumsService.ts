@@ -3,11 +3,11 @@ import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import {
   EnumsService, 
+  TopicAddressEnum,
   TopicAddressEnumResponse, 
   TopicAddressEnumsResponse,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkService } from './EpSdkService';
-import { TopicAddressEnum } from '../@solace-labs/ep-openapi-node/dist';
 
 export class EpSdkEnumsService extends EpSdkService {
 
