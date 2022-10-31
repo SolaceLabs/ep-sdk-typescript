@@ -2,6 +2,11 @@
 
 Solace Event Portal SDK.
 
+## Version 0.14.3-alpha
+
+**Fixes:**
+- EpSdk version objects types: added stateId to be mandatory
+
 ## Version 0.14.2-alpha
 
 **Fixes:**
