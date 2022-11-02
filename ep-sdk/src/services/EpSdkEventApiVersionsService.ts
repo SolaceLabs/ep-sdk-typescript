@@ -10,6 +10,7 @@ import {
   EventApiVersionResponse,
   EventApiVersion,
   EventVersion,
+  StateChangeRequestResponse,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
 import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
@@ -105,7 +106,7 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     if (eventApi.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApi.id === undefined', {
       eventApi: eventApi
     });
-    const eventApiVersionList: Array<EventApi> = await this.getVersionsForEventApiId({ eventApiId: eventApi.id });
+    const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiId({ eventApiId: eventApi.id });
     return eventApiVersionList;
   }
 
@@ -198,13 +199,20 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
       eventApiVersionResponse: eventApiVersionResponse
     });
     if(createdEvenApiVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventApIsService.updateEventApiVersionStateForEventApi({
-        eventApiId: eventApiId,
-        id: createdEvenApiVersion.id,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await EventApIsService.updateEventApiVersionState({
+        versionId: createdEvenApiVersion.id,
         requestBody: {
+          eventApiId: eventApiId,
           stateId: targetLifecycleStateId
         }
       });
+      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventApIsService.updateEventApiVersionStateForEventApi({
+      //   eventApiId: eventApiId,
+      //   id: createdEvenApiVersion.id,
+      //   requestBody: {
+      //     stateId: targetLifecycleStateId
+      //   }
+      // });
       const updatedEventApiVersion: EventApiVersion | undefined = await this.getVersionByVersion({
         eventApiId: eventApiId,
         eventApiVersionString: createdEvenApiVersion.version

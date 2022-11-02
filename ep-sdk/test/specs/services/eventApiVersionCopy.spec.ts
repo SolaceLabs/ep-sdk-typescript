@@ -522,7 +522,7 @@ describe(`${scriptName}`, () => {
               applicationDomainId: TargetApplicationDomainId,            
               eventApiId: eventApiInfo.targetEventApiId,
             });  
-            await EventApIsService.deleteEventApiVersionByVersionId({
+            await EventApIsService.deleteEventApiVersion({
               versionId: latestTargetEventApiVersion.id,
             });
             const epSdkEventApiVersionTask = new EpSdkEventApiVersionTask({

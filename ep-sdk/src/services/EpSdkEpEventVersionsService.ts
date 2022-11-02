@@ -384,7 +384,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
 
     // get the source event version
     const fromEventVersionResponse: EventVersionResponse = await EventsService.getEventVersion({ 
-      versionId: eventVersionId
+      id: eventVersionId
     });
     /* istanbul ignore next */
     if(fromEventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, "fromEventVersionResponse.data === undefined", {
@@ -472,7 +472,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
       epSdkEpEventVersionTask_ExecuteReturn: epSdkEpEventVersionTask_ExecuteReturn
     });
     const eventVersionResponse: EventVersionResponse =  await EventsService.getEventVersion({
-      versionId: epSdkEpEventVersionTask_ExecuteReturn.epObject.id
+      id: epSdkEpEventVersionTask_ExecuteReturn.epObject.id
     });
     /* istanbul ignore next */
     if(eventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventVersionResponse.data === undefined', {
