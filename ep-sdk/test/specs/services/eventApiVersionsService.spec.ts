@@ -73,6 +73,7 @@ describe(`${scriptName}`, () => {
     it(`${scriptName}: should create event api version`, async () => {
       try {
         const create: EventApiVersion = {
+          eventApiId: EventApiId,
           description: `event api version for event = ${EventApiName}, id=${EventApiId}`,        
           version: EventApiVersionString,
           displayName: EventApiName,
@@ -142,6 +143,7 @@ describe(`${scriptName}`, () => {
           stateId: EpSdkStatesService.releasedId
         });
         const create: EventApiVersion = {
+          eventApiId: EventApiId,
           description: `event api version for event = ${EventApiName}, id=${EventApiId}`,        
           version: EventApiNextVersionString,
           displayName: EventApiName,
@@ -222,6 +224,7 @@ describe(`${scriptName}`, () => {
       const DisplayName = 'very, very, very, very, very, very, very, very, very, very, very, very, very long display name';
       try {
         const create: EventApiVersion = {
+          eventApiId: EventApiId,
           description: `event api version for event = ${EventApiName}, id=${EventApiId}`,        
           version: EventApiNextVersionString,
           displayName: DisplayName,
@@ -258,9 +261,9 @@ describe(`${scriptName}`, () => {
         let VersionString = '';
         for(let i=0; i<VersionQuantity; i++) {
           VersionString = `3.0.${i}`;
-          const versionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersionForEventApi({
-            eventApiId: EventApiId,
+          const versionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersion({
             requestBody: {
+              eventApiId: EventApiId,
               description: 'paging version',
               version: VersionString,
             }

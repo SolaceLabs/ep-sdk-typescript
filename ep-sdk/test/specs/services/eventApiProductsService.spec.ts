@@ -94,19 +94,31 @@ describe(`${scriptName}`, () => {
           });
           const eventApiProductId = eventApiProductResponse.data.id;
           // create version 1
-          const x = await EventApiProductsService.createEventApiProductVersionForEventApiProduct({
-            eventApiProductId: eventApiProductId,
+          const x = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
+              eventApiProductId: eventApiProductId,
               version: EventApiProductVersionString_1
             }
           });
+          // const x = await EventApiProductsService.createEventApiProductVersionForEventApiProduct({
+          //   eventApiProductId: eventApiProductId,
+          //   requestBody: {
+          //     version: EventApiProductVersionString_1
+          //   }
+          // });
           // create version 2
-          const y = await EventApiProductsService.createEventApiProductVersionForEventApiProduct({
-            eventApiProductId: eventApiProductId,
+          const y = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
+              eventApiProductId: eventApiProductId,
               version: EventApiProductVersionString_2
             }
           });
+          // const y = await EventApiProductsService.createEventApiProductVersionForEventApiProduct({
+          //   eventApiProductId: eventApiProductId,
+          //   requestBody: {
+          //     version: EventApiProductVersionString_2
+          //   }
+          // });
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
