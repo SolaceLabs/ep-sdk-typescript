@@ -13,7 +13,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && github.actor != 'ricardojosegomezulmke'
         run: |
           echo "not authorized"
-          echo '::set-output name=IS_AUTHORIZED::false'
+          echo "{IS_AUTHORIZED}={false}" >> $GITHUB_OUTPUT
         id: auth
       - name: Cancel Workflow
         if: ${{ always() && steps.auth.outputs.IS_AUTHORIZED == 'false' }}
@@ -25,7 +25,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: "docs:setup python"
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.8
 
