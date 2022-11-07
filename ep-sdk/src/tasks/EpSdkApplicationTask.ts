@@ -8,7 +8,6 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationsService from "../services/EpSdkApplicationsService";
 import { 
-  EEpSdkTask_EpObjectType,
   EpSdkTask,
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
@@ -20,6 +19,8 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
+import { EEpSdkObjectTypes } from '../types';
+
 
 export type TEpSdkApplicationTask_Settings = Partial<Pick<Application, "applicationType" | "brokerType">>;
 type TEpSdkApplicationTask_CompareObject = TEpSdkApplicationTask_Settings;
@@ -80,7 +81,7 @@ export class EpSdkApplicationTask extends EpSdkTask {
   protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.APPLICATION,
+      epObjectType: EEpSdkObjectTypes.APPLICATION,
     };
   };
 

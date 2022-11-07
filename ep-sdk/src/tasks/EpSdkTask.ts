@@ -7,23 +7,10 @@ import {
   ApiError 
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkTask_TransactionLog, IEpSdkTask_TransactionLogData } from "./EpSdkTask_TransactionLog";
+import { EEpSdkObjectTypes } from '../types';
 
-export enum EEpSdkTask_EpObjectType {
-  UNDEFINED = "undefined",
-  APPLICATION_DOMAIN = "applicationDomain",
-  ENUM = "enum",
-  ENUM_VERSION = "enumVersion",
-  APPLICATION = "application",
-  APPLICATION_VERSION = "applicationVersion",
-  SCHEMA_OBJECT = "schemaObject",
-  SCHEMA_VERSION = "schemaVersion",
-  EVENT = "event",
-  EVENT_VERSION = "eventVersion",
-  EVENT_API = "eventApi",
-  EVENT_API_VERSION = "eventApiVersion"
-}
 export interface IEpSdkTask_EpObjectKeys {
-  epObjectType: EEpSdkTask_EpObjectType; 
+  epObjectType: EEpSdkObjectTypes; 
   epObjectId: string; 
 }
 export enum EEpSdkTask_TargetState {

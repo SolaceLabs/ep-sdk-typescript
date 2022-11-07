@@ -7,7 +7,6 @@ import {
   EventsService,
 } from '@solace-labs/ep-openapi-node';
 import { 
-  EEpSdkTask_EpObjectType,
   EpSdkTask,
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
@@ -20,6 +19,7 @@ import {
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
 import EpSdkEpEventsService from '../services/EpSdkEpEventsService';
+import { EEpSdkObjectTypes } from '../types';
 
 export type TEpSdkEpEventTask_Settings = Partial<Pick<EpEvent, "shared">>;
 type TEpSdkEpEventTask_CompareObject = TEpSdkEpEventTask_Settings;
@@ -79,7 +79,7 @@ export class EpSdkEpEventTask extends EpSdkTask {
   protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.EVENT,
+      epObjectType: EEpSdkObjectTypes.EVENT,
     };
   };
 

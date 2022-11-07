@@ -15,6 +15,7 @@
     "src/utils/EpSdkLogger.ts",
     "src/utils/EpSdkConsoleLogger.ts",
     "src/internal-utils/EpApiHelpers.ts",
-    "test"
+    "test",
+    ".eslintrc.cjs"
   ]
 }

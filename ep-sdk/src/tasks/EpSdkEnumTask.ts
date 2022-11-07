@@ -8,7 +8,6 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumsService from "../services/EpSdkEnumsService";
 import { 
-  EEpSdkTask_EpObjectType,
   EpSdkTask,
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
@@ -20,6 +19,8 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
+import { EEpSdkObjectTypes} from '../types';
+
 
 export type TEpSdkEnumTask_Settings = Partial<Pick<TopicAddressEnum, "shared">>;
 type TEpSdkEnumTask_CompareObject = TEpSdkEnumTask_Settings;
@@ -79,7 +80,7 @@ export class EpSdkEnumTask extends EpSdkTask {
   protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.ENUM,
+      epObjectType: EEpSdkObjectTypes.ENUM,
     };
   };
 

@@ -8,7 +8,6 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemasService, { EEpSdkSchemaContentType, EEpSdkSchemaType } from "../services/EpSdkSchemasService";
 import { 
-  EEpSdkTask_EpObjectType,
   EpSdkTask,
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
@@ -20,6 +19,7 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
+import { EEpSdkObjectTypes } from '../types';
 
 type TEpSdkSchemaTask_Settings = Partial<Pick<SchemaObject, "shared"  | "contentType" | "schemaType">>;
 type TEpSdkSchemaTask_CompareObject = TEpSdkSchemaTask_Settings;
@@ -78,7 +78,7 @@ export class EpSdkSchemaTask extends EpSdkTask {
   protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.SCHEMA_OBJECT,
+      epObjectType: EEpSdkObjectTypes.SCHEMA_OBJECT,
     };
   };
 

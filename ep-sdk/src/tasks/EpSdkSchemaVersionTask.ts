@@ -8,7 +8,6 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemaVersionsService from '../services/EpSdkSchemaVersionsService';
 import { 
-  EEpSdkTask_EpObjectType,
   IEpSdkTask_CreateFuncReturn, 
   IEpSdkTask_ExecuteReturn, 
   IEpSdkTask_GetFuncReturn, 
@@ -16,7 +15,14 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { 
+  EEpSdk_VersionTaskStrategy, 
+  EpSdkVersionTask, 
+  IEpSdkVersionTask_Config, 
+  IEpSdkVersionTask_EpObjectKeys 
+} from './EpSdkVersionTask';
+import { EEpSdkObjectTypes } from '../types';
+
 
 export type TEpSdkSchemaVersionTask_Settings = Required<Pick<SchemaVersion, "description" | "displayName" | "content" | "stateId">>;
 type TEpSdkSchemaVersionTask_CompareObject = Partial<TEpSdkSchemaVersionTask_Settings> & Partial<Pick<SchemaVersion, "version">>;
@@ -75,7 +81,7 @@ export class EpSdkSchemaVersionTask extends EpSdkVersionTask {
   protected getDefaultEpObjectKeys(): IEpSdkVersionTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.SCHEMA_VERSION,
+      epObjectType: EEpSdkObjectTypes.SCHEMA_VERSION,
       epVersionObjectId: 'undefined'
     };
   };

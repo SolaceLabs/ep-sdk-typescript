@@ -13,22 +13,12 @@ export {
 export * from './types';
 
 // tasks
-export * from './tasks/EpSdkTask_TransactionLog';
-export * from './tasks/EpSdkTask';
-export * from './tasks/EpSdkVersionTask';
-export * from './tasks/EpSdkApplicationDomainTask';
-export * from './tasks/EpSdkEnumTask';
-export * from './tasks/EpSdkEnumVersionTask';
-export * from './tasks/EpSdkSchemaTask';
-export * from './tasks/EpSdkSchemaVersionTask';
-export * from './tasks/EpSdkEpEventTask';
-export * from './tasks/EpSdkEpEventVersionTask';
-export * from './tasks/EpSdkEventApiTask';
-export * from './tasks/EpSdkEventApiVersionTask';
-export * from './tasks/EpSdkApplicationTask';
-export * from './tasks/EpSdkApplicationVersionTask';
+export * from './tasks';
 
 // services
+export { 
+  default as EpSdkCustomAttributeDefinitionsService 
+} from './services/EpSdkCustomAttributeDefinitionsService';
 export { 
   default as EpSdkApplicationDomainsService 
 } from './services/EpSdkApplicationDomainsService';
