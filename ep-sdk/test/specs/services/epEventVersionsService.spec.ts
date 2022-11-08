@@ -158,7 +158,10 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get event versions for event id`, async () => {
       try {
-        const eventVersionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventId({ eventId: EventId });
+        const eventVersionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventId({ 
+          eventId: EventId,
+          stateId: EpSdkStatesService.releasedId
+        });
         expect(eventVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
         const eventVersion: EventVersion = eventVersionList[0];
         expect(eventVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(EventVersionId);
@@ -294,7 +297,8 @@ describe(`${scriptName}`, () => {
         // expect(false, 'check 1000 enum versions created').to.be.true;
         const versionList: Array<EventVersion> = await EpSdkEpEventVersionsService.getVersionsForEventId({ 
           eventId: EventId,
-          pageSize: PageSize
+          pageSize: PageSize,
+          stateId: EpSdkStatesService.draftId
         });
         expect(versionList.length, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionQuantity);
 

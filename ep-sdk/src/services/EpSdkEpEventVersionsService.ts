@@ -536,7 +536,6 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     };
   }
 
-
 }
 
 export default new EpSdkEpEventVersionsService();

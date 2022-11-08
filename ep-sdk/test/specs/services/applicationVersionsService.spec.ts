@@ -74,7 +74,7 @@ describe(`${scriptName}`, () => {
         const create: ApplicationVersion = {
           description: `application version for application = ${ApplicationName}, id=${ApplicationId}`,        
           version: ApplicationVersionString,
-          applicationId: ApplicationId
+          applicationId: ApplicationId,
         };
 
         const created: ApplicationVersion = await EpSdkApplicationVersionsService.createApplicationVersion({
@@ -107,7 +107,10 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get application versions for application id`, async () => {
       try {
-        const applicationVersionList: Array<ApplicationVersion> = await EpSdkApplicationVersionsService.getVersionsForApplicationId({ applicationId: ApplicationId });
+        const applicationVersionList: Array<ApplicationVersion> = await EpSdkApplicationVersionsService.getVersionsForApplicationId({ 
+          applicationId: ApplicationId,
+          stateId: EpSdkStatesService.releasedId
+        });
         expect(applicationVersionList.length, TestLogger.createApiTestFailMessage('length not === 1')).to.eq(1);
         const applicationVersion: ApplicationVersion = applicationVersionList[0];
         expect(applicationVersion.id, TestLogger.createApiTestFailMessage('id mismatch')).to.eq(ApplicationVersionId);

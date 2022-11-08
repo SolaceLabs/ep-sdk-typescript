@@ -1,15 +1,99 @@
-import { EpSdkApiContentError, EpSdkServiceError } from '../utils/EpSdkErrors';
-import { EpSdkLogger } from '../utils/EpSdkLogger';
-import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import {
   Application,
   ApplicationResponse,
   ApplicationsResponse,
   ApplicationsService,
+  Pagination,
 } from '@solace-labs/ep-openapi-node';
+import { 
+  EpSdkApiContentError, 
+  EpSdkServiceError,
+  EpSdkLogger,
+  EEpSdkLoggerCodes
+} from '../utils';
 import { EpSdkService } from './EpSdkService';
+import { EpApiHelpers } from '../internal-utils';
 
 export class EpSdkApplicationsService extends EpSdkService {
+
+  private listAllForApplicationDomainId = async({ applicationDomainId }:{
+    applicationDomainId?: string;
+  }): Promise<ApplicationsResponse> => {
+    const funcName = 'listAllForApplicationDomainId';
+    const logName = `${EpSdkApplicationsService.name}.${funcName}()`;
+
+    const applicationList: Array<Application> = [];
+    
+    let nextPage: number | undefined | null = 1;
+    while(nextPage !== undefined && nextPage !== null) {
+
+      const applicationsResponse: ApplicationsResponse = await ApplicationsService.getApplications({
+        applicationDomainId: applicationDomainId,
+        pageSize: EpApiHelpers.MaxPageSize,
+        pageNumber: nextPage,
+      });
+      if(applicationsResponse.data === undefined || applicationsResponse.data.length === 0) nextPage = undefined;
+      else {
+        applicationList.push(...applicationsResponse.data);
+        /* istanbul ignore next */
+        if(applicationsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'applicationsResponse.meta === undefined', {
+          applicationsResponse: applicationsResponse
+        });
+        /* istanbul ignore next */
+        if(applicationsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'applicationsResponse.meta.pagination === undefined', {
+          applicationsResponse: applicationsResponse
+        });
+        const pagination: Pagination = applicationsResponse.meta.pagination;
+        nextPage = pagination.nextPage;  
+      }
+    }
+    const applicationsResponse: ApplicationsResponse = {
+      data: applicationList,
+      meta: {
+        pagination: {
+          count: applicationList.length,
+        }
+      }
+    };
+    return applicationsResponse;
+  }
+
+  /**
+   * Retrieves a list of all Applications without paging.
+   * @param param0 
+   */
+  public listAll = async({ applicationDomainIds, sortFieldName }:{
+    applicationDomainIds?: Array<string>;
+    sortFieldName?: string;
+  }): Promise<ApplicationsResponse> => {
+    const funcName = 'listAll';
+    const logName = `${EpSdkApplicationsService.name}.${funcName}()`;
+
+    const applicationList: Array<Application> = [];
+    
+    if(applicationDomainIds) {
+      for(const applicationDomainId of applicationDomainIds) {
+        const applicationsResponse: ApplicationsResponse = await this.listAllForApplicationDomainId({
+          applicationDomainId: applicationDomainId
+        });
+        if(applicationsResponse.data) applicationList.push(...applicationsResponse.data);
+      }
+    } else {
+      const applicationsResponse: ApplicationsResponse = await this.listAllForApplicationDomainId({});
+      if(applicationsResponse.data) applicationList.push(...applicationsResponse.data);
+    }
+    // TODO: sort by sortFieldName
+    sortFieldName;
+    const applicationsResponse: ApplicationsResponse = {
+      data: applicationList,
+      meta: {
+        pagination: {
+          count: applicationList.length,
+        }
+      }
+    };
+    return applicationsResponse;
+  }
 
   public getByName = async ({ applicationName, applicationDomainId }: {
     applicationName: string;
