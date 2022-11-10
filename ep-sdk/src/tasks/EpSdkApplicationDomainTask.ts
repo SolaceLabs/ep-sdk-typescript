@@ -6,7 +6,6 @@
  * @example
  * [[include:applicationDomainTask.example.ts]]
  */
-import { EpSdkConfig } from "../utils/EpSdkConfig";
 import { EpSdkApiContentError, EpSdkInternalTaskError } from "../utils/EpSdkErrors";
 import { EpSdkLogger } from "../utils/EpSdkLogger";
 import { EEpSdkLoggerCodes } from "../utils/EpSdkLoggerCodes";
@@ -17,7 +16,6 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationDomainsService from '../services/EpSdkApplicationDomainsService';
 import { 
-  EEpSdkTask_EpObjectType,
   EpSdkTask,
   IEpSdkTask_Config, 
   IEpSdkTask_CreateFuncReturn, 
@@ -29,6 +27,7 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
+import { EEpSdkObjectTypes} from '../types';
 
 
 type TEpSdkApplicationDomainTask_Settings = Partial<Pick<ApplicationDomain, "topicDomainEnforcementEnabled" | "uniqueTopicAddressEnforcementEnabled" | "description">>;
@@ -92,7 +91,7 @@ export class EpSdkApplicationDomainTask extends EpSdkTask {
   protected getDefaultEpObjectKeys(): IEpSdkTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.APPLICATION_DOMAIN,
+      epObjectType: EEpSdkObjectTypes.APPLICATION_DOMAIN,
     };
   };
 

@@ -1,11 +1,10 @@
-import { EpSdkConfig } from '../utils/EpSdkConfig';
 import { EpSdkApiContentError, EpSdkInternalTaskError, EpSdkVersionTaskStrategyValidationError } from '../utils/EpSdkErrors';
 import { EpSdkLogger } from '../utils/EpSdkLogger';
 import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { $TopicAddressEnumVersion, TopicAddressEnumValue, TopicAddressEnumVersion } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumVersionsService from '../services/EpSdkEnumVersionsService';
+import { EEpSdkObjectTypes} from '../types';
 import { 
-  EEpSdkTask_EpObjectType,
   IEpSdkTask_CreateFuncReturn, 
   IEpSdkTask_ExecuteReturn, 
   IEpSdkTask_GetFuncReturn, 
@@ -13,7 +12,13 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { 
+  EEpSdk_VersionTaskStrategy, 
+  EpSdkVersionTask, 
+  IEpSdkVersionTask_Config, 
+  IEpSdkVersionTask_EpObjectKeys 
+} from './EpSdkVersionTask';
+
 
 export type TEpSdkEnumVersionTask_Settings = Required<Pick<TopicAddressEnumVersion, "displayName" | "stateId">> & Pick<TopicAddressEnumVersion, "description">;
 type TEpSdkEnumVersionTask_CompareObject = Partial<TEpSdkEnumVersionTask_Settings> & Pick<TopicAddressEnumVersion, "values"> & Partial<Pick<TopicAddressEnumVersion, "version">>;
@@ -89,7 +94,7 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
   protected getDefaultEpObjectKeys(): IEpSdkVersionTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.ENUM_VERSION,
+      epObjectType: EEpSdkObjectTypes.ENUM_VERSION,
       epVersionObjectId: 'undefined'
     };
   };

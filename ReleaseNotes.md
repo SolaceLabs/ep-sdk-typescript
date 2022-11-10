@@ -2,10 +2,31 @@
 
 Solace Event Portal SDK.
 
+## Version 0.21.0-alpha
+
+**Added Support for Event Portal Attributes:**
+* **New: EpSdkCustomAttributeDefinitionsService**
+* **New: EpSdkCustomAttributeDefinitionTask**
+* **New methods: ApplicationsService**
+  - `setCustomAttributes()`
+  - `unsetCustomAttributes()`
+  - `removeAssociatedEntityTypeFromCustomAttributeDefinitions()`
+* **New methods: EpSdkEventApiProductsService**
+  - `setCustomAttributes()`
+  - `unsetCustomAttributes()`
+  - `removeAssociatedEntityTypeFromCustomAttributeDefinitions()`
+* **New methods: EpSdkEpEventsService**
+  - `setCustomAttributes()`
+  - `unsetCustomAttributes()`
+  - `removeAssociatedEntityTypeFromCustomAttributeDefinitions()`
+
+**New Service: EpSdkApplicationVersionsService**
+  - support methods for application versions
+
 ## Version 0.20.0-alpha
 
 **EP API**
-- upgrade to use "@solace-labs/ep-openapi-node": "^2.0.1" 
+- upgrade to use "@solace-labs/ep-openapi-node": "^2.0.1"
 
 ## Version 0.14.3-alpha
 

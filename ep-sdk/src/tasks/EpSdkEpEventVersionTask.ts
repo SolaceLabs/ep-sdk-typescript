@@ -10,7 +10,6 @@ import {
   TopicAddressEnumVersion, 
 } from '@solace-labs/ep-openapi-node';
 import { 
-  EEpSdkTask_EpObjectType,
   IEpSdkTask_CreateFuncReturn, 
   IEpSdkTask_ExecuteReturn, 
   IEpSdkTask_GetFuncReturn, 
@@ -18,9 +17,15 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { 
+  EEpSdk_VersionTaskStrategy, 
+  EpSdkVersionTask, 
+  IEpSdkVersionTask_Config, 
+  IEpSdkVersionTask_EpObjectKeys 
+} from './EpSdkVersionTask';
 import EpSdkEnumVersionService from '../services/EpSdkEnumVersionsService';
 import EpSdkEpEventVersionsService from '../services/EpSdkEpEventVersionsService';
+import { EEpSdkObjectTypes } from '../types';
 
 /** @category EpSdkEpEventVersionTask */
 export type TEpSdkEpEventVersionTask_Settings_DeliveryDescriptor = Pick<DeliveryDescriptor, "brokerType" >;
@@ -146,7 +151,7 @@ export class EpSdkEpEventVersionTask extends EpSdkVersionTask {
   protected getDefaultEpObjectKeys(): IEpSdkVersionTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.EVENT_VERSION,
+      epObjectType: EEpSdkObjectTypes.EVENT_VERSION,
       epVersionObjectId: 'undefined'
     };
   };

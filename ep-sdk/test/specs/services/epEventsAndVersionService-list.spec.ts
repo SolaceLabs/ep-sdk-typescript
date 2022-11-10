@@ -164,8 +164,8 @@ describe(`${scriptName}`, () => {
           } else {
             expect(epSdkEpEventAndVersionListResponse.meta.pagination.nextPage, message).to.be.undefined;
           }
-          for(const epSdkProductAndVersion of epSdkEpEventAndVersionList) {
-            expect(epSdkProductAndVersion.eventVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventVersionString_2);
+          for(const epSdkEpEventAndVersion of epSdkEpEventAndVersionList) {
+            expect(epSdkEpEventAndVersion.eventVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventVersionString_2);
           }
           nextPage = epSdkEpEventAndVersionListResponse.meta.pagination.nextPage;  
         }

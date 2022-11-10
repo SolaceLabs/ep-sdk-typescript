@@ -1,13 +1,21 @@
-import { EpSdkApiContentError, EpSdkServiceError } from '../utils/EpSdkErrors';
-import { EpSdkLogger } from '../utils/EpSdkLogger';
-import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   ApplicationDomain,
   ApplicationDomainResponse,
   ApplicationDomainsResponse,
   ApplicationDomainsService,
 } from '@solace-labs/ep-openapi-node';
+import { 
+  EpSdkApiContentError, 
+  EpSdkServiceError,
+  EpSdkLogger,
+  EEpSdkLoggerCodes,
+  EpSdkFeatureNotSupportedError
+} from '../utils';
 import { EpSdkService } from './EpSdkService';
+import { 
+  EEpSdkCustomAttributeEntityTypes, 
+  TEpSdkCustomAttributeList 
+} from '../types';
 
 export class EpSdkApplicationDomainsService extends EpSdkService {
 

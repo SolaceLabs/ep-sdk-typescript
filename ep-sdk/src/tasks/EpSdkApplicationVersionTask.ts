@@ -8,7 +8,6 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import EpSdkApplicationVersionsService from '../services/EpSdkApplicationVersionsService';
 import { 
-  EEpSdkTask_EpObjectType,
   IEpSdkTask_CreateFuncReturn, 
   IEpSdkTask_ExecuteReturn, 
   IEpSdkTask_GetFuncReturn, 
@@ -16,7 +15,13 @@ import {
   IEpSdkTask_Keys, 
   IEpSdkTask_UpdateFuncReturn 
 } from './EpSdkTask';
-import { EEpSdk_VersionTaskStrategy, EpSdkVersionTask, IEpSdkVersionTask_Config, IEpSdkVersionTask_EpObjectKeys } from './EpSdkVersionTask';
+import { 
+  EEpSdk_VersionTaskStrategy, 
+  EpSdkVersionTask, 
+  IEpSdkVersionTask_Config, 
+  IEpSdkVersionTask_EpObjectKeys 
+} from './EpSdkVersionTask';
+import { EEpSdkObjectTypes } from '../types';
 
 export type TEpSdkApplicationVersionTask_Settings = Required<Pick<ApplicationVersion, "description" | "displayName" | "stateId" | "declaredProducedEventVersionIds" | "declaredConsumedEventVersionIds" >>;
 type TEpSdkApplicationVersionTask_CompareObject = Partial<TEpSdkApplicationVersionTask_Settings> & Partial<Pick<ApplicationVersion, "version">>;
@@ -75,7 +80,7 @@ export class EpSdkApplicationVersionTask extends EpSdkVersionTask {
   protected getDefaultEpObjectKeys(): IEpSdkVersionTask_EpObjectKeys {
     return {
       epObjectId: 'undefined',
-      epObjectType: EEpSdkTask_EpObjectType.APPLICATION_VERSION,
+      epObjectType: EEpSdkObjectTypes.APPLICATION_VERSION,
       epVersionObjectId: 'undefined'
     };
   };
