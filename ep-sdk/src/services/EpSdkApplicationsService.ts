@@ -3,6 +3,7 @@ import {
   ApplicationResponse,
   ApplicationsResponse,
   ApplicationsService,
+  CustomAttribute,
   Pagination,
 } from '@solace-labs/ep-openapi-node';
 import { 
@@ -13,6 +14,9 @@ import {
 } from '../utils';
 import { EpSdkService } from './EpSdkService';
 import { EpApiHelpers } from '../internal-utils';
+import { EEpSdkCustomAttributeEntityTypes, TEpSdkCustomAttributeList } from '../types';
+import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
+import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
 
 export class EpSdkApplicationsService extends EpSdkService {
 
@@ -56,6 +60,88 @@ export class EpSdkApplicationsService extends EpSdkService {
       }
     };
     return applicationsResponse;
+  }
+
+  private async updateApplication({ update }:{
+    update: Application;
+  }): Promise<Application> {
+    const funcName = 'updateApplication';
+    const logName = `${EpSdkApplicationsService.name}.${funcName}()`;
+
+    /* istanbul ignore next */
+    if(update.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'update.id === undefined', {
+      update: update
+    });
+
+    const applicationResponse: ApplicationResponse = await ApplicationsService.updateApplication({
+      id: update.id,
+      requestBody: update
+    });
+    /* istanbul ignore next */
+    if(applicationResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationResponse.data === undefined', {
+      applicationResponse: applicationResponse
+    });
+    return applicationResponse.data;
+  }
+
+  /**
+   * Sets the custom attributes in the list on the application.
+   * Creates attribute definitions / adds entity type 'application' if it doesn't exist.
+   * @param param0 
+   * @returns 
+   */
+  public async setCustomAttributes({ applicationId, epSdkCustomAttributeList}:{
+    applicationId: string;
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+  }): Promise<Application> {
+    const application: Application = await this.getById({
+      applicationId: applicationId
+    });
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesWithNew({
+      existingCustomAttributes: application.customAttributes,
+      epSdkCustomAttributeList: epSdkCustomAttributeList,
+      epSdkCustomAttributeEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION
+    });
+    return await this.updateApplication({
+      update: {
+        ...application,
+        customAttributes: customAttributes,  
+      }
+    });
+  }
+
+  /**
+   * Unsets the custom attributes in the list on the application.
+   * Leaves attibute definitions as-is.
+   */
+  public async unsetCustomAttributes({ applicationId, epSdkCustomAttributeList }:{
+    applicationId: string;
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+  }): Promise<Application> {
+    const application: Application = await this.getById({
+      applicationId: applicationId
+    });
+    const customAttributes: Array<CustomAttribute> = await EpSdkCustomAttributesService.createCustomAttributesExcluding({
+      existingCustomAttributes: application.customAttributes,
+      epSdkCustomAttributeList: epSdkCustomAttributeList,
+    });
+    return await this.updateApplication({
+      update: {
+        ...application,
+        customAttributes: customAttributes,  
+      }
+    });
+  }
+
+  public async removeAssociatedEntityTypeFromCustomAttributeDefinitions({ customAttributeNames }: {
+    customAttributeNames: Array<string>;
+  }): Promise<void> {
+    for(const customAttributeName of customAttributeNames) {
+      await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
+        attributeName: customAttributeName,
+        associatedEntityType: EEpSdkCustomAttributeEntityTypes.APPLICATION,
+      });
+    }
   }
 
   /**
@@ -123,7 +209,7 @@ export class EpSdkApplicationsService extends EpSdkService {
 
   public getById = async ({ applicationId, applicationDomainId }: {
     applicationId: string;
-    applicationDomainId: string;
+    applicationDomainId?: string;
   }): Promise<Application> => {
     const funcName = 'getById';
     const logName = `${EpSdkApplicationsService.name}.${funcName}()`;

@@ -297,7 +297,6 @@ export class EpSdkEpEventTask extends EpSdkTask {
     }
 
     const epEvent: EpEvent = await EpSdkEpEventsService.deleteById({ 
-      applicationDomainId: this.getTaskConfig().applicationDomainId,
       eventId: epSdkEpEventTask_GetFuncReturn.epObject.id,
     });
 

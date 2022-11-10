@@ -19,8 +19,8 @@ import {
   EpSdkError,
   EpSdkApplicationDomainsService,
   EpSdkCustomAttributeDefinitionsService,
+  EEpSdkCustomAttributeEntityTypes
 } from '../../../src';
-import { EEpSdkCustomAttributeEntityTypes } from '../../../src/types/EpSdkObjectTypes';
 
 
 const scriptName: string = path.basename(__filename);
@@ -46,23 +46,58 @@ let ApplicationDomainId: string | undefined;
 const EnumName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
 let EnumId: string | undefined;
 
+const deleteCustomAttributeDefinitions = async (): Promise<void> => {
+  if(CustomAttributeDefinition_1_Id !== undefined) {
+    try {
+      await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
+        id: CustomAttributeDefinition_1_Id
+      });    
+    } catch(e) {}
+  }
+  for(const id of CustomAttributeDefinition_IdList) {
+    try {
+      await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
+        id: id
+      });  
+    } catch(e) {};
+  }
+}
+
 describe(`${scriptName}`, () => {
+
+    before(async() => {
+      // clean up before 
+      CustomAttributeDefinition_IdList = [];
+      CustomAttributeDefinition_1_Id = undefined;
+      const customAttributeDefinition: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.getByName({
+        attributeName: CustomAttributeDefinition_1_Name
+      });
+      if(customAttributeDefinition !== undefined) CustomAttributeDefinition_1_Id = customAttributeDefinition.id;
+      for(const customAttributeName of CustomAttributeDefinition_NameList) {
+        const customAttributeDefinition: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.getByName({
+          attributeName: customAttributeName
+        });
+        if(customAttributeDefinition !== undefined) CustomAttributeDefinition_IdList.push(customAttributeDefinition.id);
+      }
+      try { 
+        const xvoid: void = await deleteCustomAttributeDefinitions();
+      } catch(e) {
+        // noop
+      }
+      CustomAttributeDefinition_IdList = [];
+      CustomAttributeDefinition_1_Id = undefined;
+      // // DEBUG
+      // expect(false).to.be.true;
+    });
 
     beforeEach(() => {
       TestContext.newItId();
     });
 
     after(async() => {
-      // delete custom attribute definition
-      await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
-        id: CustomAttributeDefinition_1_Id
-      });
-      for(const id of CustomAttributeDefinition_IdList) {
-        await CustomAttributeDefinitionsService.deleteCustomAttributeDefinition({
-          id: id
-        });  
-      }
-      // delete application domain
+      try { 
+        const xvoid: void = await deleteCustomAttributeDefinitions();
+      } catch(e) {}
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
     });
 
@@ -89,6 +124,12 @@ describe(`${scriptName}`, () => {
           }
         });
         CustomAttributeDefinition_1_Id = customAttributeDefinitionResponse.data.id;
+
+        // // DEBUG
+        // expect(false, `customAttributeDefinitionResponse.data=\n${JSON.stringify(customAttributeDefinitionResponse.data, null, 2)}`).to.be.true;
+
+        expect(customAttributeDefinitionResponse.data).to.not.be.undefined;
+        expect(customAttributeDefinitionResponse.data.associatedEntityTypes.length).to.equal(1);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -244,6 +285,95 @@ describe(`${scriptName}`, () => {
           }
         });
         expect(JSON.stringify(enumResponse.data.customAttributes), `enum does not include attribute value = ${CustomAttributeDefinition_1_UpdateValue}`).to.include(CustomAttributeDefinition_1_UpdateValue);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should remove attribute value for enum`, async () => {
+      try {
+        const enumResponse: TopicAddressEnumResponse = await EnumsService.updateEnum({
+          id: EnumId,
+          requestBody: {
+            applicationDomainId: ApplicationDomainId,
+            name: EnumName,
+            customAttributes: []
+          }
+        });
+        // // DEBUG
+        // expect(false, `enumResponse.data.customAttributes = \n${JSON.stringify(enumResponse.data.customAttributes, null, 2)}`).to.be.true;
+        expect(enumResponse.data.customAttributes.length, `enum still has attributes`).to.equal(0);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should remove eum from custom attribute definition associations`, async () => {
+      try {
+        // ensure it exists
+        const before: CustomAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.getByName({
+          attributeName: CustomAttributeDefinition_1_Name
+        });
+        expect(JSON.stringify(before.associatedEntityTypes)).to.include(EEpSdkCustomAttributeEntityTypes.ENUM);
+        // remove enum type without deleting
+        const after: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
+          attributeName: CustomAttributeDefinition_1_Name,
+          associatedEntityType: EEpSdkCustomAttributeEntityTypes.ENUM,
+        });
+        // // DEBUG
+        // expect(false, `after = \n${JSON.stringify(after, null, 2)}`).to.be.true;
+
+        expect(after).to.not.be.undefined;
+        expect(JSON.stringify(before.associatedEntityTypes)).to.not.include(`"EEpSdkCustomAttributeEntityTypes.ENUM"`);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should remove all associations from custom attribute definition and delete it`, async () => {
+      try {
+        // ensure it exists
+        const before: CustomAttributeDefinition = await EpSdkCustomAttributeDefinitionsService.getByName({
+          attributeName: CustomAttributeDefinition_1_Name
+        });
+        expect(before.associatedEntityTypes).to.not.be.undefined;
+        expect(before.associatedEntityTypes.length).to.be.greaterThan(0);
+        if(before.associatedEntityTypes === undefined) throw new Error('before.associatedEntityTypes');
+        // remove all types and deletes it
+        for(const associatedEntityType of before.associatedEntityTypes) {
+          const after: CustomAttributeDefinition | undefined = await EpSdkCustomAttributeDefinitionsService.removeAssociatedEntityTypeFromCustomAttributeDefinition({
+            attributeName: CustomAttributeDefinition_1_Name,
+            associatedEntityType: associatedEntityType as EEpSdkCustomAttributeEntityTypes,
+          });
+
+          // // DEBUG
+          // expect(false, `removed=${associatedEntityType}, after = \n${JSON.stringify(after, null, 2)}`).to.be.true;
+          if(associatedEntityType === before.associatedEntityTypes[before.associatedEntityTypes.length - 1]) {
+            expect(after, `\nremoved associatedEntityType=${associatedEntityType}, \nbefore.associatedEntityTypes=\n${JSON.stringify(before.associatedEntityTypes, null, 2)}, \nafter=\n${JSON.stringify(after, null, 2)}`).to.be.undefined;
+          } else {
+            expect(after).to.not.be.undefined;
+            expect(JSON.stringify(after.associatedEntityTypes)).to.not.include(`"${associatedEntityType}"`);    
+          }
+        }
+
+        const after: CustomAttributeDefinition | undefined= await EpSdkCustomAttributeDefinitionsService.getByName({
+          attributeName: CustomAttributeDefinition_1_Name
+        });
+
+        // // DEBUG
+        // expect(false, `after = \n${JSON.stringify(after, null, 2)}`).to.be.true;
+
+        expect(after, `after=\n${JSON.stringify(after, null, 2)}`).to.be.undefined;
+
 
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;

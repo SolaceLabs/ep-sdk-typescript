@@ -67,3 +67,6 @@ export {
   EpSdkEventApiProductAndVersionListResponse,
   EpSdkEventApiProductAndVersionResponse,
 } from './EpSdkEventApiProductVersionsService';
+export {
+  default as EpSdkCustomAttributesService
+} from './EpSdkCustomAttributesService';

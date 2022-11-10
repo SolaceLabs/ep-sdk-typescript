@@ -1,4 +1,3 @@
-import { EpSdkApiContentError } from '../utils/EpSdkErrors';
 import {
   CustomAttributeDefinition,
   CustomAttributeDefinitionResponse,
@@ -6,12 +5,130 @@ import {
   CustomAttributeDefinitionsService,
   Pagination,
 } from '@solace-labs/ep-openapi-node';
+import { 
+  EpSdkApiContentError, 
+  EpSdkLogger,
+  EEpSdkLoggerCodes
+} from '../utils';
+import { EpApiHelpers } from '../internal-utils';
+import { 
+  EEpSdkCustomAttributeEntityTypes, 
+} from '../types';
+import { 
+  EEpSdkTask_TargetState, 
+  EpSdkCustomAttributeDefinitionTask, 
+  IEpSdkCustomAttributeDefinitionTask_ExecuteReturn 
+} from '../tasks';
 import { EpSdkService } from './EpSdkService';
-import { EpApiHelpers } from '../internal-utils/EpApiHelpers';
-import { EpSdkLogger } from '../utils/EpSdkLogger';
-import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
+
 
 export class EpSdkCustomAttributeDefinitionsService extends EpSdkService {
+
+  /**
+   * Adds the associated entity type to existing list of entity types if definition exists.
+   * Returns list of all associated enitity types.
+   */
+  public async presentAssociatedEntityType({ attributeName, associatedEntityType}:{
+    attributeName: string;
+    associatedEntityType: EEpSdkCustomAttributeEntityTypes;
+  }): Promise<Array<EEpSdkCustomAttributeEntityTypes>> {
+    const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({
+      attributeName: attributeName,
+    });
+    if(customAttributeDefinition === undefined || customAttributeDefinition.associatedEntityTypes === undefined) return [associatedEntityType];
+    const exists = customAttributeDefinition.associatedEntityTypes.find( (x) => {
+      return x === associatedEntityType;
+    });
+    if(!exists) return customAttributeDefinition.associatedEntityTypes.concat([associatedEntityType]) as Array<EEpSdkCustomAttributeEntityTypes>;
+    return customAttributeDefinition.associatedEntityTypes.concat([]) as Array<EEpSdkCustomAttributeEntityTypes>;
+  }
+
+  // /**
+  //  * Removes the associated entity type from the existing list.
+  //  * Returns list of remaining associated entity types, which could be empty.
+  //  */
+  // public async absentAssociatedEntityType({ attributeName, associatedEntityType}:{
+  //   attributeName: string;
+  //   associatedEntityType: EEpSdkCustomAttributeEntityTypes;
+  // }): Promise<Array<EEpSdkCustomAttributeEntityTypes>> {
+  //   const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({
+  //     attributeName: attributeName,
+  //   });
+  //   if(customAttributeDefinition === undefined || customAttributeDefinition.associatedEntityTypes === undefined) return [];
+  //   return customAttributeDefinition.associatedEntityTypes.filter( (x) => {
+  //     return x !== associatedEntityType;
+  //   }).concat([]) as Array<EEpSdkCustomAttributeEntityTypes>;
+  // }
+
+  /**
+   * Removes the associatedEntityType from the custom attribute definition.
+   * If no associatedEntityTypes are left, then deletes the entire custom attribute definition.
+   * @returns The modified custom attribute definition or undefined if it has been deleted.
+   */
+  public async removeAssociatedEntityTypeFromCustomAttributeDefinition({ attributeName, associatedEntityType }:{
+    attributeName: string;
+    associatedEntityType: EEpSdkCustomAttributeEntityTypes;
+  }): Promise<CustomAttributeDefinition | undefined> {
+
+    const customAttributeDefinition: CustomAttributeDefinition | undefined = await this.getByName({
+      attributeName: attributeName,
+    });
+    if(customAttributeDefinition === undefined) return undefined;
+    
+    let associatedEntityTypes: Array<EEpSdkCustomAttributeEntityTypes> = [];
+    if(customAttributeDefinition.associatedEntityTypes !== undefined) {
+      associatedEntityTypes = customAttributeDefinition.associatedEntityTypes.filter( (x) => {
+        return x !== associatedEntityType;
+      }).concat([]) as Array<EEpSdkCustomAttributeEntityTypes>;
+    }
+    let epSdkTask_TargetState = EEpSdkTask_TargetState.PRESENT;
+    if(associatedEntityTypes.length === 0) epSdkTask_TargetState = EEpSdkTask_TargetState.ABSENT;
+    const epSdkCustomAttributeDefinitionTask = new EpSdkCustomAttributeDefinitionTask({
+      epSdkTask_TargetState: epSdkTask_TargetState,
+      attributeName: attributeName,
+      customAttributeDefinitionObjectSettings: {
+        associatedEntityTypes: associatedEntityTypes
+      }
+    });
+    const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+    if(epSdkTask_TargetState === EEpSdkTask_TargetState.ABSENT) return undefined;
+    return epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject;
+  }
+
+  // public getByAssociatedEntityTypes = async({ associatedEntityTypes, pageSize = EpApiHelpers.MaxPageSize }:{
+  //   associatedEntityTypes: Array<string>;
+  //   pageSize?: number; /** for testing */
+  // }): Promise<Array<CustomAttributeDefinition>> => {
+  //   const funcName = 'getByAssociatedEntityTypes';
+  //   const logName = `${EpSdkCustomAttributeDefinitionsService.name}.${funcName}()`;
+
+  //   if(associatedEntityTypes.length === 0) return [];
+
+  //   let customAttributeDefinitionList: Array<CustomAttributeDefinition> = [];
+  //   let nextPage: number | undefined | null = 1;
+
+  //   while(nextPage !== null) {
+  //     const customAttributeDefinitionsResponse: CustomAttributeDefinitionsResponse = await CustomAttributeDefinitionsService.getCustomAttributeDefinitions({
+  //       associatedEntityTypes: associatedEntityTypes,
+  //       pageSize: pageSize,
+  //       pageNumber: nextPage,
+  //     });
+  //     if(customAttributeDefinitionsResponse.data === undefined || customAttributeDefinitionsResponse.data.length === 0) nextPage = null;
+  //     else customAttributeDefinitionList.push(...customAttributeDefinitionsResponse.data);
+
+  //     /* istanbul ignore next */
+  //     if(customAttributeDefinitionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'customAttributeDefinitionsResponse.meta === undefined', {
+  //       customAttributeDefinitionsResponse: customAttributeDefinitionsResponse
+  //     });
+  //     /* istanbul ignore next */
+  //     if(customAttributeDefinitionsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'customAttributeDefinitionsResponse.meta.pagination === undefined', {
+  //       customAttributeDefinitionsResponse: customAttributeDefinitionsResponse
+  //     });      
+  //     const pagination: Pagination = customAttributeDefinitionsResponse.meta.pagination;
+  //     nextPage = pagination.nextPage;
+  //   }
+  //   return customAttributeDefinitionList;
+  // }
 
   /**
    * Get attribute definition by name. Name is unique.

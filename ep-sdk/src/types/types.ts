@@ -1,4 +1,9 @@
 
+export enum EpSdkBrokerTypes {
+  Solace = "solace",
+  Kafka = "kafka"
+}
+
 export enum EEpSdkCustomAttributeEntityTypes {
   APPLICATION_DOMAIN = "applicationDomain",
   ENUM = "enum",
@@ -33,3 +38,16 @@ export enum EEpSdkObjectTypes {
   EVENT_API_PRODUCT_VERSION = "eventApiProductVersion",
   // consumer?, 
 }
+
+export type EpSdkPagination = {
+  count: number;
+  pageNumber: number;
+  nextPage?: number;
+}
+
+export type TEpSdkCustomAttribute = {
+  name: string;
+  value: string;
+}
+
+export type TEpSdkCustomAttributeList = Array<TEpSdkCustomAttribute>;

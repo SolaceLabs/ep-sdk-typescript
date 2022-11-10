@@ -17,7 +17,9 @@ import {
   EpSdkError,
   EpSdkServiceError,
   EpSdkApplicationsService,
+  TEpSdkCustomAttributeList,
   EpSdkApplicationDomainsService,
+  EpSdkCustomAttributeDefinitionsService,
 } from '../../../src';
 
 
@@ -30,6 +32,27 @@ let ApplicationDomainId: string | undefined;
 const ApplicationName = `${TestConfig.getAppId()}-services-${TestSpecId}`;
 let ApplicationId: string | undefined;
 
+const ApplicationCustomAttributeList: TEpSdkCustomAttributeList = [
+  {
+    name: "applicationAttribute_1",
+    value: "applicationAttribute_1 value"
+  },
+  {
+    name: "applicationAttribute_2",
+    value: "applicationAttribute_2 value"
+  }
+];
+const ApplicationAdditionalCustomAttributeList: TEpSdkCustomAttributeList = [
+  {
+    name: "applicationAttribute_3",
+    value: "applicationAttribute_3 value"
+  },
+  {
+    name: "applicationAttribute_4",
+    value: "applicationAttribute_4 value"
+  }
+];
+
 describe(`${scriptName}`, () => {
 
     beforeEach(() => {
@@ -39,6 +62,13 @@ describe(`${scriptName}`, () => {
     after(async() => {
       // delete application domain
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
+      // remove all attribute definitions
+      const customAttributeList = ApplicationCustomAttributeList.concat(ApplicationAdditionalCustomAttributeList);
+      const xvoid: void = await EpSdkApplicationsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
+        customAttributeNames: customAttributeList.map( (x) => {
+          return x.name;
+        })
+      });
     });
 
     it(`${scriptName}: should create application domain`, async () => {
@@ -120,6 +150,117 @@ describe(`${scriptName}`, () => {
           }
         });
         ApplicationId = applicationResponse.data.id;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should set custom attributes on application`, async () => {
+      try {
+        const application: Application = await EpSdkApplicationsService.setCustomAttributes({
+          applicationId: ApplicationId,
+          epSdkCustomAttributeList: ApplicationCustomAttributeList
+        });
+        expect(application.customAttributes).to.not.be.undefined;
+        if(application.customAttributes === undefined) throw new Error('application.customAttributes === undefined');
+        for(const customAttribute of ApplicationCustomAttributeList) {
+          const found = application.customAttributes.find( (x) => {
+            return x.customAttributeDefinitionName === customAttribute.name;
+          });
+          expect(found).to.not.be.undefined;
+          expect(found.value).to.equal(customAttribute.value);
+        }
+        // // DEBUG
+        // expect(false, `application.customAttributes=${JSON.stringify(application.customAttributes, null, 2)}`).to.be.true;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should set custom attributes on application: idempotency`, async () => {
+      try {
+        const application: Application = await EpSdkApplicationsService.setCustomAttributes({
+          applicationId: ApplicationId,
+          epSdkCustomAttributeList: ApplicationCustomAttributeList
+        });
+        expect(application.customAttributes).to.not.be.undefined;
+        if(application.customAttributes === undefined) throw new Error('application.customAttributes === undefined');
+        for(const customAttribute of ApplicationCustomAttributeList) {
+          const found = application.customAttributes.find( (x) => {
+            return x.customAttributeDefinitionName === customAttribute.name;
+          });
+          expect(found).to.not.be.undefined;
+          expect(found.value).to.equal(customAttribute.value);
+        }
+        // // DEBUG
+        // expect(false, `application.customAttributes=${JSON.stringify(application.customAttributes, null, 2)}`).to.be.true;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should set additional custom attributes on application leaving original attributes as-is`, async () => {
+      try {
+        const application: Application = await EpSdkApplicationsService.setCustomAttributes({
+          applicationId: ApplicationId,
+          epSdkCustomAttributeList: ApplicationAdditionalCustomAttributeList
+        });
+        expect(application.customAttributes).to.not.be.undefined;
+        if(application.customAttributes === undefined) throw new Error('application.customAttributes === undefined');
+        expect(application.customAttributes.length, `wrong number of attributes`).to.equal(ApplicationAdditionalCustomAttributeList.length + ApplicationCustomAttributeList.length);
+        for(const customAttribute of ApplicationCustomAttributeList) {
+          const found = application.customAttributes.find( (x) => {
+            return x.customAttributeDefinitionName === customAttribute.name;
+          });
+          expect(found).to.not.be.undefined;
+          expect(found.value).to.equal(customAttribute.value);
+        }
+        for(const customAttribute of ApplicationAdditionalCustomAttributeList) {
+          const found = application.customAttributes.find( (x) => {
+            return x.customAttributeDefinitionName === customAttribute.name;
+          });
+          expect(found).to.not.be.undefined;
+          expect(found.value).to.equal(customAttribute.value);
+        }
+        // // DEBUG
+        // expect(false, `application.customAttributes=${JSON.stringify(application.customAttributes, null, 2)}`).to.be.true;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should unset additional custom attributes on application leaving only original attributes`, async () => {
+      try {
+        const application: Application = await EpSdkApplicationsService.unsetCustomAttributes({
+          applicationId: ApplicationId,
+          epSdkCustomAttributeList: ApplicationAdditionalCustomAttributeList
+        });
+        expect(application.customAttributes).to.not.be.undefined;
+        if(application.customAttributes === undefined) throw new Error('application.customAttributes === undefined');
+        expect(application.customAttributes.length, `wrong number of attributes`).to.equal(ApplicationCustomAttributeList.length);
+        for(const customAttribute of ApplicationCustomAttributeList) {
+          const found = application.customAttributes.find( (x) => {
+            return x.customAttributeDefinitionName === customAttribute.name;
+          });
+          expect(found).to.not.be.undefined;
+          expect(found.value).to.equal(customAttribute.value);
+        }
+        for(const customAttribute of ApplicationAdditionalCustomAttributeList) {
+          const found = application.customAttributes.find( (x) => {
+            return x.customAttributeDefinitionName === customAttribute.name;
+          });
+          expect(found).to.be.undefined;
+        }
+        // // DEBUG
+        // expect(false, `application.customAttributes=${JSON.stringify(application.customAttributes, null, 2)}`).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

@@ -1,15 +1,14 @@
-import { EpSdkApiContentError, EpSdkInternalTaskError } from "../utils/EpSdkErrors";
-import { EpSdkLogger } from "../utils/EpSdkLogger";
-import { EEpSdkLoggerCodes } from "../utils/EpSdkLoggerCodes";
 import {
-  Application,
-  ApplicationResponse,
-  ApplicationsService,
   CustomAttributeDefinition,
   CustomAttributeDefinitionResponse,
   CustomAttributeDefinitionsService
 } from '@solace-labs/ep-openapi-node';
-import EpSdkApplicationsService from "../services/EpSdkApplicationsService";
+import { 
+  EpSdkApiContentError, 
+  EpSdkInternalTaskError,
+  EpSdkLogger,
+  EEpSdkLoggerCodes,
+} from "../utils";
 import { 
   EpSdkTask,
   IEpSdkTask_Config, 
@@ -23,8 +22,7 @@ import {
   IEpSdkTask_UpdateFuncReturn
 } from "./EpSdkTask";
 import { EEpSdkObjectTypes } from '../types';
-import { EEpSdkCustomAttributeEntityTypes } from "../types/EpSdkObjectTypes";
-import EpSdkCustomAttributeDefinitionsService from "../services/EpSdkCustomAttributeDefinitionsService";
+import { EpSdkCustomAttributeDefinitionsService } from "../services";
 
 
 export type TEpSdkCustomAttributeDefinitionTask_Settings = Partial<Pick<CustomAttributeDefinition, "valueType">> & Required<Pick<CustomAttributeDefinition, "associatedEntityTypes">>;
@@ -54,6 +52,9 @@ export interface IEpSdkCustomAttributeDefinitionTask_ExecuteReturn extends Omit<
 }
 
 /**
+ * Manages presence and absence of custom attribute defintion.
+ * For absence:
+ * - pass empty list of associatedEntityTypes
  * @category Tasks
  */
 export class EpSdkCustomAttributeDefinitionTask extends EpSdkTask {

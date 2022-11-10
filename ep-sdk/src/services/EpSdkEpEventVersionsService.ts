@@ -401,7 +401,6 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     });
     // get the source event object
     const fromEvent: EpEvent = await EpSdkEpEventsService.getById({
-      applicationDomainId: fromApplicationDomainId,
       eventId: fromEventVersion.eventId,
     });
 

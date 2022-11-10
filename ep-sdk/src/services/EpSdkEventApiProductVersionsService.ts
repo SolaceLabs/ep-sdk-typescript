@@ -1,5 +1,3 @@
-import { EpSdkVersionService } from "./EpSdkVersionService";
-import { EpSdkApiContentError } from "../utils/EpSdkErrors";
 import {
   EventApiProductsResponse,
   EventApiProduct,
@@ -9,10 +7,11 @@ import {
   Pagination,
   EventApiProductResponse,
 } from '@solace-labs/ep-openapi-node';
+import { EpSdkApiContentError } from "../utils";
+import { EpSdkVersionService } from "./EpSdkVersionService";
 import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
-import { EpSdkBrokerType } from './EpSdkService';
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
-import { EpSdkPagination } from "../types";
+import { EpSdkBrokerTypes, EpSdkPagination } from "../types";
 
 
 export type EpSdkEventApiProduct = Required<Pick<EventApiProduct, "applicationDomainId" | "id" | "name">> & Omit<EventApiProduct, "applicationDomainId" | "id" | "name">;
@@ -57,7 +56,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
   public listLatestVersions = async({ applicationDomainIds, shared, brokerType, stateId, pageNumber = 1, pageSize = 20, sortFieldName }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
-    brokerType?: EpSdkBrokerType;
+    brokerType?: EpSdkBrokerTypes;
     stateId?: string;
     pageNumber?: number;
     pageSize?: number;

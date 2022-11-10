@@ -1,15 +1,36 @@
-import { EpSdkApiContentError, EpSdkServiceError } from '../utils/EpSdkErrors';
-import { EpSdkLogger } from '../utils/EpSdkLogger';
-import { EEpSdkLoggerCodes } from '../utils/EpSdkLoggerCodes';
 import { 
   ApplicationDomain,
   ApplicationDomainResponse,
   ApplicationDomainsResponse,
   ApplicationDomainsService,
 } from '@solace-labs/ep-openapi-node';
+import { 
+  EpSdkApiContentError, 
+  EpSdkServiceError,
+  EpSdkLogger,
+  EEpSdkLoggerCodes,
+  EpSdkFeatureNotSupportedError
+} from '../utils';
 import { EpSdkService } from './EpSdkService';
+import { 
+  EEpSdkCustomAttributeEntityTypes, 
+  TEpSdkCustomAttributeList 
+} from '../types';
 
 export class EpSdkApplicationDomainsService extends EpSdkService {
+
+  public getCustomAttributeEntityType(): EEpSdkCustomAttributeEntityTypes { return EEpSdkCustomAttributeEntityTypes.APPLICATION_DOMAIN; }
+
+  public async setCustomAttributes({ epObjectId, epSdkCustomAttributeList }:{
+    epObjectId: string;
+    epSdkCustomAttributeList: TEpSdkCustomAttributeList;
+  }): Promise<ApplicationDomain> {
+    const funcName = 'setCustomAttributes';
+    const logName = `${EpSdkApplicationDomainsService.name}.${funcName}()`;
+    epObjectId;
+    epSdkCustomAttributeList;
+    throw new EpSdkFeatureNotSupportedError(logName, this.constructor.name, 'not implemented', {});
+  }
 
   /**
    * Get application domain object by name.
