@@ -43,6 +43,7 @@ export class EpSdkCustomAttributeDefinitionsService extends EpSdkService {
     return customAttributeDefinition.associatedEntityTypes.concat([]) as Array<EEpSdkCustomAttributeEntityTypes>;
   }
 
+  /* istanbul ignore next */
   // /**
   //  * Removes the associated entity type from the existing list.
   //  * Returns list of remaining associated entity types, which could be empty.
@@ -95,6 +96,7 @@ export class EpSdkCustomAttributeDefinitionsService extends EpSdkService {
     return epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject;
   }
 
+  /* istanbul ignore next */
   // public getByAssociatedEntityTypes = async({ associatedEntityTypes, pageSize = EpApiHelpers.MaxPageSize }:{
   //   associatedEntityTypes: Array<string>;
   //   pageSize?: number; /** for testing */
