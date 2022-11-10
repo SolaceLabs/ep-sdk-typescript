@@ -13,7 +13,7 @@ import {
   IEpSdkCustomAttributeDefinitionTask_ExecuteReturn 
 } from "../tasks";
 
-class EpSdkCustomAttributesService {
+export class EpSdkCustomAttributesService {
 
   /**
    * Returns full custom attributes including existing & new ones.

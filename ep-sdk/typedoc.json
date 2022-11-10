@@ -2,7 +2,7 @@
   "$schema": "https://typedoc.org/schema.json",
   "entryPointStrategy": "resolve",
   "entryPoints": [
-    "./src/types.ts",
+    "./src/types/*.ts",
     "./src/services/*.ts",
     "./src/tasks/*.ts",
     "./src/utils/*.ts",
