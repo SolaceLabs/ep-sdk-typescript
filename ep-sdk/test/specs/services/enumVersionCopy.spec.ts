@@ -99,8 +99,8 @@ describe(`${scriptName}`, () => {
   
     after(async() => {
       // delete application domains
-      // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: SourceApplicationDomainId });
-      // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: TargetApplicationDomainId });
+      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: SourceApplicationDomainId });
+      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: TargetApplicationDomainId });
     });
 
     it(`${scriptName}: should create source enums`, async () => {
