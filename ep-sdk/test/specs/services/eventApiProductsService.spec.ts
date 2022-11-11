@@ -267,7 +267,7 @@ describe(`${scriptName}`, () => {
         expect(eventApiProductsResponse.data.length, message).to.equal(NumApplicationDomains);
         for(const eventApiProduct of eventApiProductsResponse.data) {
           // get the latest version for each event api product
-          const latest_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getVersionForEventApiProductId({ 
+          const latest_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,
             stateId: undefined
           });
@@ -277,7 +277,7 @@ describe(`${scriptName}`, () => {
           expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_1);    
           expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_2);    
           // get the version 1 for each event api product
-          const version1_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getVersionForEventApiProductId({ 
+          const version1_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,
             stateId: undefined,
             versionString: EventApiProductVersionString_1

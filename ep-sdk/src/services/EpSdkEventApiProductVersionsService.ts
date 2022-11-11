@@ -36,7 +36,7 @@ export type EpSdkEventApiProductAndVersionResponse = EpSdkEventApiProductAndVers
 }
 export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
-  private getLatestVersionObjectForEventApiProductId = async ({ eventApiProductId, stateId }: {
+  private getLatestVersionForEventApiProductId = async ({ eventApiProductId, stateId }: {
     eventApiProductId: string;
     stateId?: string;
   }): Promise<EventApiProductVersion | undefined> => {
@@ -83,7 +83,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
         eventApiProduct: eventApiProduct
       });
       // get the latest version in the requested state
-      const latest_EventApiProductVersion: EventApiProductVersion | undefined = await this.getLatestVersionObjectForEventApiProductId({
+      const latest_EventApiProductVersion: EventApiProductVersion | undefined = await this.getLatestVersionForEventApiProductId({
         eventApiProductId: eventApiProduct.id,
         stateId: stateId
       });      
@@ -169,57 +169,18 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     return eventApiProductVersionList;
   }
 
-  // public getVersionsForEventApiName = async ({ eventApiName, applicationDomainId }: {
-  //   applicationDomainId: string;
-  //   eventApiName: string;
-  // }): Promise<Array<EventApiVersion>> => {
-  //   const funcName = 'getVersionsForEventName';
-  //   const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
-
-  //   const eventApi: EventApi | undefined = await EpSdkEventApisService.getByName({
-  //     applicationDomainId: applicationDomainId,
-  //     eventApiName: eventApiName,
-  //   });
-
-  //   if (eventApi === undefined) return [];
-  //   if (eventApi.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApi.id === undefined', {
-  //     eventApi: eventApi
-  //   });
-  //   const eventApiVersionList: Array<EventApi> = await this.getVersionsForEventApiId({ eventApiId: eventApi.id });
-  //   return eventApiVersionList;
-  // }
-
-  // public getLatestVersionString = async ({ eventApiId }: {
-  //   eventApiId: string;
-  // }): Promise<string | undefined> => {
-  //   const funcName = 'getLatestVersionString';
-  //   const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
-
-  //   const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiId({ eventApiId: eventApiId });
-  //   // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
-  //   //   enumVersionList: enumVersionList
-  //   // }}));
-  //   const latestEventVersion: EventApiVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: eventApiVersionList });
-  //   if(latestEventVersion === undefined) return undefined;
-  //   if(latestEventVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'latestEventVersion.version === undefined', {
-  //     latestEventVersion: latestEventVersion
-  //   });
-  //   return latestEventVersion.version;
-  // }
-
-
   /**
    * Retrieves Event API Product Version object in the given stateId.
    * If versionString is omitted, retrieves the latest version.
    * @param param0 
    * @returns 
    */
-  public getVersionForEventApiProductId = async ({ eventApiProductId, stateId, versionString }: {
+  public getObjectAndVersionForEventApiProductId = async ({ eventApiProductId, stateId, versionString }: {
     eventApiProductId: string;
     stateId?: string;
     versionString?: string;
   }): Promise<EpSdkEventApiProductAndVersionResponse | undefined> => {
-    const funcName = 'getLatestVersionForEventApiProductId';
+    const funcName = 'getObjectAndVersionForEventApiProductId';
     const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
 
     // get event api product
@@ -266,26 +227,6 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       }
     }
   }
-
-  // public getLatestVersionForEventApiName = async ({ applicationDomainId, eventApiName }: {
-  //   applicationDomainId: string;
-  //   eventApiName: string;
-  // }): Promise<EventApiVersion | undefined> => {
-  //   const funcName = 'getLatestVersionForEventApiName';
-  //   const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
-
-  //   const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiName({
-  //     eventApiName: eventApiName,
-  //     applicationDomainId: applicationDomainId
-  //   });
-  //   // CliLogger.trace(CliLogger.createLogEntry(logName, { code: ECliStatusCodes.SERVICE, details: {
-  //   //   enumVersionList: enumVersionList
-  //   // }}));
-
-  //   const latestEventApiVersion: EventApiVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: eventApiVersionList });
-  //   return latestEventApiVersion;
-  // }
-
 }
 
 export default new EpSdkEventApiProductVersionsService();
