@@ -310,6 +310,7 @@ export abstract class EpSdkTask {
           epSdkTask_ExecuteReturn = await this.executeAbsent(epSdkTask_GetFuncReturn);
           break;
         default:
+          /* istanbul ignore next */
           EpSdkUtils.assertNever(logName, this.epSdkTask_Config.epSdkTask_TargetState);
       }
 

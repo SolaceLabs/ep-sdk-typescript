@@ -23,6 +23,7 @@ export class EpSdkCustomAttributesQueryService {
       case EEpSdkComparisonOps.CONTAINS:
         return sourceValue.includes(compareValue);
       default:
+        /* istanbul ignore next */
         EpSdkUtils.assertNever(logName, comparisonOp);
     }
     // should never get here
