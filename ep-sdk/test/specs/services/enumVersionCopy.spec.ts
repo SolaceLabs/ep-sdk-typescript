@@ -99,8 +99,8 @@ describe(`${scriptName}`, () => {
   
     after(async() => {
       // delete application domains
-      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: SourceApplicationDomainId });
-      await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: TargetApplicationDomainId });
+      // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: SourceApplicationDomainId });
+      // await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: TargetApplicationDomainId });
     });
 
     it(`${scriptName}: should create source enums`, async () => {
@@ -116,6 +116,8 @@ describe(`${scriptName}`, () => {
           });  
           const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();
           enumInfo.sourceEnumId = epSdkEnumTask_ExecuteReturn.epObject.id;
+          // // DEBUG
+          // expect(false, `enumInfo=${JSON.stringify(enumInfo, null, 2)}`).to.be.true;
           for(const versionInfo of enumInfo.versionInfoList) {
             const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
               epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,

@@ -44,6 +44,7 @@ export class EpSdkCustomAttributesService {
         },
       });
       const epSdkCustomAttributeDefinitionTask_ExecuteReturn: IEpSdkCustomAttributeDefinitionTask_ExecuteReturn = await epSdkCustomAttributeDefinitionTask.execute();
+      /* istanbul ignore next */
       if(epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id == undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject.id == undefined', {
         epSdkCustomAttributeDefinitionTask_ExecuteReturn_epObject: epSdkCustomAttributeDefinitionTask_ExecuteReturn.epObject
       });

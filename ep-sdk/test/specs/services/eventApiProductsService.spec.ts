@@ -23,7 +23,6 @@ import {
   EpSdkEventApiProductAndVersionListResponse,
   EpSdkEventApiProductAndVersionResponse,
   TEpSdkCustomAttributeList,
-  EpSdkBrokerTypes,
 } from '../../../src';
 
 const scriptName: string = path.basename(__filename);

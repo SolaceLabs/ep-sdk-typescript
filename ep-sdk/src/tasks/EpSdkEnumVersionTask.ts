@@ -242,7 +242,6 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     }
 
     const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({ 
-      applicationDomainId: this.getTaskConfig().applicationDomainId,
       enumId: this.getTaskConfig().enumId,
       topicAddressEnumVersion: create,
       targetLifecycleStateId: this.getTaskConfig().enumVersionSettings.stateId,
@@ -327,7 +326,6 @@ export class EpSdkEnumVersionTask extends EpSdkVersionTask {
     }
 
     const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({
-      applicationDomainId: this.getTaskConfig().applicationDomainId,      
       enumId: this.getTaskConfig().enumId,
       topicAddressEnumVersion: update,
       targetLifecycleStateId: this.getTaskConfig().enumVersionSettings.stateId

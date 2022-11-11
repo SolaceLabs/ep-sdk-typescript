@@ -70,3 +70,6 @@ export {
 export {
   default as EpSdkCustomAttributesService
 } from './EpSdkCustomAttributesService';
+export {
+  default as EpSdkCustomAttributesQueryService
+} from './EpSdkCustomAttributesQueryService';

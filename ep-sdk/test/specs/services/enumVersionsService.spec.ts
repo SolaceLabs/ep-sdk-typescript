@@ -20,6 +20,7 @@ import {
   EpSdkServiceError,
   EpSdkApplicationDomainsService,
   EpSdkEnumVersionsService,
+  EpSdkStatesService,
 } from '../../../src';
 
 const scriptName: string = path.basename(__filename);
@@ -85,16 +86,18 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should create enum version`, async () => {
       try {
-        const enumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+        const create: TopicAddressEnumVersion = {
           enumId: EnumId,
-          requestBody: {
-            enumId: EnumId,
-            description: `enum version for enum = ${EnumName}, id=${EnumId}`,
-            values: EnumValues,
-            version: EnumVersionString,
-          }
+          description: `enum version for enum = ${EnumName}, id=${EnumId}`,
+          values: EnumValues,
+          version: EnumVersionString,
+        };
+        const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({ 
+          enumId: EnumId,
+          topicAddressEnumVersion: create,
+          targetLifecycleStateId: EpSdkStatesService.releasedId,
         });
-        EnumVersionId = enumVersionResponse.data.id;
+        EnumVersionId = topicAddressEnumVersion.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -147,16 +150,17 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should create new enum version`, async () => {
       try {
-        const enumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+        const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({ 
           enumId: EnumId,
-          requestBody: {
+          topicAddressEnumVersion: {
             enumId: EnumId,
             description: `enum version for enum = ${EnumName}, id=${EnumId}`,
             values: EnumValues,
             version: EnumNextVersionString,
-          }
+          },
+          targetLifecycleStateId: EpSdkStatesService.releasedId,
         });
-        EnumNextVersionId = enumVersionResponse.data.id;
+        EnumNextVersionId = topicAddressEnumVersion.id;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -238,14 +242,15 @@ describe(`${scriptName}`, () => {
         let EnumVersionString = '';
         for(let i=0; i<EnumVersionQuantity; i++) {
           EnumVersionString = `3.0.${i}`;
-          const enumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
+          const topicAddressEnumVersion: TopicAddressEnumVersion = await EpSdkEnumVersionsService.createEnumVersion({ 
             enumId: EnumId,
-            requestBody: {
+            topicAddressEnumVersion: {
               enumId: EnumId,
               description: `enum version for enum = ${EnumName}, id=${EnumId}`,
               values: EnumValues,
               version: EnumVersionString,
-            }
+            },
+            targetLifecycleStateId: EpSdkStatesService.releasedId,
           });
         }
         // // DEBUG

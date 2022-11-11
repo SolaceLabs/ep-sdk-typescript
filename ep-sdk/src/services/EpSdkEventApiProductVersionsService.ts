@@ -11,7 +11,7 @@ import { EpSdkApiContentError } from "../utils";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
-import { EpSdkBrokerTypes, EpSdkPagination } from "../types";
+import { EpSdkBrokerTypes, EpSdkPagination, IEpSdkAttributesQuery } from "../types";
 
 
 export type EpSdkEventApiProduct = Required<Pick<EventApiProduct, "applicationDomainId" | "id" | "name">> & Omit<EventApiProduct, "applicationDomainId" | "id" | "name">;
@@ -53,7 +53,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     return latest_EventApiProductVersion;
   }
 
-  public listLatestVersions = async({ applicationDomainIds, shared, brokerType, stateId, pageNumber = 1, pageSize = 20, sortFieldName }:{
+  public listLatestVersions = async({ applicationDomainIds, shared, brokerType, stateId, pageNumber = 1, pageSize = 20, sortFieldName, objectAttributesQuery }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -61,6 +61,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     pageNumber?: number;
     pageSize?: number;
     sortFieldName?: string;
+    objectAttributesQuery?: IEpSdkAttributesQuery;
   }): Promise<EpSdkEventApiProductAndVersionListResponse> => {
     const funcName = 'listLatestVersions';
     const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
@@ -72,6 +73,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       shared: shared,
       brokerType: brokerType,
       sortFieldName: sortFieldName,
+      attributesQuery: objectAttributesQuery,
     });
     const eventApiProductList: Array<EventApiProduct> = eventApiProductsResponse.data ? eventApiProductsResponse.data : [];
 
