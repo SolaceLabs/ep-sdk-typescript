@@ -2,6 +2,23 @@
 
 Solace Event Portal SDK.
 
+## Version 0.22.0-alpha
+
+**New Features:**
+- **EpSdkCustomAttributesQueryService**
+  - simple query expression for attributes
+  - supports list of AND comparisons, operators: `isEqual` and `contains`
+
+**Enhancements:**
+- **EpSdkEventApiProductVersionsService.listLatestVersions()**
+  - added argument: `objectAttributesQuery`
+  - allows to filter list using query expressions on attributes
+
+**Breaking Changes:**
+- **EpSdkEventApiProductVersionsService**
+  - change name from `getVersionForEventApiProductId()` to `getObjectAndVersionForEventApiProductId()`
+
+
 ## Version 0.21.0-alpha
 
 **Added Support for Event Portal Attributes:**
