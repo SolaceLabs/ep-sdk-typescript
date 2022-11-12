@@ -294,7 +294,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should create 2 event apis with 1 version each & get event & version list`, async () => {
+    it(`${scriptName}: should create 2 event apis with 1 version each & get event and version list`, async () => {
       let EventApiId_1: string | undefined;
       let EventApiVersionId_1: string | undefined;
       let EventApiId_2: string | undefined;
