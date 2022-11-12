@@ -172,7 +172,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
   }
 
   /**
-   * Retrieves Event API Product Version object in the given stateId.
+   * Retrieves Event API Product & Version object in the given stateId.
    * If versionString is omitted, retrieves the latest version.
    * @param param0 
    * @returns 
