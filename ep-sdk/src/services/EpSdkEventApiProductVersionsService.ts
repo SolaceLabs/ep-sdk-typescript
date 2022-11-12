@@ -15,7 +15,7 @@ import { EpSdkBrokerTypes, EpSdkPagination, IEpSdkAttributesQuery } from "../typ
 
 
 export type EpSdkEventApiProduct = Required<Pick<EventApiProduct, "applicationDomainId" | "id" | "name">> & Omit<EventApiProduct, "applicationDomainId" | "id" | "name">;
-export type EpSdkEventApiProductVersion = Required<Pick<EventApiProductVersion, "id" | "eventApiProductId" | "version" | "stateId">> & Omit<EventApiProductVersion, "id" | "eventApiProductId" | "version" | "stateId">;
+export type EpSdkEventApiProductVersion = Required<Pick<EventApiProductVersion, "id" | "eventApiProductId" | "version" | "stateId" | "plans" | "solaceMessagingServices">> & Omit<EventApiProductVersion, "id" | "eventApiProductId" | "version" | "stateId" | "plans" | "solaceMessagingServices">;
 
 export type EpSdkEventApiProductVersionList = Array<EpSdkEventApiProductVersion>;
 export type EpSdkEventApiProductAndVersion = {
@@ -129,9 +129,11 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
   //   return found;
   // }
 
-  public getVersionsForEventApiProductId = async ({ eventApiProductId, stateId, pageSize = EpApiHelpers.MaxPageSize }: {
+  public getVersionsForEventApiProductId = async ({ eventApiProductId, stateId, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false, pageSize = EpApiHelpers.MaxPageSize }: {
     eventApiProductId: string;
     stateId?: string;
+    withAtLeastOnePlan?: boolean;
+    withAtLeastOneAMessagingService?: boolean;
     pageSize?: number; /** for testing */
   }): Promise<Array<EventApiProductVersion>> => {
     const funcName = 'getVersionsForEventApiProductId';
@@ -155,7 +157,17 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
       if(eventApiProductVersionsResponse.data === undefined || eventApiProductVersionsResponse.data.length === 0) nextPage = null;
       else {
-        eventApiProductVersionList.push(...eventApiProductVersionsResponse.data);
+        // apply filters
+        const filteredList: Array<EventApiProductVersion> = eventApiProductVersionsResponse.data.filter( (eventApiProductVersion: EventApiProductVersion) => {
+          if(withAtLeastOnePlan) {
+            if(eventApiProductVersion.plans === undefined || eventApiProductVersion.plans.length === 0) return false;
+          }
+          if(withAtLeastOneAMessagingService) {
+            if(eventApiProductVersion.solaceMessagingServices === undefined || eventApiProductVersion.solaceMessagingServices.length === 0) return false;
+          }
+          return true;
+        });
+        eventApiProductVersionList.push(...filteredList);
         /* istanbul ignore next */
         if(eventApiProductVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductVersionsResponse.meta === undefined', {
           eventApiProductVersionsResponse: eventApiProductVersionsResponse
@@ -172,15 +184,15 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
   }
 
   /**
-   * Retrieves Event API Product & Version object in the given stateId.
+   * Retrieves Event API Product & Version object in the given stateId & filters.
    * If versionString is omitted, retrieves the latest version.
-   * @param param0 
-   * @returns 
    */
-  public getObjectAndVersionForEventApiProductId = async ({ eventApiProductId, stateId, versionString }: {
+  public getObjectAndVersionForEventApiProductId = async ({ eventApiProductId, stateId, versionString, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false }: {
     eventApiProductId: string;
     stateId?: string;
     versionString?: string;
+    withAtLeastOnePlan?: boolean;
+    withAtLeastOneAMessagingService?: boolean;
   }): Promise<EpSdkEventApiProductAndVersionResponse | undefined> => {
     const funcName = 'getObjectAndVersionForEventApiProductId';
     const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
@@ -192,10 +204,17 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     } catch(e) {
       return undefined;
     }
-    // get all versions for selected stateId
+    /* istanbul ignore next */
+    if(eventApiProductResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductResponse.data === undefined', {
+      eventApiProductResponse: eventApiProductResponse
+    });
+    
+    // get all versions for selected stateId with plans & messaging services
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
       eventApiProductId: eventApiProductId,
       stateId: stateId,
+      withAtLeastOnePlan: withAtLeastOnePlan,
+      withAtLeastOneAMessagingService: withAtLeastOneAMessagingService,
     });
     let eventApiProductVersion: EventApiProductVersion | undefined = undefined;
     if(versionString === undefined) {
@@ -216,10 +235,6 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
         eventApiProductVersion: eventApiProductVersion
       });
       return eventApiProductVersion.version;
-    });
-    /* istanbul ignore next */
-    if(eventApiProductResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductResponse.data === undefined', {
-      eventApiProductResponse: eventApiProductResponse
     });
     return {
       eventApiProduct: eventApiProductResponse.data as EpSdkEventApiProduct,
