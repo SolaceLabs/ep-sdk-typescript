@@ -157,17 +157,20 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
       if(eventApiProductVersionsResponse.data === undefined || eventApiProductVersionsResponse.data.length === 0) nextPage = null;
       else {
+        let listToAdd: Array<EventApiProductVersion> = eventApiProductVersionsResponse.data;
         // apply filters
-        const filteredList: Array<EventApiProductVersion> = eventApiProductVersionsResponse.data.filter( (eventApiProductVersion: EventApiProductVersion) => {
-          if(withAtLeastOnePlan) {
-            if(eventApiProductVersion.plans === undefined || eventApiProductVersion.plans.length === 0) return false;
-          }
-          if(withAtLeastOneAMessagingService) {
-            if(eventApiProductVersion.solaceMessagingServices === undefined || eventApiProductVersion.solaceMessagingServices.length === 0) return false;
-          }
-          return true;
-        });
-        eventApiProductVersionList.push(...filteredList);
+        if(withAtLeastOnePlan || withAtLeastOneAMessagingService) {
+          listToAdd = eventApiProductVersionsResponse.data.filter( (eventApiProductVersion: EventApiProductVersion) => {
+            if(withAtLeastOnePlan) {
+              if(eventApiProductVersion.plans === undefined || eventApiProductVersion.plans.length === 0) return false;
+            }
+            if(withAtLeastOneAMessagingService) {
+              if(eventApiProductVersion.solaceMessagingServices === undefined || eventApiProductVersion.solaceMessagingServices.length === 0) return false;
+            }
+            return true;
+          });  
+        }
+        eventApiProductVersionList.push(...listToAdd);
         /* istanbul ignore next */
         if(eventApiProductVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductVersionsResponse.meta === undefined', {
           eventApiProductVersionsResponse: eventApiProductVersionsResponse
