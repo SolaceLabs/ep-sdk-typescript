@@ -14,6 +14,11 @@ import {
   EventApiProduct,
   Plan,
   SolaceClassOfServicePolicy,
+  MessagingServicesService,
+  MessagingServicesResponse,
+  SolaceMessagingService,
+  MessagingService,
+  EventApiProductVersionResponse,
 } from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkError,
@@ -272,6 +277,16 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should create all eventApiProducts with 1 version, half of them with a plan, of which half have correct domain attributes`, async () => {
       try {
+        // get the messaging services
+        const messagingServicesResponse: MessagingServicesResponse = await MessagingServicesService.getMessagingServices({
+        });
+        // // DEBUG
+        // expect(false, `${JSON.stringify(messagingServicesResponse.data, null, 2)}`).to.be.true;
+        const message = 'TEST cannot run without at least 1 messaging service defined';
+        expect(messagingServicesResponse.data, message).to.not.be.undefined;
+        expect(messagingServicesResponse.data.length, message).to.be.greaterThan(0);
+        if(!messagingServicesResponse.data || messagingServicesResponse.data.length ===0) throw new Error(message);
+        const messagingService: MessagingService = messagingServicesResponse.data[0];
         // create the products
         const eventApiProductNameList = getEventApiProductNameList();
         let i = 0;
@@ -288,7 +303,7 @@ describe(`${scriptName}`, () => {
           EventApiProductIdList.push(eventApiProductResponse.data.id);
           // create version 1
           const withPlan: boolean = (i/2) % 2 === 0;
-          const x = await EventApiProductsService.createEventApiProductVersion({
+          const eventApiProductVersionResponse: EventApiProductVersionResponse = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
               eventApiProductId: eventApiProductResponse.data.id,
               version: '1.0.0',
@@ -297,6 +312,17 @@ describe(`${scriptName}`, () => {
           });
           // set correct domain on half the ones withPlan
           if(withPlan) {
+            // set also the mem association
+            const xparams: any = {
+              supportedProtocols: ["mqtt"]
+            }
+            const x = await EventApiProductsService.associateGatewayMessagingServiceToEapVersion({
+              eventApiProductVersionId: eventApiProductVersionResponse.data.id,
+              requestBody: {
+                ...xparams,
+                messagingServiceId: messagingService.id,
+              }
+            })
             if(withPlan_i % 2 === 0) {
               // add correct domains
               const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
@@ -486,7 +512,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan)`, async () => {
+    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan, withMsgSvc)`, async () => {
       try {
         const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
           applicationDomainIds: [ApplicationDomainId],
@@ -494,7 +520,7 @@ describe(`${scriptName}`, () => {
           brokerType: EpSdkBrokerTypes.Solace,
           objectAttributesQuery: PublishDestinationAttributesQuery,
           withAtLeastOnePlan: true,
-          withAtLeastOneAMessagingService: false,
+          withAtLeastOneAMessagingService: true,
           pageSize: 100,
         });
         // // DEBUG
@@ -507,7 +533,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan, correct domainId)`, async () => {
+    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan, withMsgSvc, correct domainId)`, async () => {
       try {
         const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
           applicationDomainIds: [ApplicationDomainId],
@@ -515,7 +541,7 @@ describe(`${scriptName}`, () => {
           brokerType: EpSdkBrokerTypes.Solace,
           objectAttributesQuery: CorrectOwningDomainIdAttributesQuery,
           withAtLeastOnePlan: true,
-          withAtLeastOneAMessagingService: false,
+          withAtLeastOneAMessagingService: true,
           pageSize: 100,
         });
         // DEBUG
@@ -528,7 +554,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan, correct domain sharing)`, async () => {
+    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan, withMsgSvc, correct domain sharing)`, async () => {
       try {
         const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
           applicationDomainIds: [ApplicationDomainId],
@@ -536,7 +562,7 @@ describe(`${scriptName}`, () => {
           brokerType: EpSdkBrokerTypes.Solace,
           objectAttributesQuery: CorrectSharingDomainIdAttributesQuery,
           withAtLeastOnePlan: true,
-          withAtLeastOneAMessagingService: false,
+          withAtLeastOneAMessagingService: true,
           pageSize: 100,
         });
         // // DEBUG
@@ -557,7 +583,7 @@ describe(`${scriptName}`, () => {
           brokerType: EpSdkBrokerTypes.Solace,
           objectAttributesQuery: NoResultPublishDestinationAttributesQuery,
           withAtLeastOnePlan: true,
-          withAtLeastOneAMessagingService: false,
+          withAtLeastOneAMessagingService: true,
           pageSize: 100,
         });
         // // DEBUG
