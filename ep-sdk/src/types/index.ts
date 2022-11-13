@@ -61,6 +61,45 @@ export interface IEpSdkAttributeQuery {
   comparisonOp: EEpSdkComparisonOps;
   value: string;
 }
+export interface IEpSdkAndAttributeQuery {
+  queryList: Array<IEpSdkAttributeQuery>;
+  OR?: IEpSdkOrAttributeQuery;
+}
+export interface IEpSdkOrAttributeQuery {
+  queryList: Array<IEpSdkAttributeQuery>;
+}
+/**
+ * Attributes Query Definition.
+ * @example
+ * Example:
+ * ```
+ * const ExampleQuery: IEpSdkAttributesQuery = {
+ * AND: {
+ *  queryList: [
+ *   {
+ *     attributeName: 'PUBLISH_DESTINATION',
+ *     comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+ *     value: 'DEV-PORTAL-SYSTEM-ID',
+ *   },
+ *  ],
+ *  OR: {
+ *     queryList: [
+ *       {
+ *        attributeName: 'OWNING_DOMAIN_ID',
+ *         comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+ *         value: 'DOMAIN-ID'
+ *       },
+ *       {
+ *         attributeName: 'DOMAIN_ID_SHARING',
+ *         comparisonOp: EEpSdkComparisonOps.CONTAINS,
+ *         value: 'SHARED-WITH-DOMAIN-ID'
+ *       },      
+ *     ]
+ *    }
+ *  }
+ * };
+ * ```
+ */
 export interface IEpSdkAttributesQuery {
-  AND: Array<IEpSdkAttributeQuery>;
+  AND: IEpSdkAndAttributeQuery;
 }

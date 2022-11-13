@@ -58,7 +58,7 @@ const EventApiProductVersionPlan_1: Plan = {
   }
 };
 
-enum EEpDevPManageAssetApiObjectAttributeNames {
+enum EEpDevPManageAssetObjectAttributeNames {
   PUBLISH_DESTINATION = "PUBLISH_DESTINATION",
   _X_EP_DEVP_DOMAIN_OWNING_ID_ = "_X_EP_DEVP_DOMAIN_OWNING_ID_",
   _X_EP_DEVP_DOMAIN_SHARING_LIST_ = "_X_EP_DEVP_DOMAIN_SHARING_LIST_",
@@ -97,30 +97,30 @@ const XEpDevPDomainSharingList: Array<TEpDevPManagedAssetBusinessGroupSharing> =
 const XEpDevPDomainSharingListAttributeValue = `${XEpDevPDomainSharing_1}.${XEpDevPDomainSharing_2}`;
 
 const CorrectPublishDestinationAttribute: TEpSdkCustomAttribute = {
-  name: EEpDevPManageAssetApiObjectAttributeNames.PUBLISH_DESTINATION,
+  name: EEpDevPManageAssetObjectAttributeNames.PUBLISH_DESTINATION,
   value: CorrectPublishDestination
 };
 const UnknownPublishDestinationAttribute: TEpSdkCustomAttribute = {
-  name: EEpDevPManageAssetApiObjectAttributeNames.PUBLISH_DESTINATION,
+  name: EEpDevPManageAssetObjectAttributeNames.PUBLISH_DESTINATION,
   value: UnknownPublishDestination
 };
 const CorrectDomainCustomAttributeList: TEpSdkCustomAttributeList = [
   {
-    name: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
+    name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
     value: XEpDevPDomainOwningId
   },
   {
-    name: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
+    name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
     value: XEpDevPDomainSharingListAttributeValue
   }
 ];
 const UnknownDomainCustomAttributeList: TEpSdkCustomAttributeList = [
   {
-    name: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
+    name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
     value: 'unknown-id'
   },
   {
-    name: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
+    name: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
     value: "unknown-id-1.unknown-id-2"
   }
 ];
@@ -136,78 +136,111 @@ const AdditionalCustomAttributeList: TEpSdkCustomAttributeList = [
 ];
 
 const PublishDestinationAttributesQuery: IEpSdkAttributesQuery = {
-  AND: [
-    {
-      attributeName: CorrectPublishDestinationAttribute.name,
-      comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-      value: CorrectPublishDestinationAttribute.value,
-    },
-    {
-      attributeName: CorrectPublishDestinationAttribute.name,
-      comparisonOp: EEpSdkComparisonOps.CONTAINS,
-      value: CorrectPublishDestinationAttribute.value,
-    },
-  ]
+  AND: {
+    queryList: [
+      {
+        attributeName: CorrectPublishDestinationAttribute.name,
+        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+        value: CorrectPublishDestinationAttribute.value,
+      },
+      {
+        attributeName: CorrectPublishDestinationAttribute.name,
+        comparisonOp: EEpSdkComparisonOps.CONTAINS,
+        value: CorrectPublishDestinationAttribute.value,
+      },
+    ]  
+  }
 };
 
 const NoResultPublishDestinationAttributesQuery: IEpSdkAttributesQuery = {
-  AND: [
-    {
-      attributeName: CorrectPublishDestinationAttribute.name,
-      comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-      value: 'no-result-pub-dest',
-    },
-  ]
+  AND: {
+    queryList: [
+      {
+        attributeName: CorrectPublishDestinationAttribute.name,
+        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+        value: 'no-result-pub-dest',
+      },
+    ]
+  }
 };
 
 const CorrectOwningDomainIdAttributesQuery: IEpSdkAttributesQuery = {
-  AND: [
-    {
-      attributeName: CorrectPublishDestinationAttribute.name,
-      comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-      value: CorrectPublishDestinationAttribute.value,
-    },
-
-    // correct domain id
-
-  //   OR: [
-  //     {
-  //       attributeName: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_BUSINESS_GROUP_OWNING_ID_,
-  //       comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-  //       value: domainId
-  //     },
-  //     {
-  //       attributeName: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_BUSINESS_GROUP_SHARING_LIST_,
-  //       comparisonOp: EEpSdkComparisonOps.CONTAINS,
-  //       value: domainId
-  //     },
-  //   ]
-  ]
+  AND: {
+    queryList: [
+      {
+        attributeName: CorrectPublishDestinationAttribute.name,
+        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+        value: CorrectPublishDestinationAttribute.value,
+      },
+    ],
+    OR: {
+      queryList: [
+        {
+          attributeName: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
+          comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+          value: XEpDevPDomainOwningId
+        },
+        {
+          attributeName: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
+          comparisonOp: EEpSdkComparisonOps.CONTAINS,
+          value: 'a different domain id list'
+        },      
+      ]
+    }
+  }
 };
 
 const CorrectSharingDomainIdAttributesQuery: IEpSdkAttributesQuery = {
-  AND: [
-    {
-      attributeName: CorrectPublishDestinationAttribute.name,
-      comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-      value: CorrectPublishDestinationAttribute.value,
-    },
+  AND: {
+    queryList: [
+      {
+        attributeName: CorrectPublishDestinationAttribute.name,
+        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+        value: CorrectPublishDestinationAttribute.value,
+      },
+    ],
+    OR: {
+      queryList: [
+        {
+          attributeName: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_OWNING_ID_,
+          comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+          value: 'a different owning domain id'
+        },
+        {
+          attributeName: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
+          comparisonOp: EEpSdkComparisonOps.CONTAINS,
+          value: XEpDevPDomainSharing_1
+        },      
+      ]
+    }
+  }
+};
 
-    // correct domain id in sharing
-
-  //   OR: [
-  //     {
-  //       attributeName: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_BUSINESS_GROUP_OWNING_ID_,
-  //       comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-  //       value: domainId
-  //     },
-  //     {
-  //       attributeName: EEpDevPManageAssetApiObjectAttributeNames._X_EP_DEVP_BUSINESS_GROUP_SHARING_LIST_,
-  //       comparisonOp: EEpSdkComparisonOps.CONTAINS,
-  //       value: domainId
-  //     },
-  //   ]
-  ]
+// for documentation
+const ExampleQuery: IEpSdkAttributesQuery = {
+  AND: {
+    queryList: [
+      {
+        attributeName: 'PUBLISH_DESTINATION',
+        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+        value: 'DEV-PORTAL-SYSTEM-ID',
+      },
+    ],
+    OR: {
+      queryList: [
+        {
+          attributeName: 'OWNING_DOMAIN_ID',
+          comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+          value: 'DOMAIN-ID'
+        },
+        {
+          attributeName: 'DOMAIN_ID_SHARING',
+          comparisonOp: EEpSdkComparisonOps.CONTAINS,
+          value: 'SHARED-WITH-DOMAIN-ID'
+        },      
+      ]
+    }
+  }
 };
 
 describe(`${scriptName}`, () => {
@@ -474,7 +507,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    xit(`${scriptName}: should list latest versions (filters=PubDest, withPlan, correct domainId)`, async () => {
+    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan, correct domainId)`, async () => {
       try {
         const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
           applicationDomainIds: [ApplicationDomainId],
@@ -485,7 +518,7 @@ describe(`${scriptName}`, () => {
           withAtLeastOneAMessagingService: false,
           pageSize: 100,
         });
-        // // DEBUG
+        // DEBUG
         // expect(false, `epSdkEventApiProductAndVersionListResponse=${JSON.stringify(epSdkEventApiProductAndVersionListResponse, null, 2)}`).to.be.true;
         expect(epSdkEventApiProductAndVersionListResponse.data.length, 'wrong length').to.equal(NumEventApiProducts/2/2/2);
       } catch(e) {
@@ -495,7 +528,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    xit(`${scriptName}: should list latest versions (filters=PubDest, withPlan, correct domain sharing)`, async () => {
+    it(`${scriptName}: should list latest versions (filters=PubDest, withPlan, correct domain sharing)`, async () => {
       try {
         const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
           applicationDomainIds: [ApplicationDomainId],
