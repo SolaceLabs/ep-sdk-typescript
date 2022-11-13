@@ -8,10 +8,14 @@ import {
   EventApiProductResponse,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkApiContentError } from "../utils";
+import { EpApiHelpers } from "../internal-utils";
+import { 
+  EpSdkBrokerTypes, 
+  EpSdkPagination, 
+  IEpSdkAttributesQuery 
+} from "../types";
 import { EpSdkVersionService } from "./EpSdkVersionService";
-import { EpApiHelpers } from "../internal-utils/EpApiHelpers";
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
-import { EpSdkBrokerTypes, EpSdkPagination, IEpSdkAttributesQuery } from "../types";
 
 
 export type EpSdkEventApiProduct = Required<Pick<EventApiProduct, "applicationDomainId" | "id" | "name">> & Omit<EventApiProduct, "applicationDomainId" | "id" | "name">;
@@ -36,24 +40,44 @@ export type EpSdkEventApiProductAndVersionResponse = EpSdkEventApiProductAndVers
 }
 export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
-  private getLatestVersionForEventApiProductId = async ({ eventApiProductId, stateId }: {
+  private getLatestVersionForEventApiProductId = async ({ 
+    eventApiProductId, 
+    stateId,
+    withAtLeastOnePlan = false,
+    withAtLeastOneAMessagingService = false,
+  }: {
     eventApiProductId: string;
     stateId?: string;
+    withAtLeastOnePlan?: boolean;
+    withAtLeastOneAMessagingService?: boolean;
   }): Promise<EventApiProductVersion | undefined> => {
     // const funcName = 'getLatestVersionObjectForEventApiProductId';
     // const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
 
-    // get all versions for selected stateId
+    // get all versions for selected stateId & filters
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
       eventApiProductId: eventApiProductId,
       stateId: stateId,
+      withAtLeastOnePlan: withAtLeastOnePlan,
+      withAtLeastOneAMessagingService: withAtLeastOneAMessagingService
     });
     // extract the latest version
     const latest_EventApiProductVersion: EventApiProductVersion | undefined = this.getLatestEpObjectVersionFromList({ epObjectVersionList: eventApiProductVersionList });
     return latest_EventApiProductVersion;
   }
 
-  public listLatestVersions = async({ applicationDomainIds, shared, brokerType, stateId, pageNumber = 1, pageSize = 20, sortFieldName, objectAttributesQuery }:{
+  public listLatestVersions = async({ 
+    applicationDomainIds, 
+    shared, 
+    brokerType, 
+    stateId, 
+    pageNumber = 1, 
+    pageSize = 20, 
+    sortFieldName, 
+    objectAttributesQuery,
+    withAtLeastOnePlan = false,
+    withAtLeastOneAMessagingService = false,
+  }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
@@ -62,6 +86,8 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     pageSize?: number;
     sortFieldName?: string;
     objectAttributesQuery?: IEpSdkAttributesQuery;
+    withAtLeastOnePlan?: boolean;
+    withAtLeastOneAMessagingService?: boolean;
   }): Promise<EpSdkEventApiProductAndVersionListResponse> => {
     const funcName = 'listLatestVersions';
     const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
@@ -84,10 +110,12 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       if(eventApiProduct.id === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiProduct.id === undefined', {
         eventApiProduct: eventApiProduct
       });
-      // get the latest version in the requested state
+      // get the latest version in the requested state & by filters
       const latest_EventApiProductVersion: EventApiProductVersion | undefined = await this.getLatestVersionForEventApiProductId({
         eventApiProductId: eventApiProduct.id,
-        stateId: stateId
+        stateId: stateId,
+        withAtLeastOnePlan: withAtLeastOnePlan,
+        withAtLeastOneAMessagingService: withAtLeastOneAMessagingService
       });      
       if(latest_EventApiProductVersion !== undefined) complete_EpSdkEventApiProductAndVersionList.push({
         eventApiProduct: eventApiProduct as EpSdkEventApiProduct,
@@ -111,23 +139,6 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       } 
     };
   }
-
-  // public getVersionByVersion = async ({ eventApiId, eventApiVersionString }: {
-  //   eventApiId: string;
-  //   eventApiVersionString: string;
-  // }): Promise<EventApiVersion | undefined> => {
-  //   const funcName = 'getVersionByVersion';
-  //   const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
-
-  //   const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiId({ eventApiId: eventApiId });
-  //   const found: EventApiVersion | undefined = eventApiVersionList.find( (eventApiVersion: EventApiVersion ) => {
-  //     if(eventApiVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersion.version === undefined', {
-  //       eventApiVersion: eventApiVersion
-  //     });
-  //     return eventApiVersion.version === eventApiVersionString;
-  //   });
-  //   return found;
-  // }
 
   public getVersionsForEventApiProductId = async ({ eventApiProductId, stateId, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false, pageSize = EpApiHelpers.MaxPageSize }: {
     eventApiProductId: string;

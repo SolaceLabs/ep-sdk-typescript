@@ -48,6 +48,33 @@ let EventApiProductId: string | undefined;
 const EventApiProductVersionString_1 = "1.0.0";
 const EventApiProductVersionString_2 = "1.1.0";
 
+const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
+let ApplicationDomainId: string | undefined;
+const CustomAttributeList: TEpSdkCustomAttributeList = [
+  {
+    name: "PUBLISH_DESTINATION",
+    value: "PublishDestination"
+  },
+  {
+    name: "_X_EP_DEVP_DOMAIN_OWNING_ID_",
+    value: "XEpDevPDomainOwningId"
+  },
+  {
+    name: "_X_EP_DEVP_DOMAIN_SHARING_LIST_",
+    value: "XEpDevPDomainSharingListAttributeValue"
+  },
+];
+const AdditionalCustomAttributeList: TEpSdkCustomAttributeList = [
+  {
+    name: "eventApiProduct_1",
+    value: "eventApiProduct_1 value"
+  },
+  {
+    name: "eventApiProduct_2",
+    value: "eventApiProduct_2 value"
+  }
+];
+
 const EventApiProductVersionPlan_1: Plan = {
   name: "plan-1",
   solaceClassOfServicePolicy: {
@@ -59,29 +86,6 @@ const EventApiProductVersionPlan_1: Plan = {
     type: 'solaceClassOfServicePolicy'
   }
 };
-
-const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
-let ApplicationDomainId: string | undefined;
-const CustomAttributeList: TEpSdkCustomAttributeList = [
-  {
-    name: "eventApiProduct_1",
-    value: "eventApiProduct_1 value"
-  },
-  {
-    name: "eventApiProduct_2",
-    value: "eventApiProduct_2 value"
-  }
-];
-const AdditionalCustomAttributeList: TEpSdkCustomAttributeList = [
-  {
-    name: "eventApiProduct_3",
-    value: "eventApiProduct_3 value"
-  },
-  {
-    name: "eventApiProduct_4",
-    value: "eventApiProduct_4 value"
-  }
-];
 
 describe(`${scriptName}`, () => {
 
@@ -110,17 +114,7 @@ describe(`${scriptName}`, () => {
   
     after(async() => {
       // delete all application domains
-      // TODO: wait for EP to allow deletion of app domains which still contain event api products
       for(const applicationDomainId of ApplicationDomainIdList) {
-        // delete all event api products first, restriction in EP at the moment
-        const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.getEventApiProducts({
-          applicationDomainId: applicationDomainId
-        });
-        for(const eventApiProduct of eventApiProductsResponse.data) {
-          await EventApiProductsService.deleteEventApiProduct({
-            id: eventApiProduct.id
-          });
-        }
         await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: applicationDomainId });
       }
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
@@ -385,6 +379,7 @@ describe(`${scriptName}`, () => {
             applicationDomainId: ApplicationDomainId,
             name: EventApiProductName,
             brokerType: EventApiProduct.brokerType.SOLACE,
+            shared: EventApiProductShared
           }
         });
         EventApiProductId = eventApiProductResponse.data.id;
