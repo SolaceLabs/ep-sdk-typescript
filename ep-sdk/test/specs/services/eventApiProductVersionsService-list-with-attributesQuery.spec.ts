@@ -16,7 +16,6 @@ import {
   SolaceClassOfServicePolicy,
   MessagingServicesService,
   MessagingServicesResponse,
-  SolaceMessagingService,
   MessagingService,
   EventApiProductVersionResponse,
 } from '@solace-labs/ep-openapi-node';
