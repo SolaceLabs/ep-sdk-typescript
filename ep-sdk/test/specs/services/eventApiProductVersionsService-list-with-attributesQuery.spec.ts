@@ -150,6 +150,16 @@ const PublishDestinationAttributesQuery: IEpSdkAttributesQuery = {
   ]
 };
 
+const NoResultPublishDestinationAttributesQuery: IEpSdkAttributesQuery = {
+  AND: [
+    {
+      attributeName: CorrectPublishDestinationAttribute.name,
+      comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
+      value: 'no-result-pub-dest',
+    },
+  ]
+};
+
 const CorrectOwningDomainIdAttributesQuery: IEpSdkAttributesQuery = {
   AND: [
     {
@@ -499,6 +509,27 @@ describe(`${scriptName}`, () => {
         // // DEBUG
         // expect(false, `epSdkEventApiProductAndVersionListResponse=${JSON.stringify(epSdkEventApiProductAndVersionListResponse, null, 2)}`).to.be.true;
         expect(epSdkEventApiProductAndVersionListResponse.data.length, 'wrong length').to.equal(NumEventApiProducts/2/2/2);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should list latest versions with empty list result`, async () => {
+      try {
+        const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
+          applicationDomainIds: [ApplicationDomainId],
+          shared: true,
+          brokerType: EpSdkBrokerTypes.Solace,
+          objectAttributesQuery: NoResultPublishDestinationAttributesQuery,
+          withAtLeastOnePlan: true,
+          withAtLeastOneAMessagingService: false,
+          pageSize: 100,
+        });
+        // // DEBUG
+        // expect(false, `epSdkEventApiProductAndVersionListResponse=${JSON.stringify(epSdkEventApiProductAndVersionListResponse, null, 2)}`).to.be.true;
+        expect(epSdkEventApiProductAndVersionListResponse.data.length, 'wrong length').to.equal(0);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
