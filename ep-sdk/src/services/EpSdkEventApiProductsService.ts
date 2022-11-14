@@ -8,9 +8,10 @@ import {
 } from '@solace-labs/ep-openapi-node';
 import { EEpSdkLoggerCodes, EpSdkApiContentError, EpSdkLogger } from '../utils';
 import { EpSdkService } from './EpSdkService';
-import { EEpSdkCustomAttributeEntityTypes, EpSdkBrokerTypes, TEpSdkCustomAttributeList } from '../types';
+import { EEpSdkCustomAttributeEntityTypes, EpSdkBrokerTypes, IEpSdkAttributesQuery, TEpSdkCustomAttributeList } from '../types';
 import EpSdkCustomAttributesService from './EpSdkCustomAttributesService';
 import EpSdkCustomAttributeDefinitionsService from './EpSdkCustomAttributeDefinitionsService';
+import EpSdkCustomAttributesQueryService from './EpSdkCustomAttributesQueryService';
 
 export class EpSdkEventApiProductsService extends EpSdkService {
 
@@ -98,11 +99,12 @@ export class EpSdkEventApiProductsService extends EpSdkService {
    * Retrieves a list of all EventApiProducts without paging.
    * @param param0 
    */
-  public listAll = async({ applicationDomainIds, shared, brokerType, sortFieldName }:{
+  public listAll = async({ applicationDomainIds, shared, brokerType, sortFieldName, attributesQuery }:{
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
     sortFieldName?: string;
+    attributesQuery?: IEpSdkAttributesQuery;
   }): Promise<EventApiProductsResponse> => {
     const funcName = 'listAll';
     const logName = `${EpSdkEventApiProductsService.name}.${funcName}()`;
@@ -121,7 +123,14 @@ export class EpSdkEventApiProductsService extends EpSdkService {
       });
       if(eventApiProductsResponse.data === undefined || eventApiProductsResponse.data.length === 0) nextPage = undefined;
       else {
-        eventApiProductList.push(...eventApiProductsResponse.data);
+        if(attributesQuery) {
+          for(const eventApiProduct of eventApiProductsResponse.data) {
+            if(EpSdkCustomAttributesQueryService.resolve({
+              customAttributes: eventApiProduct.customAttributes,
+              attributesQuery: attributesQuery,
+            })) eventApiProductList.push(eventApiProduct);  
+          }
+        } else eventApiProductList.push(...eventApiProductsResponse.data);  
         /* istanbul ignore next */
         if(eventApiProductsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiProductsResponse.meta === undefined', {
           eventApiProductsResponse: eventApiProductsResponse

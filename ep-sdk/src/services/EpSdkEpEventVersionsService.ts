@@ -323,6 +323,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
           topicString += `{${addressLevel.name}}`;
           break;
         default:
+          /* istanbul ignore next */
           EpSdkUtils.assertNever(logName, addressLevel.addressLevelType);
       }
     }

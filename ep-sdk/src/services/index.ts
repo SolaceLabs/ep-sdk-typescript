@@ -26,10 +26,13 @@ export {
   EpSdkEpEventAndVersionResponse,
 } from './EpSdkEpEventVersionsService';
 export {
-  default as EpSdkEventApisService
+  default as EpSdkEventApisService,
 } from './EpSdkEventApisService';
 export {
-  default as EpSdkEventApiVersionsService
+  default as EpSdkEventApiVersionsService,
+  EpSdkEventApi,
+  EpSdkEventApiVersion,
+  EpSdkEventApiAndVersion  
 } from './EpSdkEventApiVersionsService';
 export {
   default as EpSdkStatesService,
@@ -70,3 +73,6 @@ export {
 export {
   default as EpSdkCustomAttributesService
 } from './EpSdkCustomAttributesService';
+export {
+  default as EpSdkCustomAttributesQueryService
+} from './EpSdkCustomAttributesQueryService';

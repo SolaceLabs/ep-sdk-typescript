@@ -40,6 +40,7 @@ export class EpSdkSemVerUtils {
         versionSemVer.inc("patch");
         break;
       default:
+        /* istanbul ignore next */
         EpSdkUtils.assertNever(logName, strategy);
     }
     return versionSemVer.format();

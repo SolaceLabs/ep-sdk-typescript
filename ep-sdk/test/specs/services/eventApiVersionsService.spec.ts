@@ -23,6 +23,7 @@ import {
   EpSdkApplicationDomainsService,
   EpSdkStatesService,
   EpSdkEventApiVersionsService,
+  EpSdkEventApiAndVersion,
 } from '../../../src';
 
 
@@ -285,6 +286,71 @@ describe(`${scriptName}`, () => {
 
         const latestObjectVersionString: string = await EpSdkEventApiVersionsService.getLatestVersionString({ eventApiId: EventApiId });
         expect(latestObjectVersionString, TestLogger.createApiTestFailMessage('failed')).to.eq(VersionString);
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should create 2 event apis with 1 version each & get event and version list`, async () => {
+      let EventApiId_1: string | undefined;
+      let EventApiVersionId_1: string | undefined;
+      let EventApiId_2: string | undefined;
+      let EventApiVersionId_2: string | undefined;
+
+      try {
+        {
+          const eventApiResponse_1: EventApiResponse = await EventApIsService.createEventApi({
+            requestBody: {
+              applicationDomainId: ApplicationDomainId,
+              name: 'EventApi_1',
+              shared: false,
+              brokerType: EventApi.brokerType.SOLACE
+            }
+          });
+          EventApiId_1 = eventApiResponse_1.data.id;
+          const eventApiVersionResponse_1: EventApiVersionResponse = await EventApIsService.createEventApiVersion({
+            requestBody: {
+              eventApiId: EventApiId_1,
+              version: '1.0.0'
+            }
+          });
+          EventApiVersionId_1 = eventApiVersionResponse_1.data.id;
+        }
+        {
+          const eventApiResponse_2: EventApiResponse = await EventApIsService.createEventApi({
+            requestBody: {
+              applicationDomainId: ApplicationDomainId,
+              name: 'EventApi_2',
+              shared: false,
+              brokerType: EventApi.brokerType.SOLACE
+            }
+          });
+          EventApiId_2 = eventApiResponse_2.data.id;
+          const eventApiVersionResponse_2: EventApiVersionResponse = await EventApIsService.createEventApiVersion({
+            requestBody: {
+              eventApiId: EventApiId_2,
+              version: '1.0.0'
+            }
+          });
+          EventApiVersionId_2 = eventApiVersionResponse_2.data.id;
+        }
+
+        // get the list
+        const epSdkEventApiAndVersionList: Array<EpSdkEventApiAndVersion> = await EpSdkEventApiVersionsService.getObjectAndVersionListForEventApiVersionIds({
+          eventApiVersionIds: [ EventApiVersionId_1, EventApiVersionId_2]
+        });
+        // // DEBUG
+        // expect(false, `epSdkEventApiAndVersionList=${JSON.stringify(epSdkEventApiAndVersionList, null, 2)}`).to.be.true;
+
+        expect(epSdkEventApiAndVersionList.length, 'wrong length').to.equal(2);
+        expect(epSdkEventApiAndVersionList[0].eventApi.id, 'wrong event api id').to.equal(EventApiId_1);
+        expect(epSdkEventApiAndVersionList[0].eventApiVersion.id, 'wrong event api version id').to.equal(EventApiVersionId_1);
+
+        expect(epSdkEventApiAndVersionList[1].eventApi.id, 'wrong event api id').to.equal(EventApiId_2);
+        expect(epSdkEventApiAndVersionList[1].eventApiVersion.id, 'wrong event api version id').to.equal(EventApiVersionId_2);
 
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;

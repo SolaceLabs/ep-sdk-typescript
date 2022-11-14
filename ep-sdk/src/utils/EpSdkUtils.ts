@@ -21,6 +21,7 @@ export interface IEpSdkDeepCompareResult {
 
 export class EpSdkUtils {
 
+  /* istanbul ignore next */
   public static assertNever = (extLogName: string, x: never): never => {
     const funcName = 'assertNever';
     const logName = `${EpSdkUtils.name}.${funcName}()`;

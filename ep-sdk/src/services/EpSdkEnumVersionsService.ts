@@ -1,6 +1,7 @@
 import { EpSdkApiContentError } from "../utils/EpSdkErrors";
 import {
   EnumsService,
+  StateChangeRequestResponse,
   TopicAddressEnum,
   TopicAddressEnumVersion,
   TopicAddressEnumVersionResponse,
@@ -144,8 +145,7 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     return latestTopicAddressEnumVersion;
   }
 
-  public createEnumVersion = async({ applicationDomainId, enumId, topicAddressEnumVersion, targetLifecycleStateId }:{
-    applicationDomainId: string;
+  public createEnumVersion = async({ enumId, topicAddressEnumVersion, targetLifecycleStateId }:{
     enumId: string;
     topicAddressEnumVersion: TopicAddressEnumVersion;
     targetLifecycleStateId: string;
@@ -153,10 +153,11 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     const funcName = 'createEnumVersion';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    applicationDomainId;
-    const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersionForEnum({
-      enumId: enumId,
-      requestBody: topicAddressEnumVersion
+    const topicAddressEnumVersionResponse: TopicAddressEnumVersionResponse = await EnumsService.createEnumVersion({
+      requestBody: {        
+        ...topicAddressEnumVersion,
+        enumId: enumId,
+      }
     });
     /* istanbul ignore next */
     if(topicAddressEnumVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionResponse.data === undefined', {
@@ -176,14 +177,20 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
       createdTopicAddressEnumVersion: createdTopicAddressEnumVersion
     });
     if(createdTopicAddressEnumVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EnumsService.updateEnumVersionStateForEnum({
-        enumId: enumId,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await EnumsService.updateEnumVersionState({
         id: createdTopicAddressEnumVersion.id,
         requestBody: {
-          ...createdTopicAddressEnumVersion,
           stateId: targetLifecycleStateId
         }
       });
+      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EnumsService.updateEnumVersionStateForEnum({
+      //   enumId: enumId,
+      //   id: createdTopicAddressEnumVersion.id,
+      //   requestBody: {
+      //     ...createdTopicAddressEnumVersion,
+      //     stateId: targetLifecycleStateId
+      //   }
+      // });
       const updatedTopicAddressEnumVersion: TopicAddressEnumVersion | undefined = await this.getVersionByVersion({
         enumId: enumId,
         enumVersionString: createdTopicAddressEnumVersion.version

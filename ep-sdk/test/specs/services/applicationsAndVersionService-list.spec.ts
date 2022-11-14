@@ -113,13 +113,25 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get complete list of applications`, async () => {
+    it(`${scriptName}: should get complete list of applications for application domains`, async () => {
       try {
         const applicationsResponse: ApplicationsResponse = await EpSdkApplicationsService.listAll({
           applicationDomainIds: ApplicationDomainIdList,
         });
         expect(applicationsResponse.data.length, TestLogger.createApiTestFailMessage('applicationsResponse.data.length')).to.equal(NumApplicationDomains);
         expect(applicationsResponse.meta.pagination.count, TestLogger.createApiTestFailMessage('applicationsResponse.meta.pagination.count')).to.equal(NumApplicationDomains);
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get complete list of applications for all application domains`, async () => {
+      try {
+        const applicationsResponse: ApplicationsResponse = await EpSdkApplicationsService.listAll({
+        });
+        expect(applicationsResponse.data.length, TestLogger.createApiTestFailMessage('applicationsResponse.data.length')).to.be.greaterThanOrEqual(NumApplicationDomains);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;

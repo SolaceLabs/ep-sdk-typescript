@@ -1,9 +1,8 @@
 import { Validator, ValidatorResult } from 'jsonschema';
 import { EpSdkVersionService } from "./EpSdkVersionService";
-import { EpSdkApiContentError, EpSdkValidationError } from "../utils/EpSdkErrors";
+import { EpSdkApiContentError, EpSdkValidationError } from "../utils";
 import {
   $EventApiVersion, 
-  VersionedObjectStateChangeRequest,
   EventApIsService,
   EventApiVersionsResponse,
   EventApi,
@@ -11,16 +10,67 @@ import {
   EventApiVersion,
   EventVersion,
   StateChangeRequestResponse,
+  EventApiResponse,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
-import { EpApiHelpers, T_EpMeta } from "../internal-utils/EpApiHelpers";
+import { EpApiHelpers, T_EpMeta } from "../internal-utils";
 import EpSdkEpEventVersionsService from './EpSdkEpEventVersionsService';
-import { EpSdkEventApiTask, IEpSdkEventApiTask_ExecuteReturn } from '../tasks/EpSdkEventApiTask';
-import { EEpSdkTask_Action, EEpSdkTask_TargetState } from '../tasks/EpSdkTask';
-import { EpSdkEventApiVersionTask, IEpSdkEventApiVersionTask_ExecuteReturn } from '../tasks/EpSdkEventApiVersionTask';
-import { EEpSdk_VersionTaskStrategy } from '../tasks/EpSdkVersionTask';
+import { 
+  EpSdkEventApiTask, 
+  IEpSdkEventApiTask_ExecuteReturn,
+  EEpSdkTask_TargetState,
+  EpSdkEventApiVersionTask,
+  IEpSdkEventApiVersionTask_ExecuteReturn,
+  EEpSdk_VersionTaskStrategy
+} from '../tasks';
+import { EEpSdkObjectTypes } from '../types';
+
+export type EpSdkEventApi = Required<Pick<EventApi, "applicationDomainId" | "id" | "name">> & Omit<EventApi, "applicationDomainId" | "id" | "name">;
+export type EpSdkEventApiVersion = Required<Pick<EventApiVersion, "id" | "eventApiId" | "version" | "stateId">> & Omit<EventApiVersion, "id" | "eventApiId" | "version" | "stateId">;
+export type EpSdkEventApiAndVersion = {
+  eventApi: EpSdkEventApi;
+  eventApiVersion: EpSdkEventApiVersion;
+}
 
 export class EpSdkEventApiVersionsService extends EpSdkVersionService {
+
+  /**
+   * Retrieves Event API & Version object for a list of version ids.
+   */
+  public getObjectAndVersionListForEventApiVersionIds = async ({ eventApiVersionIds }: {
+    eventApiVersionIds?: Array<string>;
+  }): Promise<Array<EpSdkEventApiAndVersion>> => {
+    const funcName = 'getObjectAndVersionListForEventApiVersionIds';
+    const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
+
+    if(eventApiVersionIds === undefined) return [];
+
+    const epSdkEventApiAndVersionList: Array<EpSdkEventApiAndVersion> = [];
+
+    for(const eventApiVersionId of eventApiVersionIds) {
+      // get the version
+      const eventApiVersionResponse: EventApiVersionResponse = await EventApIsService.getEventApiVersion({
+        versionId: eventApiVersionId,
+        include: EEpSdkObjectTypes.EVENT_API
+      });
+      /* istanbul ignore next */      
+      if(eventApiVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiVersionResponse.data === undefined', {
+        eventApiVersionResponse: eventApiVersionResponse
+      });
+      // get the object
+      const eventApiResponse: EventApiResponse = await EventApIsService.getEventApi({ id: eventApiVersionResponse.data.eventApiId });
+      /* istanbul ignore next */
+      if(eventApiResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiResponse.data === undefined', {
+        eventApiResponse: eventApiResponse
+      });
+      const epSdkEventApiAndVersion: EpSdkEventApiAndVersion = {
+        eventApi: eventApiResponse.data as EpSdkEventApi,
+        eventApiVersion: eventApiVersionResponse.data as EpSdkEventApiVersion,
+      }
+      epSdkEventApiAndVersionList.push(epSdkEventApiAndVersion);
+    }
+    return epSdkEventApiAndVersionList;
+  }
 
   public validateDisplayName = ({ displayName }: {
     displayName: string;

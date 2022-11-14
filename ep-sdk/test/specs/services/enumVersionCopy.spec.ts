@@ -116,6 +116,8 @@ describe(`${scriptName}`, () => {
           });  
           const epSdkEnumTask_ExecuteReturn: IEpSdkEnumTask_ExecuteReturn = await epSdkEnumTask.execute();
           enumInfo.sourceEnumId = epSdkEnumTask_ExecuteReturn.epObject.id;
+          // // DEBUG
+          // expect(false, `enumInfo=${JSON.stringify(enumInfo, null, 2)}`).to.be.true;
           for(const versionInfo of enumInfo.versionInfoList) {
             const epSdkEnumVersionTask = new EpSdkEnumVersionTask({
               epSdkTask_TargetState: EEpSdkTask_TargetState.PRESENT,
