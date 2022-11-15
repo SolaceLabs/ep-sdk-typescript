@@ -52,15 +52,15 @@ const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
 const CustomAttributeList: TEpSdkCustomAttributeList = [
   {
-    name: `${TestSpecId}:PUB_DEST`,
+    name: `${TestSpecId}.PUB_DEST`,
     value: "PublishDestination"
   },
   {
-    name: `${TestSpecId}:DOMAIN_OWNING_ID`,
+    name: `${TestSpecId}.DOMAIN_OWNING_ID`,
     value: "XEpDevPDomainOwningId"
   },
   {
-    name: `${TestSpecId}:DOMAIN_SHARING_LIST`,
+    name: `${TestSpecId}.DOMAIN_SHARING_LIST`,
     value: "XEpDevPDomainSharingListAttributeValue"
   },
 ];

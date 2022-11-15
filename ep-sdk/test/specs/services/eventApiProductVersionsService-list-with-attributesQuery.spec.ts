@@ -63,9 +63,9 @@ const EventApiProductVersionPlan_1: Plan = {
 };
 
 const EEpDevPManageAssetObjectAttributeNames = {
-  PUBLISH_DESTINATION: `${TestSpecId}:PUB_DEST`,
-  _X_EP_DEVP_DOMAIN_OWNING_ID_: `${TestSpecId}:DOMAIN_OWNING_ID`,
-  _X_EP_DEVP_DOMAIN_SHARING_LIST_: `${TestSpecId}:DOMAIN_SHARING_LIST`,
+  PUBLISH_DESTINATION: `${TestSpecId}.PUB_DEST`,
+  _X_EP_DEVP_DOMAIN_OWNING_ID_: `${TestSpecId}.DOMAIN_OWNING_ID`,
+  _X_EP_DEVP_DOMAIN_SHARING_LIST_: `${TestSpecId}.DOMAIN_SHARING_LIST`,
 }
 const CorrectPublishDestination = "CorrectPublishDestination";
 const UnknownPublishDestination = "UnknownPublishDestination";
