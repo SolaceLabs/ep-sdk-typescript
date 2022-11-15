@@ -227,6 +227,7 @@ describe(`${scriptName}`, () => {
     });
 
     before(async() => {
+      TestContext.newItId();
       const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
         requestBody: {
           name: ApplicationDomainName,
@@ -237,9 +238,11 @@ describe(`${scriptName}`, () => {
   
     after(async() => {
       // delete application domain
+      TestContext.newItId();
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
       // remove all attribute definitions
       const allAttributes = AdditionalCustomAttributeList.concat([CorrectPublishDestinationAttribute, UnknownPublishDestinationAttribute]);
+      TestContext.newItId();
       const xvoid: void = await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
         customAttributeNames: allAttributes.map( (x) => {
           return x.name;
