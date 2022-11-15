@@ -62,10 +62,10 @@ const EventApiProductVersionPlan_1: Plan = {
   }
 };
 
-enum EEpDevPManageAssetObjectAttributeNames {
-  PUBLISH_DESTINATION = "PUBLISH_DESTINATION",
-  _X_EP_DEVP_DOMAIN_OWNING_ID_ = "_X_EP_DEVP_DOMAIN_OWNING_ID_",
-  _X_EP_DEVP_DOMAIN_SHARING_LIST_ = "_X_EP_DEVP_DOMAIN_SHARING_LIST_",
+const EEpDevPManageAssetObjectAttributeNames = {
+  PUBLISH_DESTINATION: `${scriptName}:PUBLISH_DESTINATION`,
+  _X_EP_DEVP_DOMAIN_OWNING_ID_: `${scriptName}:_X_EP_DEVP_DOMAIN_OWNING_ID_`,
+  _X_EP_DEVP_DOMAIN_SHARING_LIST_: `${scriptName}: _X_EP_DEVP_DOMAIN_SHARING_LIST_`,
 }
 const CorrectPublishDestination = "CorrectPublishDestination";
 const UnknownPublishDestination = "UnknownPublishDestination";
@@ -214,33 +214,6 @@ const CorrectSharingDomainIdAttributesQuery: IEpSdkAttributesQuery = {
           attributeName: EEpDevPManageAssetObjectAttributeNames._X_EP_DEVP_DOMAIN_SHARING_LIST_,
           comparisonOp: EEpSdkComparisonOps.CONTAINS,
           value: XEpDevPDomainSharing_1
-        },      
-      ]
-    }
-  }
-};
-
-// for documentation
-const ExampleQuery: IEpSdkAttributesQuery = {
-  AND: {
-    queryList: [
-      {
-        attributeName: 'PUBLISH_DESTINATION',
-        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-        value: 'DEV-PORTAL-SYSTEM-ID',
-      },
-    ],
-    OR: {
-      queryList: [
-        {
-          attributeName: 'OWNING_DOMAIN_ID',
-          comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-          value: 'DOMAIN-ID'
-        },
-        {
-          attributeName: 'DOMAIN_ID_SHARING',
-          comparisonOp: EEpSdkComparisonOps.CONTAINS,
-          value: 'SHARED-WITH-DOMAIN-ID'
         },      
       ]
     }
