@@ -98,7 +98,6 @@ describe(`${scriptName}`, () => {
       TestContext.newItId();
       const applicationDomainNameList = getApplicationDomainNameList();
       for(const applicationDomainName of applicationDomainNameList) {
-        TestContext.newItId();
         const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
           requestBody: {
             name: applicationDomainName,
@@ -106,7 +105,6 @@ describe(`${scriptName}`, () => {
         });
         ApplicationDomainIdList.push(applicationDomainResponse.data.id);
       }
-      TestContext.newItId();
       const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
         requestBody: {
           name: ApplicationDomainName,
@@ -116,15 +114,13 @@ describe(`${scriptName}`, () => {
   });
   
     after(async() => {
+      TestContext.newItId();
       // delete all application domains
       for(const applicationDomainId of ApplicationDomainIdList) {
-        TestContext.newItId();
         await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: applicationDomainId });
       }
-      TestContext.newItId();
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
       // remove all attribute definitions
-      TestContext.newItId();
       const customAttributeList = CustomAttributeList.concat(AdditionalCustomAttributeList);
       const xvoid: void = await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
         customAttributeNames: customAttributeList.map( (x) => {
