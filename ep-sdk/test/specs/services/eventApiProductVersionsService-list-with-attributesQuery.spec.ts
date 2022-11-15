@@ -241,7 +241,7 @@ describe(`${scriptName}`, () => {
       TestContext.newItId();
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
       // remove all attribute definitions
-      const allAttributes = AdditionalCustomAttributeList.concat([CorrectPublishDestinationAttribute, UnknownPublishDestinationAttribute]);
+      const allAttributes = AdditionalCustomAttributeList.concat([CorrectPublishDestinationAttribute, UnknownPublishDestinationAttribute], CorrectDomainCustomAttributeList, UnknownDomainCustomAttributeList);
       const xvoid: void = await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
         customAttributeNames: allAttributes.map( (x) => {
           return x.name;
