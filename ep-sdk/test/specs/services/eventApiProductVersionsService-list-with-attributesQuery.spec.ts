@@ -36,6 +36,7 @@ import {
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
 
+const TestSpecName = "eapV-list-with.spec";
 const TestSpecId: string = TestUtils.getUUID();
 const ApplicationDomainName = `${TestConfig.getAppId()}/${scriptName}/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
@@ -63,9 +64,9 @@ const EventApiProductVersionPlan_1: Plan = {
 };
 
 const EEpDevPManageAssetObjectAttributeNames = {
-  PUBLISH_DESTINATION: `${TestSpecId}.PUB_DEST`,
-  _X_EP_DEVP_DOMAIN_OWNING_ID_: `${TestSpecId}.DOMAIN_OWNING_ID`,
-  _X_EP_DEVP_DOMAIN_SHARING_LIST_: `${TestSpecId}.DOMAIN_SHARING_LIST`,
+  PUBLISH_DESTINATION: `${TestSpecName}.PUB_DEST`,
+  _X_EP_DEVP_DOMAIN_OWNING_ID_: `${TestSpecName}.DOMAIN_OWNING_ID`,
+  _X_EP_DEVP_DOMAIN_SHARING_LIST_: `${TestSpecName}.DOMAIN_SHARING_LIST`,
 }
 const CorrectPublishDestination = "CorrectPublishDestination";
 const UnknownPublishDestination = "UnknownPublishDestination";
@@ -241,7 +242,7 @@ describe(`${scriptName}`, () => {
       TestContext.newItId();
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
       // remove all attribute definitions
-      const allAttributes = AdditionalCustomAttributeList.concat([CorrectPublishDestinationAttribute, UnknownPublishDestinationAttribute]);
+      const allAttributes = AdditionalCustomAttributeList.concat([CorrectPublishDestinationAttribute, UnknownPublishDestinationAttribute], CorrectDomainCustomAttributeList, UnknownDomainCustomAttributeList);
       const xvoid: void = await EpSdkEventApiProductsService.removeAssociatedEntityTypeFromCustomAttributeDefinitions({
         customAttributeNames: allAttributes.map( (x) => {
           return x.name;
