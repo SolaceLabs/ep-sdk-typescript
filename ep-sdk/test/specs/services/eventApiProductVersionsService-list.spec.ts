@@ -31,6 +31,7 @@ import {
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
 
+const TestSpecName = "eapV-list.spec";
 const TestSpecId: string = TestUtils.getUUID();
 const NumApplicationDomains = 2;
 const getApplicationDomainNameList = (): Array<string> => {
@@ -52,15 +53,15 @@ const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
 const CustomAttributeList: TEpSdkCustomAttributeList = [
   {
-    name: `${TestSpecId}.PUB_DEST`,
+    name: `${TestSpecName}.PUB_DEST`,
     value: "PublishDestination"
   },
   {
-    name: `${TestSpecId}.DOMAIN_OWNING_ID`,
+    name: `${TestSpecName}.DOMAIN_OWNING_ID`,
     value: "XEpDevPDomainOwningId"
   },
   {
-    name: `${TestSpecId}.DOMAIN_SHARING_LIST`,
+    name: `${TestSpecName}.DOMAIN_SHARING_LIST`,
     value: "XEpDevPDomainSharingListAttributeValue"
   },
 ];
