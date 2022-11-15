@@ -52,15 +52,15 @@ const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
 const CustomAttributeList: TEpSdkCustomAttributeList = [
   {
-    name: "PUBLISH_DESTINATION",
+    name: `${TestSpecId}.PUB_DEST`,
     value: "PublishDestination"
   },
   {
-    name: "_X_EP_DEVP_DOMAIN_OWNING_ID_",
+    name: `${TestSpecId}.DOMAIN_OWNING_ID`,
     value: "XEpDevPDomainOwningId"
   },
   {
-    name: "_X_EP_DEVP_DOMAIN_SHARING_LIST_",
+    name: `${TestSpecId}.DOMAIN_SHARING_LIST`,
     value: "XEpDevPDomainSharingListAttributeValue"
   },
 ];
@@ -95,6 +95,7 @@ describe(`${scriptName}`, () => {
 
     before(async() => {
       // create all application domains
+      TestContext.newItId();
       const applicationDomainNameList = getApplicationDomainNameList();
       for(const applicationDomainName of applicationDomainNameList) {
         const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
@@ -113,6 +114,7 @@ describe(`${scriptName}`, () => {
   });
   
     after(async() => {
+      TestContext.newItId();
       // delete all application domains
       for(const applicationDomainId of ApplicationDomainIdList) {
         await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: applicationDomainId });

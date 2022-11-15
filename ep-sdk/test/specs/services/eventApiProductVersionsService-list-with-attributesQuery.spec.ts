@@ -62,10 +62,10 @@ const EventApiProductVersionPlan_1: Plan = {
   }
 };
 
-enum EEpDevPManageAssetObjectAttributeNames {
-  PUBLISH_DESTINATION = "PUBLISH_DESTINATION",
-  _X_EP_DEVP_DOMAIN_OWNING_ID_ = "_X_EP_DEVP_DOMAIN_OWNING_ID_",
-  _X_EP_DEVP_DOMAIN_SHARING_LIST_ = "_X_EP_DEVP_DOMAIN_SHARING_LIST_",
+const EEpDevPManageAssetObjectAttributeNames = {
+  PUBLISH_DESTINATION: `${TestSpecId}.PUB_DEST`,
+  _X_EP_DEVP_DOMAIN_OWNING_ID_: `${TestSpecId}.DOMAIN_OWNING_ID`,
+  _X_EP_DEVP_DOMAIN_SHARING_LIST_: `${TestSpecId}.DOMAIN_SHARING_LIST`,
 }
 const CorrectPublishDestination = "CorrectPublishDestination";
 const UnknownPublishDestination = "UnknownPublishDestination";
@@ -220,33 +220,6 @@ const CorrectSharingDomainIdAttributesQuery: IEpSdkAttributesQuery = {
   }
 };
 
-// for documentation
-const ExampleQuery: IEpSdkAttributesQuery = {
-  AND: {
-    queryList: [
-      {
-        attributeName: 'PUBLISH_DESTINATION',
-        comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-        value: 'DEV-PORTAL-SYSTEM-ID',
-      },
-    ],
-    OR: {
-      queryList: [
-        {
-          attributeName: 'OWNING_DOMAIN_ID',
-          comparisonOp: EEpSdkComparisonOps.IS_EQUAL,
-          value: 'DOMAIN-ID'
-        },
-        {
-          attributeName: 'DOMAIN_ID_SHARING',
-          comparisonOp: EEpSdkComparisonOps.CONTAINS,
-          value: 'SHARED-WITH-DOMAIN-ID'
-        },      
-      ]
-    }
-  }
-};
-
 describe(`${scriptName}`, () => {
 
     beforeEach(() => {
@@ -254,6 +227,7 @@ describe(`${scriptName}`, () => {
     });
 
     before(async() => {
+      TestContext.newItId();
       const applicationDomainResponse: ApplicationDomainResponse = await ApplicationDomainsService.createApplicationDomain({
         requestBody: {
           name: ApplicationDomainName,
@@ -264,6 +238,7 @@ describe(`${scriptName}`, () => {
   
     after(async() => {
       // delete application domain
+      TestContext.newItId();
       await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: ApplicationDomainId });
       // remove all attribute definitions
       const allAttributes = AdditionalCustomAttributeList.concat([CorrectPublishDestinationAttribute, UnknownPublishDestinationAttribute]);
