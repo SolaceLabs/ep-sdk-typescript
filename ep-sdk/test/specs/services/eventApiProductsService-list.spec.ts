@@ -32,7 +32,7 @@ const TestSpecId: string = TestUtils.getUUID();
 const ApplicationDomainName = `${TestConfig.getAppId()}/${scriptName}/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
 
-const NumEventApiProducts = 4; // divided by 2 = even number
+const NumEventApiProducts = 6; // divided by 3 = even number
 const getEventApiProductNameList = (): Array<string> => {
   const list: Array<string> = [];;
   for(let i=0; i < NumEventApiProducts; i++) {
@@ -107,8 +107,8 @@ describe(`${scriptName}`, () => {
             }
           });
           EventApiProductIdList.push(eventApiProductResponse.data.id);
-          // set the attribute on all even event api products
-          if(i % 2 === 0) {
+          // set the attribute on all third event api products
+          if(i % 3 === 0) {
             const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
               eventApiProductId: eventApiProductResponse.data.id,
               epSdkCustomAttributeList: [PublishDestinationsAttribute, AnotherAttribute]
@@ -119,11 +119,13 @@ describe(`${scriptName}`, () => {
               return customAttribute.customAttributeDefinitionName === PublishDestinationsAttribute.name;
             });
             expect(found, `eventApiProduct=${JSON.stringify(eventApiProduct, null, 2)}`).to.not.be.undefined;
-          } else {
+          } else if(i % 3 === 1) {
             const eventApiProduct: EventApiProduct = await EpSdkEventApiProductsService.setCustomAttributes({
               eventApiProductId: eventApiProductResponse.data.id,
               epSdkCustomAttributeList: [AnotherAttribute]
             });
+          } else {
+            // no attributes
           }
           i++;
         }
@@ -144,7 +146,7 @@ describe(`${scriptName}`, () => {
         // // DEBUG
         // expect(false, `eventApiProductsResponse.data=${JSON.stringify(eventApiProductsResponse.data, null, 2)}`).to.be.true;
         expect(eventApiProductsResponse.data).to.not.be.undefined;
-        expect(eventApiProductsResponse.data.length, 'wrong length').to.equal(NumEventApiProducts/2);
+        expect(eventApiProductsResponse.data.length, `wrong length, eventApiProductsResponse.data=${JSON.stringify(eventApiProductsResponse.data, null, 2)}`).to.equal(NumEventApiProducts/3 * 2);
         for(const eventApiProduct of eventApiProductsResponse.data) {
           expect(eventApiProduct.customAttributes).to.not.be.undefined;
           const found: CustomAttribute | undefined = eventApiProduct.customAttributes.find( (customAttribute: CustomAttribute) => {

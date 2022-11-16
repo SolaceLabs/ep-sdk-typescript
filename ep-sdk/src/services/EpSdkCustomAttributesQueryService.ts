@@ -40,15 +40,15 @@ export class EpSdkCustomAttributesQueryService {
     const funcName = 'resolve';
     const logName = `${EpSdkCustomAttributesQueryService.name}.${funcName}()`;
 
-    if(customAttributes === undefined || customAttributes.length === 0) return false;
+    const _customAttributes: Array<CustomAttribute> = customAttributes ? customAttributes : [];
 
     const andQuery: IEpSdkAndAttributeQuery = attributesQuery.AND;
     for(const queryItem of andQuery.queryList) {
-      console.log(`\n\n${logName}: queryItem = ${JSON.stringify(queryItem, null, 2)}\n\n`);
-      const customAttribute: CustomAttribute | undefined = customAttributes.find( (customAttribute: CustomAttribute) => {
+      // console.log(`\n\n${logName}: queryItem = ${JSON.stringify(queryItem, null, 2)}\n\n`);
+      const customAttribute: CustomAttribute | undefined = _customAttributes.find( (customAttribute: CustomAttribute) => {
         return customAttribute.customAttributeDefinitionName === queryItem.attributeName;
       });
-      console.log(`\n\n${logName}: customAttribute = ${JSON.stringify(customAttribute, null, 2)}\n\n`);
+      // console.log(`\n\n${logName}: customAttribute = ${JSON.stringify(customAttribute, null, 2)}\n\n`);
       if(customAttribute === undefined) {
         if(queryItem.comparisonOp !== EEpSdkComparisonOps.IS_EMPTY) return false;
       } else {
@@ -63,9 +63,10 @@ export class EpSdkCustomAttributesQueryService {
     // all ANDs have passed, check if at least one OR passes
     if(andQuery.OR) {
       for(const queryItem of andQuery.OR.queryList) {
-        const customAttribute: CustomAttribute | undefined = customAttributes.find( (customAttribute: CustomAttribute) => {
+        const customAttribute: CustomAttribute | undefined = _customAttributes.find( (customAttribute: CustomAttribute) => {
           return customAttribute.customAttributeDefinitionName === queryItem.attributeName;
         });
+        if(customAttribute === undefined && queryItem.comparisonOp === EEpSdkComparisonOps.IS_EMPTY) return true;
         if(customAttribute !== undefined && customAttribute.value !== undefined) {
           if(this.compare({
             sourceValue: customAttribute.value,
