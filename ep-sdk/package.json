@@ -51,6 +51,7 @@
     "tag": "latest"
   },
   "devDependencies": {
+    "@asyncapi/parser": "^1.17.1",
     "@types/chai": "^4.3.1",
     "@types/lodash": "^4.14.182",
     "@types/mocha": "^9.1.1",
