@@ -28,7 +28,8 @@
     ]
   },
   "include": [
-    "./**/*.spec.ts"
+    "./**/*.spec.ts",
+    "./**/*.manual-spec.ts"
   ],
   "exclude": ["node_modules"]
 }

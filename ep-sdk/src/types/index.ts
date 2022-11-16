@@ -54,7 +54,8 @@ export type TEpSdkCustomAttributeList = Array<TEpSdkCustomAttribute>;
 // poor mans query interface
 export enum EEpSdkComparisonOps {
   IS_EQUAL = "IS_EQUAL",
-  CONTAINS = "CONTAINS"
+  CONTAINS = "CONTAINS",
+  IS_EMPTY = "IS_EMPTY"
 }
 export interface IEpSdkAttributeQuery {
   attributeName: string;
