@@ -2,6 +2,13 @@
 
 Solace Event Portal SDK.
 
+## Version 0.23.0-alpha
+
+**Enhancements:**
+- **EpSdkCustomAttributesQueryService**
+  - added operator: `IS_EMPTY`
+  - tests if attribute is empty or set
+
 ## Version 0.22.0-alpha
 
 **New Features:**
