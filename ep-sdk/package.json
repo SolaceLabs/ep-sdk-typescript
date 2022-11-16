@@ -1,6 +1,6 @@
 {
   "name": "@solace-labs/ep-sdk",
-  "version": "0.22.0-alpha",
+  "version": "0.23.0-alpha",
   "description": "Solace Event Portal SDK",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -51,6 +51,7 @@
     "tag": "latest"
   },
   "devDependencies": {
+    "@asyncapi/parser": "^1.17.1",
     "@types/chai": "^4.3.1",
     "@types/lodash": "^4.14.182",
     "@types/mocha": "^9.1.1",

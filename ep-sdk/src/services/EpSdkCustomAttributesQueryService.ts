@@ -23,6 +23,8 @@ export class EpSdkCustomAttributesQueryService {
         return sourceValue === compareValue;
       case EEpSdkComparisonOps.CONTAINS:
         return sourceValue.includes(compareValue);
+      case EEpSdkComparisonOps.IS_EMPTY:
+        return sourceValue === '';
       default:
         /* istanbul ignore next */
         EpSdkUtils.assertNever(logName, comparisonOp);
@@ -38,31 +40,33 @@ export class EpSdkCustomAttributesQueryService {
     const funcName = 'resolve';
     const logName = `${EpSdkCustomAttributesQueryService.name}.${funcName}()`;
 
-    if(customAttributes === undefined || customAttributes.length === 0) return false;
+    const _customAttributes: Array<CustomAttribute> = customAttributes ? customAttributes : [];
 
     const andQuery: IEpSdkAndAttributeQuery = attributesQuery.AND;
     for(const queryItem of andQuery.queryList) {
-      const customAttribute: CustomAttribute | undefined = customAttributes.find( (customAttribute: CustomAttribute) => {
+      // console.log(`\n\n${logName}: queryItem = ${JSON.stringify(queryItem, null, 2)}\n\n`);
+      const customAttribute: CustomAttribute | undefined = _customAttributes.find( (customAttribute: CustomAttribute) => {
         return customAttribute.customAttributeDefinitionName === queryItem.attributeName;
       });
       // console.log(`\n\n${logName}: customAttribute = ${JSON.stringify(customAttribute, null, 2)}\n\n`);
-      if(customAttribute === undefined) return false;
-
-      if(customAttribute.value) {
+      if(customAttribute === undefined) {
+        if(queryItem.comparisonOp !== EEpSdkComparisonOps.IS_EMPTY) return false;
+      } else {
+        if(customAttribute.value === undefined) return false;
         if(!this.compare({
           sourceValue: customAttribute.value,
           compareValue: queryItem.value,
           comparisonOp: queryItem.comparisonOp
-        })) return false;
-
+        })) return false;    
       }
     }
     // all ANDs have passed, check if at least one OR passes
     if(andQuery.OR) {
       for(const queryItem of andQuery.OR.queryList) {
-        const customAttribute: CustomAttribute | undefined = customAttributes.find( (customAttribute: CustomAttribute) => {
+        const customAttribute: CustomAttribute | undefined = _customAttributes.find( (customAttribute: CustomAttribute) => {
           return customAttribute.customAttributeDefinitionName === queryItem.attributeName;
         });
+        if(customAttribute === undefined && queryItem.comparisonOp === EEpSdkComparisonOps.IS_EMPTY) return true;
         if(customAttribute !== undefined && customAttribute.value !== undefined) {
           if(this.compare({
             sourceValue: customAttribute.value,
