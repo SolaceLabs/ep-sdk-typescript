@@ -1,12 +1,12 @@
 import { EpSdkApiContentError } from "../utils/EpSdkErrors";
 import {
   EnumsService,
+  Pagination,
   StateChangeRequestResponse,
   TopicAddressEnum,
   TopicAddressEnumVersion,
   TopicAddressEnumVersionResponse,
   TopicAddressEnumVersionsResponse,
-  VersionedObjectStateChangeRequest
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEnumsService from "./EpSdkEnumsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
@@ -25,16 +25,22 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
-    const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+    const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = await this.getVersionsForEnumId({
       enumId: enumId,
-      versions: [enumVersionString]
     });
-    if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return undefined;
-    /* istanbul ignore next */
-    if (topicAddressEnumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionsResponse.data.length > 1', {
-      topicAddressEnumVersionsResponse: topicAddressEnumVersionsResponse
+    return topicAddressEnumVersionList.find( (topicAddressEnumVersion: TopicAddressEnumVersion) => {
+      return topicAddressEnumVersion.version === enumVersionString;
     });
-    return topicAddressEnumVersionsResponse.data[0];
+    // const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+    //   enumId: enumId,
+    //   versions: [enumVersionString]
+    // });
+    // if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return undefined;
+    // /* istanbul ignore next */
+    // if (topicAddressEnumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionsResponse.data.length > 1', {
+    //   topicAddressEnumVersionsResponse: topicAddressEnumVersionsResponse
+    // });
+    // return topicAddressEnumVersionsResponse.data[0];
   }
 
   public getVersionsForEnumId = async ({ enumId, pageSize = EpApiHelpers.MaxPageSize }: {
@@ -45,23 +51,40 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkEnumVersionsService.name}.${funcName}()`;
 
     const topicAddressEnumVersionList: Array<TopicAddressEnumVersion> = [];
-    let nextPage: number | null = 1;
+    let nextPage: number | undefined | null = 1;
 
-    while(nextPage !== null) {
+    while(nextPage !== undefined && nextPage !== null) {
 
-      const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
-        enumId: enumId,
-        pageSize: pageSize,
-        pageNumber: nextPage
+      const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersions({
+        enumIds: [enumId],
+        pageNumber: nextPage,
+        pageSize: pageSize
       });
-      
-      if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return [];
+      if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) nextPage = null;
+      else {
+        topicAddressEnumVersionList.push(...topicAddressEnumVersionsResponse.data);
+      }
+      /* istanbul ignore next */
+      if(topicAddressEnumVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'topicAddressEnumVersionsResponse.meta === undefined', {
+        topicAddressEnumVersionsResponse: topicAddressEnumVersionsResponse
+      });
+      /* istanbul ignore next */
+      if(topicAddressEnumVersionsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'topicAddressEnumVersionsResponse.meta.pagination === undefined', {
+        topicAddressEnumVersionsResponse: topicAddressEnumVersionsResponse
+      });
+      const pagination: Pagination = topicAddressEnumVersionsResponse.meta.pagination;
+      nextPage = pagination.nextPage;  
 
-      topicAddressEnumVersionList.push(...topicAddressEnumVersionsResponse.data);
-
-      const meta: T_EpMeta = topicAddressEnumVersionsResponse.meta as T_EpMeta;
-      EpApiHelpers.validateMeta(meta);
-      nextPage = meta.pagination.nextPage;
+      // const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
+      //   enumId: enumId,
+      //   pageSize: pageSize,
+      //   pageNumber: nextPage
+      // });      
+      // if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return [];
+      // topicAddressEnumVersionList.push(...topicAddressEnumVersionsResponse.data);
+      // const meta: T_EpMeta = topicAddressEnumVersionsResponse.meta as T_EpMeta;
+      // EpApiHelpers.validateMeta(meta);
+      // nextPage = meta.pagination.nextPage;
 
     }
     // // DEBUG
