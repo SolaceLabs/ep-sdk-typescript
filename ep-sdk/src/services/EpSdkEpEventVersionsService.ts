@@ -12,7 +12,8 @@ import {
   TopicAddressEnumVersion,
   EventsResponse,
   Pagination,
-  EventResponse
+  EventResponse,
+  StateChangeRequestResponse
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEpEventsService from "./EpSdkEpEventsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
@@ -132,18 +133,11 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     let nextPage: number | undefined | null = 1;
 
     while(nextPage !== undefined && nextPage !== null) {
-
-      // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
-      const params: any = {
+      const eventVersionsResponse: EventVersionsResponse = await EventsService.getEventVersions({
+        eventIds: [eventId],
+        pageNumber: nextPage,
         pageSize: pageSize,
-        pageNumber: nextPage
-      };
-      
-      const eventVersionsResponse: EventVersionsResponse = await EventsService.getEventVersionsForEvent({
-        eventId: eventId,
-        ...params,
-      });
-      
+      });      
       if(eventVersionsResponse.data === undefined || eventVersionsResponse.data.length === 0) nextPage = null;
       else {
         // filter for stateId
@@ -261,9 +255,11 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkEpEventVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
-      eventId: eventId,
-      requestBody: eventVersion
+    const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersion({
+      requestBody: {
+        ...eventVersion,
+        eventId: eventId
+      }
     });
     /* istanbul ignore next */
     if(eventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventVersionResponse.data === undefined', {
@@ -283,8 +279,7 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
       eventVersionResponse: eventVersionResponse
     });
     if(createdEventVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventsService.updateEventVersionStateForEvent({
-        eventId: eventId,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await EventsService.updateEventVersionState({
         id: createdEventVersion.id,
         requestBody: {
           ...createdEventVersion,

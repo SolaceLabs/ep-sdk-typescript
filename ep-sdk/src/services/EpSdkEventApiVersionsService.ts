@@ -11,6 +11,7 @@ import {
   EventVersion,
   StateChangeRequestResponse,
   EventApiResponse,
+  Pagination,
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEventApisService from './EpSdkEventApisService';
 import { EpApiHelpers, T_EpMeta } from "../internal-utils";
@@ -95,14 +96,13 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
 
     const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiId({ eventApiId: eventApiId });
-    const found: EventApiVersion | undefined = eventApiVersionList.find( (eventApiVersion: EventApiVersion ) => {
+    return eventApiVersionList.find( (eventApiVersion: EventApiVersion ) => {
       /* istanbul ignore next */
       if(eventApiVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersion.version === undefined', {
         eventApiVersion: eventApiVersion
       });
       return eventApiVersion.version === eventApiVersionString;
     });
-    return found;
   }
 
   public getVersionsForEventApiId = async ({ eventApiId, pageSize = EpApiHelpers.MaxPageSize }: {
@@ -112,31 +112,31 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionsForEventApiId';
     const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
 
-    const versionList: Array<EventApiVersion> = [];
-    let nextPage: number | null = 1;
+    const eventApiVersionList: Array<EventApiVersion> = [];
+    let nextPage: number | undefined | null = 1;
 
-    while(nextPage !== null) {
-
-      // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
-      const params: any = {
-        pageSize: pageSize,
-        pageNumber: nextPage
-      };
-      const versionsResponse: EventApiVersionsResponse = await EventApIsService.getEventApiVersionsForEventApi({
-        eventApiId: eventApiId,
-        ...params
+    while(nextPage !== undefined && nextPage !== null) {
+      const eventApiVersionsResponse: EventApiVersionsResponse = await EventApIsService.getEventApiVersions({
+        eventApiIds: [eventApiId],
+        pageNumber: nextPage,
+        pageSize: pageSize
       });
-  
-      if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
-
-      versionList.push(...versionsResponse.data);
-
-      const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
-      EpApiHelpers.validateMeta(meta);
-      nextPage = meta.pagination.nextPage;
-
+      if(eventApiVersionsResponse.data === undefined || eventApiVersionsResponse.data.length === 0) nextPage = null;
+      else {
+        eventApiVersionList.push(...eventApiVersionsResponse.data);
+      }
+      /* istanbul ignore next */
+      if(eventApiVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiVersionsResponse.meta === undefined', {
+        eventApiVersionsResponse: eventApiVersionsResponse
+      });
+      /* istanbul ignore next */
+      if(eventApiVersionsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiVersionsResponse.meta.pagination === undefined', {
+        eventApiVersionsResponse: eventApiVersionsResponse
+      });
+      const pagination: Pagination = eventApiVersionsResponse.meta.pagination;
+      nextPage = pagination.nextPage;  
     }
-    return versionList;
+    return eventApiVersionList;
   }
 
   public getVersionsForEventApiName = async ({ eventApiName, applicationDomainId }: {
@@ -227,9 +227,11 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
     if(eventApiVersion.displayName) this.validateDisplayName({ displayName: eventApiVersion.displayName });
 
-    const eventApiVersionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersionForEventApi({
-      eventApiId: eventApiId,
-      requestBody: eventApiVersion
+    const eventApiVersionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersion({
+      requestBody: {
+        ...eventApiVersion,
+        eventApiId: eventApiId
+      }
     });
     /* istanbul ignore next */
     if(eventApiVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data === undefined', {
@@ -256,13 +258,6 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
           stateId: targetLifecycleStateId
         }
       });
-      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventApIsService.updateEventApiVersionStateForEventApi({
-      //   eventApiId: eventApiId,
-      //   id: createdEvenApiVersion.id,
-      //   requestBody: {
-      //     stateId: targetLifecycleStateId
-      //   }
-      // });
       const updatedEventApiVersion: EventApiVersion | undefined = await this.getVersionByVersion({
         eventApiId: eventApiId,
         eventApiVersionString: createdEvenApiVersion.version

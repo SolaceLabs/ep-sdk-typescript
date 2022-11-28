@@ -7,7 +7,8 @@ import {
   VersionedObjectStateChangeRequest,
   ApplicationResponse,
   Pagination,
-  ApplicationsResponse
+  ApplicationsResponse,
+  StateChangeRequestResponse
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkApiContentError } from "../utils";
 import { EpApiHelpers } from "../internal-utils";
@@ -98,16 +99,12 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionByVersion';
     const logName = `${EpSdkApplicationVersionsService.name}.${funcName}()`;
 
-    const applicationVersionsResponse: ApplicationVersionsResponse = await ApplicationsService.getApplicationVersionsForApplication({
-      applicationId: applicationId,
-      version: applicationVersionString,
+    const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({
+      applicationId: applicationId
     });
-    if (applicationVersionsResponse.data === undefined || applicationVersionsResponse.data.length === 0) return undefined;
-    /* istanbul ignore next */
-    if (applicationVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionsResponse.data.length > 1', {
-      applicationVersionsResponse: applicationVersionsResponse
+    return applicationVersionList.find( (applicationVersion: ApplicationVersion) => {
+      return applicationVersion.version === applicationVersionString;
     });
-    return applicationVersionsResponse.data[0];
   }
 
   public getVersionsForApplicationId = async ({ applicationId, stateId, pageSize = EpApiHelpers.MaxPageSize }: {
@@ -123,17 +120,12 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
 
     while(nextPage !== undefined && nextPage !== null) {
 
-      // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
-      const params: any = {
+      const applicationVersionsResponse: ApplicationVersionsResponse = await ApplicationsService.getApplicationVersions({
+        applicationIds: [applicationId],
+        pageNumber: nextPage,
         pageSize: pageSize,
-        pageNumber: nextPage
-      };
-      
-      const applicationVersionsResponse: ApplicationVersionsResponse = await ApplicationsService.getApplicationVersionsForApplication({
-        applicationId: applicationId,
-        ...params
       });
-      
+
       if(applicationVersionsResponse.data === undefined || applicationVersionsResponse.data.length === 0) nextPage = null;
       else {
         // filter for stateId
@@ -254,9 +246,11 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkApplicationVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.createApplicationVersionForApplication({
-      applicationId: applicationId,
-      requestBody: applicationVersion,
+    const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.createApplicationVersion({
+      requestBody: {
+        ...applicationVersion,
+        applicationId: applicationId,
+      }
     });
     /* istanbul ignore next */
     if(applicationVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data === undefined', {
@@ -276,12 +270,11 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
       applicationVersionResponse: applicationVersionResponse
     });
     if(createdApplicationVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await ApplicationsService.updateApplicationVersionStateForApplication({
-        applicationId: applicationId,
-        id: createdApplicationVersion.id,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await ApplicationsService.updateApplicationVersionState({
+        versionId: createdApplicationVersion.id,
         requestBody: {
           ...applicationVersion,
-          stateId: targetLifecycleStateId
+          stateId: targetLifecycleStateId          
         }
       });
       const updatedApplicationVersion: ApplicationVersion | undefined = await this.getVersionByVersion({

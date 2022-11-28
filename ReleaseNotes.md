@@ -2,6 +2,12 @@
 
 Solace Event Portal SDK.
 
+## Version 0.24.0-alpha
+
+**Maintenance:**
+- upgrade to EP API 2.0.5
+- replaced deprecated api calls
+
 ## Version 0.23.0-alpha
 
 **Enhancements:**

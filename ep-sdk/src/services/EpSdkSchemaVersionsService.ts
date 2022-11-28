@@ -1,10 +1,12 @@
 import { EpSdkApiContentError, EpSdkServiceError } from "../utils/EpSdkErrors";
 import {
+  Pagination,
   SchemaObject,
   SchemasService,
   SchemaVersion,
   SchemaVersionResponse,
   SchemaVersionsResponse,
+  StateChangeRequestResponse,
   VersionedObjectStateChangeRequest
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemasService from "./EpSdkSchemasService";
@@ -25,14 +27,13 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
     const schemaVersionList: Array<SchemaVersion> = await this.getVersionsForSchemaId({ schemaId: schemaId });
-    const found: SchemaVersion | undefined = schemaVersionList.find( (schemaVersion: SchemaVersion ) => {
+    return schemaVersionList.find( (schemaVersion: SchemaVersion ) => {
       /* istanbul ignore next */
       if(schemaVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersion.version === undefined', {
         schemaVersion: schemaVersion
       });
       return schemaVersion.version === schemaVersionString;
     });
-    return found;
   }
 
   public getVersionsForSchemaId = async ({ schemaId, pageSize = EpApiHelpers.MaxPageSize }: {
@@ -42,27 +43,32 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     const funcName = 'getVersionsForSchemaId';
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
-    const versionList: Array<SchemaVersion> = [];
-    let nextPage: number | null = 1;
+    const schemaVersionList: Array<SchemaVersion> = [];
+    let nextPage: number | undefined | null = 1;
 
-    while(nextPage !== null) {
-
-      const versionsResponse: SchemaVersionsResponse = await SchemasService.getSchemaVersionsForSchema({
-        schemaId: schemaId,
-        pageSize: pageSize,
-        pageNumber: nextPage
+    while(nextPage !== undefined && nextPage !== null) {
+      const schemaVersionsResponse: SchemaVersionsResponse = await SchemasService.getSchemaVersions({
+        schemaIds: [schemaId],
+        pageNumber: nextPage,
+        pageSize: pageSize
       });
-  
-      if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
-
-      versionList.push(...versionsResponse.data);
-
-      const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
-      EpApiHelpers.validateMeta(meta);
-      nextPage = meta.pagination.nextPage;
+      if(schemaVersionsResponse.data === undefined || schemaVersionsResponse.data.length === 0) nextPage = null;
+      else {
+        schemaVersionList.push(...schemaVersionsResponse.data);
+      }
+      /* istanbul ignore next */
+      if(schemaVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'schemaVersionsResponse.meta === undefined', {
+        schemaVersionsResponse: schemaVersionsResponse
+      });
+      /* istanbul ignore next */
+      if(schemaVersionsResponse.meta.pagination === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'schemaVersionsResponse.meta.pagination === undefined', {
+        schemaVersionsResponse: schemaVersionsResponse
+      });
+      const pagination: Pagination = schemaVersionsResponse.meta.pagination;
+      nextPage = pagination.nextPage;  
 
     }
-    return versionList;
+    return schemaVersionList;
   }
 
   public getVersionsForSchemaName = async ({ schemaName, applicationDomainId }: {
@@ -149,9 +155,11 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
-      schemaId: schemaId,
-      requestBody: schemaVersion
+    const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersion({
+      requestBody: {
+        ...schemaVersion,
+        schemaId: schemaId
+      }
     });
     /* istanbul ignore next */
     if(schemaVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data === undefined', {
@@ -171,8 +179,7 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
       schemaVersionResponse: schemaVersionResponse
     });
     if(createdSchemaVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await SchemasService.updateSchemaVersionStateForSchema({
-        schemaId: schemaId,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await SchemasService.updateSchemaVersionState({
         id: createdSchemaVersion.id,
         requestBody: {
           stateId: targetLifecycleStateId
