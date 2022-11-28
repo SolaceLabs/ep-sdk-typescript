@@ -154,17 +154,24 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     let nextPage: number | undefined | null = 1;
     while(nextPage !== undefined && nextPage !== null) {
 
-      // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
-      const params: any = {
+      const eventApiProductVersionsResponse: EventApiProductVersionsResponse = await EventApiProductsService.getEventApiProductVersions({
+        eventApiProductIds: [eventApiProductId],
+        pageNumber: nextPage,
         pageSize: pageSize,
-        pageNumber: nextPage
-      };
-      
-      const eventApiProductVersionsResponse: EventApiProductVersionsResponse = await EventApiProductsService.getEventApiProductVersionsForEventApiProduct({
-        eventApiProductId: eventApiProductId,
-        stateId: stateId,
-        ...params
+        stateId: stateId
       });
+
+      // // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
+      // const params: any = {
+      //   pageSize: pageSize,
+      //   pageNumber: nextPage
+      // };
+      
+      // const eventApiProductVersionsResponse: EventApiProductVersionsResponse = await EventApiProductsService.getEventApiProductVersionsForEventApiProduct({
+      //   eventApiProductId: eventApiProductId,
+      //   stateId: stateId,
+      //   ...params
+      // });
 
       if(eventApiProductVersionsResponse.data === undefined || eventApiProductVersionsResponse.data.length === 0) nextPage = null;
       else {

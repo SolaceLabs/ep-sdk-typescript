@@ -96,14 +96,13 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkEventApiVersionsService.name}.${funcName}()`;
 
     const eventApiVersionList: Array<EventApiVersion> = await this.getVersionsForEventApiId({ eventApiId: eventApiId });
-    const found: EventApiVersion | undefined = eventApiVersionList.find( (eventApiVersion: EventApiVersion ) => {
+    return eventApiVersionList.find( (eventApiVersion: EventApiVersion ) => {
       /* istanbul ignore next */
       if(eventApiVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersion.version === undefined', {
         eventApiVersion: eventApiVersion
       });
       return eventApiVersion.version === eventApiVersionString;
     });
-    return found;
   }
 
   public getVersionsForEventApiId = async ({ eventApiId, pageSize = EpApiHelpers.MaxPageSize }: {
