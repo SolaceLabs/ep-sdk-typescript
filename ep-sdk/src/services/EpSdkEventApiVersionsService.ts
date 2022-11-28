@@ -125,25 +125,6 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
       else {
         eventApiVersionList.push(...eventApiVersionsResponse.data);
       }
-
-      // // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
-      // const params: any = {
-      //   pageSize: pageSize,
-      //   pageNumber: nextPage
-      // };
-      // const versionsResponse: EventApiVersionsResponse = await EventApIsService.getEventApiVersionsForEventApi({
-      //   eventApiId: eventApiId,
-      //   ...params
-      // });
-  
-      // if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
-
-      // versionList.push(...versionsResponse.data);
-
-      // const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
-      // EpApiHelpers.validateMeta(meta);
-      // nextPage = meta.pagination.nextPage;
-
       /* istanbul ignore next */
       if(eventApiVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'eventApiVersionsResponse.meta === undefined', {
         eventApiVersionsResponse: eventApiVersionsResponse

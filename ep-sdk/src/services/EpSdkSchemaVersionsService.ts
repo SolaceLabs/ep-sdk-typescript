@@ -55,20 +55,6 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
       else {
         schemaVersionList.push(...schemaVersionsResponse.data);
       }
-      // const versionsResponse: SchemaVersionsResponse = await SchemasService.getSchemaVersionsForSchema({
-      //   schemaId: schemaId,
-      //   pageSize: pageSize,
-      //   pageNumber: nextPage
-      // });
-  
-      // if (versionsResponse.data === undefined || versionsResponse.data.length === 0) return [];
-
-      // versionList.push(...versionsResponse.data);
-
-      // const meta: T_EpMeta = versionsResponse.meta as T_EpMeta;
-      // EpApiHelpers.validateMeta(meta);
-      // nextPage = meta.pagination.nextPage;
-
       /* istanbul ignore next */
       if(schemaVersionsResponse.meta === undefined) throw new EpSdkApiContentError(logName, this.constructor.name,'schemaVersionsResponse.meta === undefined', {
         schemaVersionsResponse: schemaVersionsResponse

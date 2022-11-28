@@ -245,10 +245,16 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkApplicationVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.createApplicationVersionForApplication({
-      applicationId: applicationId,
-      requestBody: applicationVersion,
+    const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.createApplicationVersion({
+      requestBody: {
+        ...applicationVersion,
+        applicationId: applicationId,
+      }
     });
+    // const applicationVersionResponse: ApplicationVersionResponse = await ApplicationsService.createApplicationVersionForApplication({
+    //   applicationId: applicationId,
+    //   requestBody: applicationVersion,
+    // });
     /* istanbul ignore next */
     if(applicationVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'applicationVersionResponse.data === undefined', {
       applicationVersionResponse: applicationVersionResponse
