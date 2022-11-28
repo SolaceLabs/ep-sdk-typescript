@@ -185,13 +185,6 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
           stateId: targetLifecycleStateId
         }
       });
-      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await SchemasService.updateSchemaVersionStateForSchema({
-      //   schemaId: schemaId,
-      //   id: createdSchemaVersion.id,
-      //   requestBody: {
-      //     stateId: targetLifecycleStateId
-      //   }
-      // });
       const updatedSchemaVersion: SchemaVersion | undefined = await this.getVersionByVersion({
         schemaId: schemaId,
         schemaVersionString: createdSchemaVersion.version

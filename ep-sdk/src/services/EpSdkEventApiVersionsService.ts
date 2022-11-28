@@ -258,13 +258,6 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
           stateId: targetLifecycleStateId
         }
       });
-      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventApIsService.updateEventApiVersionStateForEventApi({
-      //   eventApiId: eventApiId,
-      //   id: createdEvenApiVersion.id,
-      //   requestBody: {
-      //     stateId: targetLifecycleStateId
-      //   }
-      // });
       const updatedEventApiVersion: EventApiVersion | undefined = await this.getVersionByVersion({
         eventApiId: eventApiId,
         eventApiVersionString: createdEvenApiVersion.version

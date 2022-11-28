@@ -286,14 +286,6 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
           stateId: targetLifecycleStateId
         }
       });
-      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventsService.updateEventVersionStateForEvent({
-      //   eventId: eventId,
-      //   id: createdEventVersion.id,
-      //   requestBody: {
-      //     ...createdEventVersion,
-      //     stateId: targetLifecycleStateId
-      //   }
-      // });
       const updatedEventVersion: EventVersion | undefined = await this.getVersionByVersion({
         eventId: eventId,
         eventVersionString: createdEventVersion.version

@@ -277,14 +277,6 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
           stateId: targetLifecycleStateId          
         }
       });
-      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await ApplicationsService.updateApplicationVersionStateForApplication({
-      //   applicationId: applicationId,
-      //   id: createdApplicationVersion.id,
-      //   requestBody: {
-      //     ...applicationVersion,
-      //     stateId: targetLifecycleStateId
-      //   }
-      // });
       const updatedApplicationVersion: ApplicationVersion | undefined = await this.getVersionByVersion({
         applicationId: applicationId,
         applicationVersionString: createdApplicationVersion.version
