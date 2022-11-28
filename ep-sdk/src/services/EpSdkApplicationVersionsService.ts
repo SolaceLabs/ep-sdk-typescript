@@ -101,10 +101,9 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
     const applicationVersionList: Array<ApplicationVersion> = await this.getVersionsForApplicationId({
       applicationId: applicationId
     });
-    const found: ApplicationVersion | undefined = applicationVersionList.find( (applicationVersion: ApplicationVersion) => {
+    return applicationVersionList.find( (applicationVersion: ApplicationVersion) => {
       return applicationVersion.version === applicationVersionString;
     });
-    return found;
   }
 
   public getVersionsForApplicationId = async ({ applicationId, stateId, pageSize = EpApiHelpers.MaxPageSize }: {
@@ -126,17 +125,6 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
         pageSize: pageSize,
       });
 
-      // // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
-      // const params: any = {
-      //   pageSize: pageSize,
-      //   pageNumber: nextPage
-      // };
-      
-      // const applicationVersionsResponse: ApplicationVersionsResponse = await ApplicationsService.getApplicationVersionsForApplication({
-      //   applicationId: applicationId,
-      //   ...params
-      // });
-      
       if(applicationVersionsResponse.data === undefined || applicationVersionsResponse.data.length === 0) nextPage = null;
       else {
         // filter for stateId

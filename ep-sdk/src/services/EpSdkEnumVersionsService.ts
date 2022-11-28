@@ -31,16 +31,6 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
     return topicAddressEnumVersionList.find( (topicAddressEnumVersion: TopicAddressEnumVersion) => {
       return topicAddressEnumVersion.version === enumVersionString;
     });
-    // const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
-    //   enumId: enumId,
-    //   versions: [enumVersionString]
-    // });
-    // if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return undefined;
-    // /* istanbul ignore next */
-    // if (topicAddressEnumVersionsResponse.data.length > 1) throw new EpSdkApiContentError(logName, this.constructor.name, 'topicAddressEnumVersionsResponse.data.length > 1', {
-    //   topicAddressEnumVersionsResponse: topicAddressEnumVersionsResponse
-    // });
-    // return topicAddressEnumVersionsResponse.data[0];
   }
 
   public getVersionsForEnumId = async ({ enumId, pageSize = EpApiHelpers.MaxPageSize }: {
@@ -74,18 +64,6 @@ export class EpSdkEnumVersionsService extends EpSdkVersionService {
       });
       const pagination: Pagination = topicAddressEnumVersionsResponse.meta.pagination;
       nextPage = pagination.nextPage;  
-
-      // const topicAddressEnumVersionsResponse: TopicAddressEnumVersionsResponse = await EnumsService.getEnumVersionsForEnum({
-      //   enumId: enumId,
-      //   pageSize: pageSize,
-      //   pageNumber: nextPage
-      // });      
-      // if (topicAddressEnumVersionsResponse.data === undefined || topicAddressEnumVersionsResponse.data.length === 0) return [];
-      // topicAddressEnumVersionList.push(...topicAddressEnumVersionsResponse.data);
-      // const meta: T_EpMeta = topicAddressEnumVersionsResponse.meta as T_EpMeta;
-      // EpApiHelpers.validateMeta(meta);
-      // nextPage = meta.pagination.nextPage;
-
     }
     // // DEBUG
     // throw new EpSdkApiContentError(logName, this.constructor.name, 'testing', {
