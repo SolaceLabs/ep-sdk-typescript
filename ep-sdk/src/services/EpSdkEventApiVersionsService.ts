@@ -233,10 +233,6 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
         eventApiId: eventApiId
       }
     });
-    // const eventApiVersionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersionForEventApi({
-    //   eventApiId: eventApiId,
-    //   requestBody: eventApiVersion
-    // });
     /* istanbul ignore next */
     if(eventApiVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data === undefined', {
       eventApiVersionResponse: eventApiVersionResponse

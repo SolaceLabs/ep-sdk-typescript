@@ -12,7 +12,8 @@ import {
   TopicAddressEnumVersion,
   EventsResponse,
   Pagination,
-  EventResponse
+  EventResponse,
+  StateChangeRequestResponse
 } from '@solace-labs/ep-openapi-node';
 import EpSdkEpEventsService from "./EpSdkEpEventsService";
 import { EpSdkVersionService } from "./EpSdkVersionService";
@@ -260,10 +261,6 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
         eventId: eventId
       }
     });
-    // const eventVersionResponse: EventVersionResponse = await EventsService.createEventVersionForEvent({
-    //   eventId: eventId,
-    //   requestBody: eventVersion
-    // });
     /* istanbul ignore next */
     if(eventVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventVersionResponse.data === undefined', {
       eventVersionResponse: eventVersionResponse
@@ -282,14 +279,21 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
       eventVersionResponse: eventVersionResponse
     });
     if(createdEventVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventsService.updateEventVersionStateForEvent({
-        eventId: eventId,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await EventsService.updateEventVersionState({
         id: createdEventVersion.id,
         requestBody: {
           ...createdEventVersion,
           stateId: targetLifecycleStateId
         }
       });
+      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await EventsService.updateEventVersionStateForEvent({
+      //   eventId: eventId,
+      //   id: createdEventVersion.id,
+      //   requestBody: {
+      //     ...createdEventVersion,
+      //     stateId: targetLifecycleStateId
+      //   }
+      // });
       const updatedEventVersion: EventVersion | undefined = await this.getVersionByVersion({
         eventId: eventId,
         eventVersionString: createdEventVersion.version

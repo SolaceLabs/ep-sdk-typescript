@@ -7,7 +7,8 @@ import {
   VersionedObjectStateChangeRequest,
   ApplicationResponse,
   Pagination,
-  ApplicationsResponse
+  ApplicationsResponse,
+  StateChangeRequestResponse
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkApiContentError } from "../utils";
 import { EpApiHelpers } from "../internal-utils";
@@ -269,14 +270,21 @@ export class EpSdkApplicationVersionsService extends EpSdkVersionService {
       applicationVersionResponse: applicationVersionResponse
     });
     if(createdApplicationVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await ApplicationsService.updateApplicationVersionStateForApplication({
-        applicationId: applicationId,
-        id: createdApplicationVersion.id,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await ApplicationsService.updateApplicationVersionState({
+        versionId: createdApplicationVersion.id,
         requestBody: {
           ...applicationVersion,
-          stateId: targetLifecycleStateId
+          stateId: targetLifecycleStateId          
         }
       });
+      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await ApplicationsService.updateApplicationVersionStateForApplication({
+      //   applicationId: applicationId,
+      //   id: createdApplicationVersion.id,
+      //   requestBody: {
+      //     ...applicationVersion,
+      //     stateId: targetLifecycleStateId
+      //   }
+      // });
       const updatedApplicationVersion: ApplicationVersion | undefined = await this.getVersionByVersion({
         applicationId: applicationId,
         applicationVersionString: createdApplicationVersion.version

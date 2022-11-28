@@ -6,6 +6,7 @@ import {
   SchemaVersion,
   SchemaVersionResponse,
   SchemaVersionsResponse,
+  StateChangeRequestResponse,
   VersionedObjectStateChangeRequest
 } from '@solace-labs/ep-openapi-node';
 import EpSdkSchemasService from "./EpSdkSchemasService";
@@ -160,10 +161,6 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
         schemaId: schemaId
       }
     });
-    // const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
-    //   schemaId: schemaId,
-    //   requestBody: schemaVersion
-    // });
     /* istanbul ignore next */
     if(schemaVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data === undefined', {
       schemaVersionResponse: schemaVersionResponse
@@ -182,13 +179,19 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
       schemaVersionResponse: schemaVersionResponse
     });
     if(createdSchemaVersion.stateId !== targetLifecycleStateId) {
-      const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await SchemasService.updateSchemaVersionStateForSchema({
-        schemaId: schemaId,
+      const stateChangeRequestResponse: StateChangeRequestResponse = await SchemasService.updateSchemaVersionState({
         id: createdSchemaVersion.id,
         requestBody: {
           stateId: targetLifecycleStateId
         }
       });
+      // const versionedObjectStateChangeRequest: VersionedObjectStateChangeRequest = await SchemasService.updateSchemaVersionStateForSchema({
+      //   schemaId: schemaId,
+      //   id: createdSchemaVersion.id,
+      //   requestBody: {
+      //     stateId: targetLifecycleStateId
+      //   }
+      // });
       const updatedSchemaVersion: SchemaVersion | undefined = await this.getVersionByVersion({
         schemaId: schemaId,
         schemaVersionString: createdSchemaVersion.version
