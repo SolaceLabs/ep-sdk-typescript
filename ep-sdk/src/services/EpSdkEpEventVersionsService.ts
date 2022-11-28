@@ -133,16 +133,22 @@ export class EpSdkEpEventVersionsService extends EpSdkVersionService {
 
     while(nextPage !== undefined && nextPage !== null) {
 
-      // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
-      const params: any = {
+      const eventVersionsResponse: EventVersionsResponse = await EventsService.getEventVersions({
+        eventIds: [eventId],
+        pageNumber: nextPage,
         pageSize: pageSize,
-        pageNumber: nextPage
-      };
-      
-      const eventVersionsResponse: EventVersionsResponse = await EventsService.getEventVersionsForEvent({
-        eventId: eventId,
-        ...params,
       });
+
+      // // WORKAROUND_BACKWARDS_COMPATIBILITY_PAGING
+      // const params: any = {
+      //   pageSize: pageSize,
+      //   pageNumber: nextPage
+      // };
+      
+      // const eventVersionsResponse: EventVersionsResponse = await EventsService.getEventVersionsForEvent({
+      //   eventId: eventId,
+      //   ...params,
+      // });
       
       if(eventVersionsResponse.data === undefined || eventVersionsResponse.data.length === 0) nextPage = null;
       else {
