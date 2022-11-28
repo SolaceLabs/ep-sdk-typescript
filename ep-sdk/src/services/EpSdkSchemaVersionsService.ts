@@ -154,10 +154,16 @@ export class EpSdkSchemaVersionsService extends EpSdkVersionService {
     const logName = `${EpSdkSchemaVersionsService.name}.${funcName}()`;
 
     applicationDomainId;
-    const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
-      schemaId: schemaId,
-      requestBody: schemaVersion
+    const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersion({
+      requestBody: {
+        ...schemaVersion,
+        schemaId: schemaId
+      }
     });
+    // const schemaVersionResponse: SchemaVersionResponse = await SchemasService.createSchemaVersionForSchema({
+    //   schemaId: schemaId,
+    //   requestBody: schemaVersion
+    // });
     /* istanbul ignore next */
     if(schemaVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'schemaVersionResponse.data === undefined', {
       schemaVersionResponse: schemaVersionResponse

@@ -227,10 +227,16 @@ export class EpSdkEventApiVersionsService extends EpSdkVersionService {
 
     if(eventApiVersion.displayName) this.validateDisplayName({ displayName: eventApiVersion.displayName });
 
-    const eventApiVersionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersionForEventApi({
-      eventApiId: eventApiId,
-      requestBody: eventApiVersion
+    const eventApiVersionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersion({
+      requestBody: {
+        ...eventApiVersion,
+        eventApiId: eventApiId
+      }
     });
+    // const eventApiVersionResponse: EventApiVersionResponse = await EventApIsService.createEventApiVersionForEventApi({
+    //   eventApiId: eventApiId,
+    //   requestBody: eventApiVersion
+    // });
     /* istanbul ignore next */
     if(eventApiVersionResponse.data === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'eventApiVersionResponse.data === undefined', {
       eventApiVersionResponse: eventApiVersionResponse
