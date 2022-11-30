@@ -44,6 +44,13 @@ export type EpSdkPagination = {
   nextPage?: number;
 }
 
+export type TEpSdkSortDirection = "asc" | "desc";
+
+export interface EpSdkSortInfo {
+  sortFieldName: string;
+  sortDirection: TEpSdkSortDirection;
+}
+
 export type TEpSdkCustomAttribute = {
   name: string;
   value: string;
