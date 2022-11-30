@@ -2,6 +2,13 @@
 
 Solace Event Portal SDK.
 
+## Version 0.25.0-alpha
+
+**Enhancements:**
+- **EpSdkEventApiProductVersionsService**
+  - new: `listAllLatestVersions()` - list all latest versions without paging or sorting
+  - modified: `listLatestVersions()` - added sort info 
+
 ## Version 0.24.0-alpha
 
 **Maintenance:**
