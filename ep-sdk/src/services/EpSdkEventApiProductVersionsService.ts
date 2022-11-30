@@ -85,7 +85,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       const funcName = 'getValueByFieldName';
       const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
       if(fieldName in obj) return obj[fieldName];
-      throw new EpSdkServiceError(logName, this.constructor.name, "unknown field name", { 
+      throw new EpSdkServiceError(logName, this.constructor.name, "unknown or undefined field name", { 
         fieldName: fieldName,
         obj: obj
       });
@@ -105,8 +105,8 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       });
     } else if(sortInfo.eventApiProductVersion) {
       return epSdkEventApiProductAndVersionList.sort( (one: EpSdkEventApiProductAndVersion, two: EpSdkEventApiProductAndVersion) => {
-        const _oneSortValue: string = getValueByFieldName(one.eventApiProductVersion, sortInfo.eventApiProduct?.sortFieldName).toLowerCase();
-        const _twoSortValue: string = getValueByFieldName(two.eventApiProductVersion, sortInfo.eventApiProduct?.sortFieldName).toLowerCase();
+        const _oneSortValue: string = getValueByFieldName(one.eventApiProductVersion, sortInfo.eventApiProductVersion?.sortFieldName).toLowerCase();
+        const _twoSortValue: string = getValueByFieldName(two.eventApiProductVersion, sortInfo.eventApiProductVersion?.sortFieldName).toLowerCase();
         switch(sortInfo.eventApiProduct?.sortDirection) {
           case "desc":
             return _oneSortValue.localeCompare(_twoSortValue);
