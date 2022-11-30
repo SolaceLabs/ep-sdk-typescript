@@ -26,6 +26,8 @@ import {
   EpSdkEventApiProductAndVersionListResponse,
   EpSdkEventApiProductAndVersionResponse,
   TEpSdkCustomAttributeList,
+  EpSdkEventApiProduct,
+  EpSdkEventApiProductVersion,
 } from '../../../src';
 
 const scriptName: string = path.basename(__filename);
@@ -147,8 +149,9 @@ describe(`${scriptName}`, () => {
           const x = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
               eventApiProductId: eventApiProductId,
+              displayName: 'version x',
               version: EventApiProductVersionString_1,
-              plans: [EventApiProductVersionPlan_1]
+              plans: [EventApiProductVersionPlan_1],
             }
           });
           // const x = await EventApiProductsService.createEventApiProductVersionForEventApiProduct({
@@ -161,6 +164,7 @@ describe(`${scriptName}`, () => {
           const y = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
               eventApiProductId: eventApiProductId,
+              displayName: 'version y',
               version: EventApiProductVersionString_2,
             }
           });
@@ -195,20 +199,18 @@ describe(`${scriptName}`, () => {
 
     it(`${scriptName}: should get complete list of latest event api product versions`, async () => {
       try {
-        const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
+        const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = await EpSdkEventApiProductVersionsService.listAllLatestVersions({
           applicationDomainIds: ApplicationDomainIdList,
           shared: true,
-          pageNumber: 1,
-          pageSize: 100
         });
-        const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = epSdkEventApiProductAndVersionListResponse.data;
 
         const message = `epSdkEventApiProductAndVersionList=\n${JSON.stringify(epSdkEventApiProductAndVersionList, null, 2)}`;        
         expect(epSdkEventApiProductAndVersionList.length, message).to.equal(NumApplicationDomains);
-        expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.count, message).to.equal(NumApplicationDomains);
         for(const epSdkEventApiProductAndVersion of epSdkEventApiProductAndVersionList) {
           expect(epSdkEventApiProductAndVersion.eventApiProductVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventApiProductVersionString_2);
         }
+        // // DEBUG
+        // expect(false, message).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -216,7 +218,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should test paging of latest event api product versions`, async () => {
+    it(`${scriptName}: should test paging & sort of latest event api product versions by eventApiProduct field`, async () => {
       const PageSize = 1;
       let nextPage: number | undefined | null = 1;
       try {
@@ -225,7 +227,13 @@ describe(`${scriptName}`, () => {
             applicationDomainIds: ApplicationDomainIdList,
             shared: true,
             pageNumber: nextPage,
-            pageSize: PageSize
+            pageSize: PageSize,
+            sortInfo: {
+              eventApiProduct: {
+                sortDirection: "asc",
+                sortFieldName: TestUtils.nameOf<EpSdkEventApiProduct>("name")
+              }
+            }
           });
           const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = epSdkEventApiProductAndVersionListResponse.data;
   
@@ -240,6 +248,49 @@ describe(`${scriptName}`, () => {
           for(const epSdkEventApiProductAndVersion of epSdkEventApiProductAndVersionList) {
             expect(epSdkEventApiProductAndVersion.eventApiProductVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventApiProductVersionString_2);
           }
+          // // DEBUG
+          // expect(false, message).to.be.true;
+          nextPage = epSdkEventApiProductAndVersionListResponse.meta.pagination.nextPage;  
+        }
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should test paging & sort of latest event api product versions by eventApiProductVersion field`, async () => {
+      const PageSize = 1;
+      let nextPage: number | undefined | null = 1;
+      try {
+        while(nextPage !== undefined && nextPage !== null) {
+          const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
+            applicationDomainIds: ApplicationDomainIdList,
+            shared: true,
+            pageNumber: nextPage,
+            pageSize: PageSize,
+            sortInfo: {
+              eventApiProductVersion: {
+                sortDirection: "asc",
+                sortFieldName: TestUtils.nameOf<EpSdkEventApiProductVersion>("displayName")
+              }
+            }
+          });
+          const epSdkEventApiProductAndVersionList: EpSdkEventApiProductAndVersionList = epSdkEventApiProductAndVersionListResponse.data;
+  
+          const message = `epSdkEventApiProductAndVersionListResponse=\n${JSON.stringify(epSdkEventApiProductAndVersionListResponse, null, 2)}`;        
+          expect(epSdkEventApiProductAndVersionList.length, message).to.equal(PageSize);
+          expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.count, message).to.equal(NumApplicationDomains);
+          if(nextPage < NumApplicationDomains) {
+            expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.nextPage, message).to.equal(nextPage + 1);
+          } else {
+            expect(epSdkEventApiProductAndVersionListResponse.meta.pagination.nextPage, message).to.be.undefined;
+          }
+          for(const epSdkEventApiProductAndVersion of epSdkEventApiProductAndVersionList) {
+            expect(epSdkEventApiProductAndVersion.eventApiProductVersion.version, TestLogger.createApiTestFailMessage('wrong version')).to.equal(EventApiProductVersionString_2);
+          }
+          // // DEBUG
+          // expect(false, message).to.be.true;
           nextPage = epSdkEventApiProductAndVersionListResponse.meta.pagination.nextPage;  
         }
       } catch(e) {
