@@ -2,12 +2,18 @@
 
 Solace Event Portal SDK.
 
+## Version 0.25.1-alpha
+
+**Fixes:**
+- **EpSdkEventApiProductVersionsService.sortEpSdkEventApiProductAndVersionList()**
+  - accepts now nested property names as field names to sort on, e.g. `propertyA.propertyB` 
+
 ## Version 0.25.0-alpha
 
 **Enhancements:**
 - **EpSdkEventApiProductVersionsService**
   - new: `listAllLatestVersions()` - list all latest versions without paging or sorting
-  - modified: `listLatestVersions()` - added sort info 
+  - modified: `listLatestVersions()` - added sort info
 
 ## Version 0.24.0-alpha
 

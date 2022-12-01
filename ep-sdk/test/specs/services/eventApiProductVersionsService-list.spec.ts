@@ -28,6 +28,7 @@ import {
   TEpSdkCustomAttributeList,
   EpSdkEventApiProduct,
   EpSdkEventApiProductVersion,
+  EpSdkServiceError,
 } from '../../../src';
 
 const scriptName: string = path.basename(__filename);
@@ -256,6 +257,32 @@ describe(`${scriptName}`, () => {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
         expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should catch error for  invalid sort field when paging & sort of latest event api product versions by eventApiProduct field`, async () => {
+      const PageSize = 1;
+      let nextPage: number | undefined | null = 1;
+      const sortFieldName = 'unknown-field';
+      try {
+        const epSdkEventApiProductAndVersionListResponse: EpSdkEventApiProductAndVersionListResponse = await EpSdkEventApiProductVersionsService.listLatestVersions({
+          applicationDomainIds: ApplicationDomainIdList,
+          shared: true,
+          pageNumber: nextPage,
+          pageSize: PageSize,
+          sortInfo: {
+            eventApiProduct: {
+              sortDirection: "asc",
+              sortFieldName: sortFieldName
+            }
+          }
+        });
+        expect(false, 'should never get here').to.be.true;
+      } catch(e) {
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(e instanceof EpSdkServiceError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        const epSdkServiceError: EpSdkServiceError = e;
+        expect(JSON.stringify(epSdkServiceError), JSON.stringify(epSdkServiceError, null, 2)).to.contain(sortFieldName);
       }
     });
 

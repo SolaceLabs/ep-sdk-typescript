@@ -333,14 +333,11 @@ describe(`${scriptName}`, () => {
         EventApiProductVersionPlanId_2 = eventApiProductVersionResponse.data.plans[1].id;
 
         // add messaging service
-        const xparams: any = {
-          supportedProtocols: ["mqtt"]
-        }
         const gatewayMessagingServiceResponse: GatewayMessagingServiceResponse = await EventApiProductsService.associateGatewayMessagingServiceToEapVersion({
           eventApiProductVersionId: EventApiProductVersionId,
           requestBody: {
-            ...xparams,
             messagingServiceId: TheMessagingService.id,
+            supportedProtocols: ['AMQP', 'MQTT', 'REST']
           }
         });
         GatewayMessagingServiceId = gatewayMessagingServiceResponse.data.id;
@@ -386,25 +383,10 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should get valid async api for event api product plans`, async () => {
+    it(`${scriptName}: should get valid async api for event api product plans & protocols`, async () => {
       try {
         let asyncApiVersion = '2.0.0';
-        let asyncApi: any = await EventApIsService.getEventApiVersionAsyncApiForEventApi({ 
-          eventApiId: EventApiId,
-          id: EventApiVersionId,
-          format: 'json',
-          version: asyncApiVersion,
-          eventApiProductVersionId: EventApiProductVersionId,
-          planId: EventApiProductVersionPlanId_1,
-          gatewayMessagingServiceIds: [GatewayMessagingServiceId]
-        });
-        // // DEBUG
-        // expect(false, `asyncApi=${JSON.stringify(asyncApi, null, 2)}`).to.be.true;
-        // parse it
-        let asyncApiDocument: AsyncAPIDocument = await parse(asyncApi);
-        // expect(asyncApiDocument.version(), 'wrong version').to.equal(asyncApiVersion);
-
-        asyncApi = await EventApIsService.getAsyncApiForEventApiVersion({ 
+        let asyncApi: any = await EventApIsService.getAsyncApiForEventApiVersion({ 
           eventApiProductVersionId: EventApiProductVersionId,
           eventApiVersionId: EventApiVersionId,
           format: 'json',
@@ -413,7 +395,7 @@ describe(`${scriptName}`, () => {
           gatewayMessagingServiceIds: [GatewayMessagingServiceId]
         });
         // parse it
-        asyncApiDocument = await parse(asyncApi);
+        let asyncApiDocument: AsyncAPIDocument = await parse(asyncApi);
 
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
