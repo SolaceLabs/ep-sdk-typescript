@@ -56,9 +56,13 @@ export type EpSdkApimEventApiProductQueryFields = {
   name: string;
   applicationDomainName: string;
   applicationDomainId: string;
-  shared: string;
+  // shared: string;
   brokerType: string;
-  customAttributes: string;
+  // customAttributes: string;
+  customAttributes: {
+    name: string;
+    value: string;
+  },
   version: {
     createdTime: string;
     updatedTime: string;

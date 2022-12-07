@@ -26,7 +26,7 @@ import { ApplicationDomainResponse, ApplicationDomainsService } from '@solace-la
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
 
-const TestSpecName = "apim-eap.spec";
+const TestSpecName = "apim-eap-spec";
 const TestSpecId: string = TestUtils.getUUID();
 const ApplicationDomainName = `${TestConfig.getAppId()}/${scriptName}/${TestSpecId}`;
 let ApplicationDomainId: string | undefined;
@@ -42,8 +42,20 @@ let ApplicationDomainId: string | undefined;
 // let EventApiProductIdList: Array<string> = [];
 
 const PublishDestinationsAttribute: TEpSdkCustomAttribute = {
-  name: `${TestSpecName}.PUB_DEST`,
+  name: `${TestSpecName}-PUB_DESTS`,
   value: "ep-developer-portal"
+};
+const FlatImportAttribute: TEpSdkCustomAttribute = {
+  name: `${TestSpecName}-FLAT_IMPORTS`,
+  value: "true"
+};
+const XOwningDomainIdAttribute: TEpSdkCustomAttribute = {
+  name: `${TestSpecName}-OwnDomainId`,
+  value: "owning-domain-id"
+};
+const XSharingDomainIdAttribute: TEpSdkCustomAttribute = {
+  name: `${TestSpecName}-SharingDomainId`,
+  value: "sharing-domain-id"
 };
 // const AnotherAttribute: TEpSdkCustomAttribute = {
 //   name: `${TestSpecName}.another`,
@@ -91,14 +103,64 @@ describe(`${scriptName}`, () => {
       // });      
     });
 
-    it(`${scriptName}: should list event api products`, async () => {
+    it(`${scriptName}: should list event api products with only 1 attribute`, async () => {
       try {
+
+        // TODO: build query with attributes like so:
+
+// customAttributes.name=‘apim-eap.spec.PUB_DEST’ AND customAttributes.value.contains=ep-developer-portal
+// 14:30
+// (customAttributes.name=‘apim-eap.spec.PUB_DEST’ AND customAttributes.value.contains=ep-developer-portal) OR (customAttributes.name=‘apim-eap.spec.ANDERERWERT’ AND customAttributes.value.contains=5)
+
+        // TODO: build query with OR statements: businessGroup and businessGroupSharing
+
+
       // https://github.com/piotr-oles/rsql#readme
         const ast = builder.and(
           builder.in(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('applicationDomainId'), [ApplicationDomainId]),
           builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('brokerType'), EpSdkBrokerTypes.Solace),
-          builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('shared'), EpSdkBooleanTypes.True),
-          builder.comparison(`${EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes")}.${PublishDestinationsAttribute.name}`, '=contains=', PublishDestinationsAttribute.value),
+          builder.and(
+            builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.name"), PublishDestinationsAttribute.name),
+            builder.comparison(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.value"), '=contains=', PublishDestinationsAttribute.value),                        
+            builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.name"), FlatImportAttribute.name),
+            builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.value"), FlatImportAttribute.value),                        
+            builder.or(
+              builder.and(
+                builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.name"), XOwningDomainIdAttribute.name),
+                builder.comparison(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.value"), '=contains=', XOwningDomainIdAttribute.value),                        
+              ),
+              builder.and(
+                builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.name"), XSharingDomainIdAttribute.name),
+                builder.comparison(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes.value"), '=contains=', XSharingDomainIdAttribute.value),                        
+              ),
+            )
+          ),
+          builder.in(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('version.state'), ["RELEASED", "DEPRECATED", "RETIRED", "DELETED"])
+        );
+
+        const query = emit(ast);
+
+        const eventApiProductsResponse: EventApiProductsResponse = await EpSdkApimEventApiProductsService.listAll({ query: query });
+
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    xit(`${scriptName}: should list event api products with only multiple or attributes`, async () => {
+      try {
+
+        // TODO: build query with OR statements: businessGroup and businessGroupSharing
+
+
+      // https://github.com/piotr-oles/rsql#readme
+        const ast = builder.and(
+          builder.in(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('applicationDomainId'), [ApplicationDomainId]),
+          builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('brokerType'), EpSdkBrokerTypes.Solace),
+          // builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('shared'), EpSdkBooleanTypes.True),
+          // builder.comparison(`${EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>("customAttributes")}.${PublishDestinationsAttribute.name}`, '=contains=', PublishDestinationsAttribute.value),
           builder.eq(EpSdkUtils.nameOf<EpSdkApimEventApiProductQueryFields>('version.state'), "RELEASED")
         );
 
