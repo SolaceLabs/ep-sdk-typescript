@@ -76,3 +76,7 @@ export {
 export {
   default as EpSdkCustomAttributesQueryService
 } from './EpSdkCustomAttributesQueryService';
+export {
+  default as EpSdkApimEventApiProductsService,
+  EpSdkApimEventApiProductQueryFields
+} from './EpSdkApimEventApiProductsService';

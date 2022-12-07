@@ -10,6 +10,16 @@ import { TestLogger } from "./TestLogger";
 import { customRequest } from "./customOpenApiRequest";
 import TestConfig from "./TestConfig";
 
+import { customRequest as apimCustomRequest } from './apimCustomOpenApiRequest';
+import { ApiRequestOptions as ApimApiRequestOptions } from "@solace-labs/ep-apim-openapi-node/dist/core/ApiRequestOptions";
+import { 
+  CancelablePromise as ApimCancelablePromise, 
+  OpenAPIConfig as ApimOpenAPIConfig
+} from "@solace-labs/ep-apim-openapi-node";
+import { 
+  ApiResult as ApimApiResult
+} from "@solace-labs/ep-apim-openapi-node/dist/core/ApiResult";
+import * as __apimRequestLib from '@solace-labs/ep-apim-openapi-node/dist/core/request';
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Stubbing global request from openapi
@@ -27,7 +37,32 @@ import TestConfig from "./TestConfig";
     // const cancelablePromise = stub.wrappedMethod(config, options) as CancelablePromise<ApiResult>;
     // call my own request
     
-    const cancelablePromise = customRequest(config, options) as CancelablePromise<ApiResult>;
+    const cancelablePromise = customRequest<ApiResult>(config, options) as CancelablePromise<ApiResult>;
+
+    cancelablePromise.then((value: ApiResult) => {
+      TestContext.setApiResult(value);
+      if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiResult(TestContext.getItId(), TestContext.getApiResult());
+    }, (reason) => {
+      TestContext.setApiError(reason);
+      TestLogger.logApiError(TestContext.getItId(), TestContext.getApiError());
+    });
+  
+    return cancelablePromise;
+  });
+  
+  const apimStub = sinon.stub(__apimRequestLib, 'request');
+  apimStub.callsFake((config: ApimOpenAPIConfig, options: ApimApiRequestOptions): ApimCancelablePromise<ApimApiResult> => {
+  
+    TestContext.setApiRequestOptions(options);
+    if(TestConfig.getConfig().enableApiLogging) TestLogger.logApiRequestOptions(TestContext.getItId(), options);
+
+    TestContext.setApiResult(undefined);
+    TestContext.setApiError(undefined);
+
+    // const cancelablePromise = stub.wrappedMethod(config, options) as CancelablePromise<ApiResult>;
+    // call my own request
+    
+    const cancelablePromise = apimCustomRequest<ApimApiResult>(config, options) as ApimCancelablePromise<ApimApiResult>;
 
     cancelablePromise.then((value: ApiResult) => {
       TestContext.setApiResult(value);

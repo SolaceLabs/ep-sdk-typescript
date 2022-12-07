@@ -1,13 +1,18 @@
 /**
  * @packageDocumentation
  * 
- * Convenience class to initialize EP OpenAPI.
+ * Convenience class to initialize EP OpenAPI & APIM OpenApi.
  * 
  */
 import {
   OpenAPI,
   OpenAPIConfig
 } from '@solace-labs/ep-openapi-node';
+
+import {
+  OpenAPI as ApimOpenAPI,
+  OpenAPIConfig as ApimOpenAPIConfig
+} from '@solace-labs/ep-apim-openapi-node';
 
 // Need to include this once in the project to generate tsdoc links
 // in ALL other files correctly.
@@ -39,14 +44,16 @@ export class EpSdkClient {
    * });
    * 
    */
-  public static initialize = ({ globalOpenAPI, token, baseUrl=EpSdkClient.DEFAULT_EP_API_BASE_URL }:{
+  public static initialize = ({ globalOpenAPI, globalApimOpenAPI, token, baseUrl=EpSdkClient.DEFAULT_EP_API_BASE_URL }:{
     /** The global OpenAPI const object from  @solace-labs/ep-openapi-node. */
     globalOpenAPI: OpenAPIConfig;
+    /** The global APIM OpenAPI const object from  @solace-labs/ep-apim-openapi-node. */
+    globalApimOpenAPI: OpenAPIConfig;
     /** The Solace Cloud token. */
     token: string;
     /** Base url for the ep api. @defaultValue  {@link EpSdkClient.DEFAULT_EP_API_BASE_URL} */
     baseUrl?: string;
-  }): OpenAPIConfig => {
+  }): void => {
     const funcName = 'initialize';
     const logName = `${EpSdkClient.name}.${funcName}()`;
 
@@ -63,10 +70,18 @@ export class EpSdkClient {
     OpenAPI.CREDENTIALS = "include";
     OpenAPI.TOKEN = token;
 
+    // globalApimOpenAPI.BASE = baseUrl;
+    globalApimOpenAPI.WITH_CREDENTIALS = true;
+    globalApimOpenAPI.CREDENTIALS = "include";
+    globalApimOpenAPI.TOKEN = token;
+
+    // ApimOpenAPI.BASE = baseUrl;
+    ApimOpenAPI.WITH_CREDENTIALS = true;
+    ApimOpenAPI.CREDENTIALS = "include";
+    ApimOpenAPI.TOKEN = token;
+
     // // DEBUG:
     // console.log(`>>>>>>>>\n\n${logName}:\n\n>>>>> globalOpenAPI=${JSON.stringify(globalOpenAPI, null, 2)}\n\n<<<<<<<<<<<`);
-
-    return globalOpenAPI;
   }
 
 }

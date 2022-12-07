@@ -47,36 +47,45 @@ import { EpSdkBrokerTypes } from '../types';
  * ISSUES:
  * - logged: brokerType: can I get an enum?
  * - logged: state: can I get an enum of strings?
+ * - query: applicationDomainIds: array of string or comma separated list of ids;
  */
 
+
+export type EpSdkApimEventApiProductQueryFields = {
+  id: string;
+  name: string;
+  applicationDomainName: string;
+  applicationDomainId: string;
+  shared: string;
+  brokerType: string;
+  customAttributes: string;
+  version: {
+    createdTime: string;
+    updatedTime: string;
+    description: string;
+    version: string;
+    summary: string;
+    displayName: string;
+    state: string;
+    customAttributes: string;
+  }
+}
 
 export class EpSdkApimEventApiProductsService extends EpSdkApimService {
 
   public listAll = async({
-
+    query,
   }: {
-    applicationDomainIds?: Array<string>;
-    shared: boolean;
-    brokerType?: EpSdkBrokerTypes;
-    versionState?: string;
-    publishDestination?: string;
+    query: string;
+    // applicationDomainIds?: Array<string>;
+    // shared: boolean;
+    // brokerType?: EpSdkBrokerTypes;
+    // versionState?: string;
+    // publishDestination?: string;
   //   objectAttributesQuery?: IEpSdkAttributesQuery;
   }): Promise<EventApiProductsResponse> => {
     const funcName = 'listAll';
     const logName = `${EpSdkApimEventApiProductsService.name}.${funcName}()`;
-
-    // TODO: construct the RSQL query
-
-    // https://github.com/piotr-oles/rsql#readme
-
-    // brokerType
-    // shared=true
-    // version.state='Released'
-    // attributes:
-    // - PUBLISH_DESTINATIONS contains publishDestination
-
-
-    const query = 'rsql-query';
 
     const eventApiProductList: Array<EventApiProduct> = [];
 

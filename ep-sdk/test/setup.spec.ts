@@ -4,11 +4,14 @@ import { expect } from 'chai';
 import { TestLogger } from "./lib/TestLogger";
 import TestConfig from "./lib/TestConfig";
 import { TestContext } from "./lib/TestContext";
-import { EpSdkClient } from "../src/utils/EpSdkClient";
-import { EpSdkConsoleLogger } from "../src/utils/EpSdkConsoleLogger";
-import { EpSdkLogger } from "../src/utils/EpSdkLogger";
 import { OpenAPI } from "@solace-labs/ep-openapi-node";
-import { EpSdkConfig } from "../src/utils/EpSdkConfig";
+import { OpenAPI as ApimOpenAPI } from "@solace-labs/ep-apim-openapi-node";
+import { 
+  EpSdkClient,
+  EpSdkConsoleLogger,
+  EpSdkLogger,
+  EpSdkConfig
+} from "../src";
 
 // load test stub
 const x = require('./lib/TestStub');
@@ -57,6 +60,7 @@ describe(`${scriptName}`, () => {
       try {
         EpSdkClient.initialize({
           globalOpenAPI: OpenAPI,
+          globalApimOpenAPI: ApimOpenAPI,
           token: TestConfig.getSolaceCloudToken(),
           baseUrl: TestConfig.getConfig().epBaseUrl,
         });

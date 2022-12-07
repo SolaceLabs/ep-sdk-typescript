@@ -1,4 +1,9 @@
 
+export enum EpSdkBooleanTypes {
+  True = "true",
+  False = "false"
+}
+
 export enum EpSdkBrokerTypes {
   Solace = "solace",
   Kafka = "kafka"

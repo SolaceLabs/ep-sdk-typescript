@@ -81,8 +81,9 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "@rsql/builder": "^1.5.0",
+    "@rsql/emitter": "^1.5.0",
     "@solace-labs/ep-openapi-node": "^2.0.5-build.1",
-    "@solace-labs/ep-apim-openapi-node": "^2.0.0-alpha.1",
     "abort-controller": "^3.0.0",
     "form-data": "^4.0.0",
     "jsonschema": "^1.4.1",
