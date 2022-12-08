@@ -2,11 +2,18 @@
 
 Solace Event Portal SDK.
 
+## Version 0.26.0-alpha
+
+**New Features:**
+- **EpSdkMessagingService**
+  - service for messaging services
+
+
 ## Version 0.25.1-alpha
 
 **Fixes:**
 - **EpSdkEventApiProductVersionsService.sortEpSdkEventApiProductAndVersionList()**
-  - accepts now nested property names as field names to sort on, e.g. `propertyA.propertyB` 
+  - accepts now nested property names as field names to sort on, e.g. `propertyA.propertyB`
 
 ## Version 0.25.0-alpha
 
