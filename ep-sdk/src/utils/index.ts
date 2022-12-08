@@ -8,3 +8,4 @@ export {
   default as EpSdkSemVerUtils,
   EEpSdk_VersionStrategy
 } from './EpSdkSemVerUtils';
+export * from './EpSdkConfig';
