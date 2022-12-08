@@ -76,3 +76,6 @@ export {
 export {
   default as EpSdkCustomAttributesQueryService
 } from './EpSdkCustomAttributesQueryService';
+export {
+  default as EpSdkMessagingService
+} from './EpSdkMessagingService';
