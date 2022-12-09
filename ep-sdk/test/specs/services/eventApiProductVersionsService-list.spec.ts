@@ -29,6 +29,7 @@ import {
   EpSdkEventApiProduct,
   EpSdkEventApiProductVersion,
   EpSdkServiceError,
+  EpSdkStatesService,
 } from '../../../src';
 
 const scriptName: string = path.basename(__filename);
@@ -146,7 +147,7 @@ describe(`${scriptName}`, () => {
             }
           });
           const eventApiProductId = eventApiProductResponse.data.id;
-          // create version 1
+          // create version 1 in Draft
           const x = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
               eventApiProductId: eventApiProductId,
@@ -155,13 +156,7 @@ describe(`${scriptName}`, () => {
               plans: [EventApiProductVersionPlan_1],
             }
           });
-          // const x = await EventApiProductsService.createEventApiProductVersionForEventApiProduct({
-          //   eventApiProductId: eventApiProductId,
-          //   requestBody: {
-          //     version: EventApiProductVersionString_1
-          //   }
-          // });
-          // create version 2
+          // create version 2 in Draft
           const y = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
               eventApiProductId: eventApiProductId,
@@ -169,12 +164,6 @@ describe(`${scriptName}`, () => {
               version: EventApiProductVersionString_2,
             }
           });
-          // const y = await EventApiProductsService.createEventApiProductVersionForEventApiProduct({
-          //   eventApiProductId: eventApiProductId,
-          //   requestBody: {
-          //     version: EventApiProductVersionString_2
-          //   }
-          // });
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -346,6 +335,39 @@ describe(`${scriptName}`, () => {
       }
     });
 
+    it(`${scriptName}: should not find latest version of for all event api products - non-existing stateIds`, async () => {
+      try {
+        const eventApiProductsResponse: EventApiProductsResponse = await EpSdkEventApiProductsService.listAll({
+          applicationDomainIds: ApplicationDomainIdList,
+          shared: EventApiProductShared,
+        });
+        let message = `eventApiProductsResponse=\n${JSON.stringify(eventApiProductsResponse, null, 2)}`;        
+        expect(eventApiProductsResponse.data, message).to.not.be.undefined;
+        expect(eventApiProductsResponse.data.length, message).to.equal(NumApplicationDomains);
+        for(const eventApiProduct of eventApiProductsResponse.data) {
+          
+          // should not find any because of state id
+
+          const eventApiProductVersionList: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.getVersionsForEventApiProductId({
+            eventApiProductId: eventApiProduct.id,
+            stateIds: [EpSdkStatesService.deprecatedId, EpSdkStatesService.retiredId]
+          });
+          expect(eventApiProductVersionList.length, `eventApiProductVersionList=\n${JSON.stringify(eventApiProductVersionList, null, 2)}`).to.equal(0);
+
+          const empty_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
+            eventApiProductId: eventApiProduct.id,
+            stateIds: [EpSdkStatesService.deprecatedId, EpSdkStatesService.retiredId]
+          });
+          expect(empty_EpSdkEventApiProductAndVersionResponse, `empty_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(empty_EpSdkEventApiProductAndVersionResponse, null, 2)}`).to.be.undefined;
+
+        }
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
     it(`${scriptName}: should get the latest version of for all event api products`, async () => {
       try {
         const eventApiProductsResponse: EventApiProductsResponse = await EpSdkEventApiProductsService.listAll({
@@ -359,17 +381,18 @@ describe(`${scriptName}`, () => {
           // get the latest version for each event api product
           const latest_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,
-            stateId: undefined
+            stateIds: [EpSdkStatesService.draftId, EpSdkStatesService.deprecatedId, EpSdkStatesService.retiredId]
           });
-          message = `latest_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse, null, 2)}`;    
+          message = `latest_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse, null, 2)}`;
           expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProduct.id, message).to.equal(eventApiProduct.id);
+          expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.stateId, message).to.equal(EpSdkStatesService.draftId);
           expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.version, message).to.equal(EventApiProductVersionString_2);
           expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_1);    
           expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_2);    
           // get the version 1 for each event api product
           const version1_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,
-            stateId: undefined,
+            stateIds: undefined,
             versionString: EventApiProductVersionString_1
           });
           message = `version1_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse, null, 2)}`;    
@@ -398,7 +421,7 @@ describe(`${scriptName}`, () => {
           // no filters
           const eventApiProductVersionList_NoFilters: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.getVersionsForEventApiProductId({
             eventApiProductId: eventApiProduct.id,
-            stateId: undefined,
+            stateIds: undefined,
             withAtLeastOnePlan: false,
             withAtLeastOneAMessagingService: false,
           });
@@ -406,7 +429,7 @@ describe(`${scriptName}`, () => {
           // both filters
           const eventApiProductVersionList_BothFilters: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.getVersionsForEventApiProductId({
             eventApiProductId: eventApiProduct.id,
-            stateId: undefined,
+            stateIds: undefined,
             withAtLeastOnePlan: true,
             withAtLeastOneAMessagingService: true,
           });
@@ -432,7 +455,7 @@ describe(`${scriptName}`, () => {
           // filter by plan
           const eventApiProductVersionList_PlanFilter: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.getVersionsForEventApiProductId({
             eventApiProductId: eventApiProduct.id,
-            stateId: undefined,
+            stateIds: undefined,
             withAtLeastOnePlan: true,
             withAtLeastOneAMessagingService: false,
           });
@@ -440,7 +463,7 @@ describe(`${scriptName}`, () => {
           // filter by messaging service
           const eventApiProductVersionList_MessagingServiceFilter: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.getVersionsForEventApiProductId({
             eventApiProductId: eventApiProduct.id,
-            stateId: undefined,
+            stateIds: undefined,
             withAtLeastOnePlan: false,
             withAtLeastOneAMessagingService: true,
           });

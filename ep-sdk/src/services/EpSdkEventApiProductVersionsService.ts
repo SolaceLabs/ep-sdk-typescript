@@ -48,12 +48,12 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
 
   private getLatestVersionForEventApiProductId = async ({
     eventApiProductId,
-    stateId,
+    stateIds,
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
   }: {
     eventApiProductId: string;
-    stateId?: string;
+    stateIds?: Array<string>;
     withAtLeastOnePlan?: boolean;
     withAtLeastOneAMessagingService?: boolean;
   }): Promise<EventApiProductVersion | undefined> => {
@@ -63,7 +63,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     // get all versions for selected stateId & filters
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
       eventApiProductId: eventApiProductId,
-      stateId: stateId,
+      stateIds: stateIds,
       withAtLeastOnePlan: withAtLeastOnePlan,
       withAtLeastOneAMessagingService: withAtLeastOneAMessagingService
     });
@@ -125,7 +125,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     applicationDomainIds,
     shared,
     brokerType,
-    stateId,
+    stateIds,
     objectAttributesQuery,
     withAtLeastOnePlan = false,
     withAtLeastOneAMessagingService = false,
@@ -133,7 +133,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
-    stateId?: string;
+    stateIds?: Array<string>;
     objectAttributesQuery?: IEpSdkAttributesQuery;
     withAtLeastOnePlan?: boolean;
     withAtLeastOneAMessagingService?: boolean;
@@ -161,7 +161,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       // get the latest version in the requested state & by filters
       const latest_EventApiProductVersion: EventApiProductVersion | undefined = await this.getLatestVersionForEventApiProductId({
         eventApiProductId: eventApiProduct.id,
-        stateId: stateId,
+        stateIds: stateIds,
         withAtLeastOnePlan: withAtLeastOnePlan,
         withAtLeastOneAMessagingService: withAtLeastOneAMessagingService
       });
@@ -177,7 +177,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     applicationDomainIds,
     shared,
     brokerType,
-    stateId,
+    stateIds,
     pageNumber = 1,
     pageSize = 20,
     sortInfo,
@@ -188,7 +188,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     applicationDomainIds?: Array<string>;
     shared: boolean;
     brokerType?: EpSdkBrokerTypes;
-    stateId?: string;
+    stateIds?: Array<string>;
     pageNumber?: number;
     pageSize?: number;
     sortInfo?: EpSdkEventApiProductAndVersionSortInfo;
@@ -203,7 +203,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       applicationDomainIds: applicationDomainIds,
       shared: shared,
       brokerType: brokerType,
-      stateId: stateId,
+      stateIds: stateIds,
       objectAttributesQuery: objectAttributesQuery,
       withAtLeastOnePlan: withAtLeastOnePlan,
       withAtLeastOneAMessagingService: withAtLeastOneAMessagingService,
@@ -232,9 +232,9 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     };
   }
 
-  public getVersionsForEventApiProductId = async ({ eventApiProductId, stateId, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false, pageSize = EpApiHelpers.MaxPageSize }: {
+  public getVersionsForEventApiProductId = async ({ eventApiProductId, stateIds, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false, pageSize = EpApiHelpers.MaxPageSize }: {
     eventApiProductId: string;
-    stateId?: string;
+    stateIds?: Array<string>;
     withAtLeastOnePlan?: boolean;
     withAtLeastOneAMessagingService?: boolean;
     pageSize?: number; /** for testing */
@@ -250,14 +250,18 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
         eventApiProductIds: [eventApiProductId],
         pageNumber: nextPage,
         pageSize: pageSize,
-        stateId: stateId
       });
       if (eventApiProductVersionsResponse.data === undefined || eventApiProductVersionsResponse.data.length === 0) nextPage = null;
       else {
         let listToAdd: Array<EventApiProductVersion> = eventApiProductVersionsResponse.data;
         // apply filters
-        if (withAtLeastOnePlan || withAtLeastOneAMessagingService) {
+        if (withAtLeastOnePlan || withAtLeastOneAMessagingService || (stateIds && stateIds.length > 0)) {
           listToAdd = eventApiProductVersionsResponse.data.filter((eventApiProductVersion: EventApiProductVersion) => {
+            if(stateIds && stateIds.length > 0) {
+              /* istanbul ignore next */
+              if(eventApiProductVersion.stateId === undefined) return false;
+              if(!stateIds.includes(eventApiProductVersion.stateId)) return false;
+            }
             if (withAtLeastOnePlan) {
               if (eventApiProductVersion.plans === undefined || eventApiProductVersion.plans.length === 0) return false;
             }
@@ -287,9 +291,9 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
    * Retrieves Event API Product & Version object in the given stateId & filters.
    * If versionString is omitted, retrieves the latest version.
    */
-  public getObjectAndVersionForEventApiProductId = async ({ eventApiProductId, stateId, versionString, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false }: {
+  public getObjectAndVersionForEventApiProductId = async ({ eventApiProductId, stateIds, versionString, withAtLeastOnePlan = false, withAtLeastOneAMessagingService = false }: {
     eventApiProductId: string;
-    stateId?: string;
+    stateIds?: Array<string>;
     versionString?: string;
     withAtLeastOnePlan?: boolean;
     withAtLeastOneAMessagingService?: boolean;
@@ -312,7 +316,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     // get all versions for selected stateId with plans & messaging services
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
       eventApiProductId: eventApiProductId,
-      stateId: stateId,
+      stateIds: stateIds,
       withAtLeastOnePlan: withAtLeastOnePlan,
       withAtLeastOneAMessagingService: withAtLeastOneAMessagingService,
     });
