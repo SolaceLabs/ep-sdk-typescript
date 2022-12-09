@@ -2,7 +2,7 @@ import _ from 'lodash';
 import {
   EventApiProduct,
   EventApiProductsResponse,
-  EventapiproductsService,
+  EventApiProductsService,
   Pagination,
 } from '@solace-labs/ep-apim-openapi-node';
 import { EpSdkApiContentError, EpSdkServiceError } from "../utils";
@@ -96,7 +96,7 @@ export class EpSdkApimEventApiProductsService extends EpSdkApimService {
     let nextPage: number | undefined | null = 1;
     while(nextPage !== undefined && nextPage !== null) {
 
-      const eventApiProductsResponse: EventApiProductsResponse = await EventapiproductsService.listEventApiProducts({
+      const eventApiProductsResponse: EventApiProductsResponse = await EventApiProductsService.listEventApiProducts({
         pageSize: 100,
         pageNumber: nextPage,
         query: query
@@ -121,7 +121,10 @@ export class EpSdkApimEventApiProductsService extends EpSdkApimService {
       meta: {
         pagination: {
           count: eventApiProductList.length,
-          nextPage: undefined,
+          pageNumber: 1,
+          pageSize: eventApiProductList.length,
+          totalPages: 1,
+          nextPage: 2
         }
       }
     };
