@@ -335,6 +335,39 @@ describe(`${scriptName}`, () => {
       }
     });
 
+    it(`${scriptName}: should not find latest version of for all event api products - non-existing stateIds`, async () => {
+      try {
+        const eventApiProductsResponse: EventApiProductsResponse = await EpSdkEventApiProductsService.listAll({
+          applicationDomainIds: ApplicationDomainIdList,
+          shared: EventApiProductShared,
+        });
+        let message = `eventApiProductsResponse=\n${JSON.stringify(eventApiProductsResponse, null, 2)}`;        
+        expect(eventApiProductsResponse.data, message).to.not.be.undefined;
+        expect(eventApiProductsResponse.data.length, message).to.equal(NumApplicationDomains);
+        for(const eventApiProduct of eventApiProductsResponse.data) {
+          
+          // should not find any because of state id
+
+          const eventApiProductVersionList: Array<EventApiProductVersion> = await EpSdkEventApiProductVersionsService.getVersionsForEventApiProductId({
+            eventApiProductId: eventApiProduct.id,
+            stateIds: [EpSdkStatesService.deprecatedId, EpSdkStatesService.retiredId]
+          });
+          expect(eventApiProductVersionList.length, `eventApiProductVersionList=\n${JSON.stringify(eventApiProductVersionList, null, 2)}`).to.equal(0);
+
+          const empty_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
+            eventApiProductId: eventApiProduct.id,
+            stateIds: [EpSdkStatesService.deprecatedId, EpSdkStatesService.retiredId]
+          });
+          expect(empty_EpSdkEventApiProductAndVersionResponse, `empty_EpSdkEventApiProductAndVersionResponse=\n${JSON.stringify(empty_EpSdkEventApiProductAndVersionResponse, null, 2)}`).to.be.undefined;
+
+        }
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
     it(`${scriptName}: should get the latest version of for all event api products`, async () => {
       try {
         const eventApiProductsResponse: EventApiProductsResponse = await EpSdkEventApiProductsService.listAll({
@@ -345,13 +378,6 @@ describe(`${scriptName}`, () => {
         expect(eventApiProductsResponse.data, message).to.not.be.undefined;
         expect(eventApiProductsResponse.data.length, message).to.equal(NumApplicationDomains);
         for(const eventApiProduct of eventApiProductsResponse.data) {
-          // should not find any because of state id
-          const empty_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
-            eventApiProductId: eventApiProduct.id,
-            stateIds: [EpSdkStatesService.deprecatedId, EpSdkStatesService.retiredId]
-          });
-          expect(empty_EpSdkEventApiProductAndVersionResponse).to.be.undefined;
-
           // get the latest version for each event api product
           const latest_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,
