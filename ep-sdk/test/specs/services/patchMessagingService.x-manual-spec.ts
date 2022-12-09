@@ -23,6 +23,55 @@ const TestSpecId: string = TestUtils.getUUID();
 
 const MessagingServiceList: Array<MessagingService> = [];
 
+const getProtocol = (authenticationDetails: any): string | undefined => {
+    //  "authenticationDetails": {
+    //           "protocol": "https",
+    //           "properties": [
+    //             {
+    //               "name": "type",
+    //               "value": "rest"
+    //             }
+    //           ]
+    //         },
+  // "authenticationDetails": {
+  //   "protocol": "tcps",
+  //   "properties": [
+  //     {
+  //       "name": "type",
+  //       "value": "smf"
+  //     }
+  //   ]
+  // },    
+  if(!('protocol' in authenticationDetails)) return undefined;
+  const protocol = authenticationDetails['protocol'].toUpperCase();
+  const properties:Array<any> = authenticationDetails['properties'];
+  if(properties === undefined || properties.length === 0) return protocol;
+  const typeProperty = properties.find( (x) => {
+    if('name' in x) return x.name === 'type';
+  });
+  if(typeProperty === undefined) return protocol;
+  if(!('value' in typeProperty)) return protocol;
+  return `${typeProperty.value.toUpperCase()}-${protocol}`;
+}
+const getProtocolVersion = (protocol: string): string => {
+  switch(protocol) {
+    case 'AMQP':
+    case 'AMQPS':
+      return '1.0.0';
+    case 'MQTT':
+    case 'MQTTS':
+      return '3.1.1';
+    case 'HTTP':
+    case 'HTTPS':
+      return '1.1';
+    case 'JMS':
+    case 'JMSS':
+      return '1.1';
+    default:
+      return protocol;
+  }
+}
+
 describe(`${scriptName}`, () => {
 
     beforeEach(() => {
@@ -55,25 +104,12 @@ describe(`${scriptName}`, () => {
               if(messagingServiceConnection.messagingServiceAuthentications.length !== 0) {
                 if(messagingServiceConnection.messagingServiceAuthentications.length !== 1) throw new Error(`messagingServiceConnection.messagingServiceAuthentications.length !== 1, \n${errMsg}`);
                 if(messagingServiceConnection.messagingServiceAuthentications[0].authenticationDetails === undefined) throw new Error(`messagingServiceConnection.messagingServiceAuthentications[0].authenticationDetails === undefined, \n${errMsg}`);
-                // // DEBUG              
-                // expect(false, `messagingServiceConnection.messagingServiceAuthentications[0].authenticationDetails = \n${JSON.stringify(messagingServiceConnection.messagingServiceAuthentications[0].authenticationDetails, null, 2)}`).to.be.true;
-                const properties:Array<any> = messagingServiceConnection.messagingServiceAuthentications[0].authenticationDetails['properties'];
-                // // DEBUG              
-                // expect(false, `properties = \n${JSON.stringify(properties, null, 2)}`).to.be.true;
-                if(properties !== undefined && properties.length > 0) {
-                  const typeProperty = properties.find( (x) => {
-                    if('name' in x) return x.name === 'type';
-                  });
-                  // // DEBUG              
-                  // expect(false, `typeProperty = \n${JSON.stringify(typeProperty, null, 2)}`).to.be.true;
-                  expect(typeProperty).to.not.be.undefined;
-                  const protocol: string = typeProperty.value;
-                  // // DEBUG              
-                  // expect(false, `protocol = ${JSON.stringify(protocol, null, 2)}`).to.be.true;
-                  expect(protocol).to.not.be.undefined;
-                  messagingServiceConnection.protocol = protocol.toUpperCase();
-                  messagingServiceConnection.protocolVersion = 'version';  
-                }  
+  
+                const protocol: string | undefined = getProtocol(messagingServiceConnection.messagingServiceAuthentications[0].authenticationDetails);
+                if(protocol !== undefined) {
+                  messagingServiceConnection.protocol = protocol;
+                  messagingServiceConnection.protocolVersion = getProtocolVersion(protocol);  
+                }
               }
             }
           }
