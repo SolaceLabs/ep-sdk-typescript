@@ -345,6 +345,13 @@ describe(`${scriptName}`, () => {
         expect(eventApiProductsResponse.data, message).to.not.be.undefined;
         expect(eventApiProductsResponse.data.length, message).to.equal(NumApplicationDomains);
         for(const eventApiProduct of eventApiProductsResponse.data) {
+          // should not find any because of state id
+          const empty_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
+            eventApiProductId: eventApiProduct.id,
+            stateIds: [EpSdkStatesService.deprecatedId, EpSdkStatesService.retiredId]
+          });
+          expect(empty_EpSdkEventApiProductAndVersionResponse).to.be.undefined;
+
           // get the latest version for each event api product
           const latest_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,

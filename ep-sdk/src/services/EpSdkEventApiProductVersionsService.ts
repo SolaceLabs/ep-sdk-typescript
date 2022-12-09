@@ -258,6 +258,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
         if (withAtLeastOnePlan || withAtLeastOneAMessagingService) {
           listToAdd = eventApiProductVersionsResponse.data.filter((eventApiProductVersion: EventApiProductVersion) => {
             if(stateIds && stateIds.length > 0) {
+              /* istanbul ignore next */
               if(eventApiProductVersion.stateId === undefined) return false;
               if(!stateIds.includes(eventApiProductVersion.stateId)) return false;
             }
