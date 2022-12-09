@@ -2,6 +2,14 @@
 
 Solace Event Portal SDK.
 
+## Version 0.27.0-alpha
+
+**Enhancements:**
+- **EpSdkEventApiProductVersionsService**
+  - methods: `listAllLatestVersions()`, `listLatestVersions()`, `getVersionsForEventApiProductId()`, `getObjectAndVersionForEventApiProductId()`
+    - changed parameter `stateId:string;` to `stateIds?: Array<string>;`
+    - allows to search for 1 or multiple state ids 
+
 ## Version 0.26.0-alpha
 
 **New Features:**
