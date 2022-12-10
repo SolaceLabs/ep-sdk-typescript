@@ -4,11 +4,11 @@ import path from 'path';
 import { TestLogger } from '../../lib/TestLogger';
 import { TestContext } from '../../lib/TestContext';
 import TestConfig from '../../lib/TestConfig';
-import { TestUtils } from '../../lib/TestUtils';
 import { 
   ApiError, 
   ApplicationDomain, 
   ApplicationDomainResponse, 
+  ApplicationDomainsResponse, 
   ApplicationDomainsService 
 } from '@solace-labs/ep-openapi-node';
 import { 
@@ -20,14 +20,30 @@ import {
 const scriptName: string = path.basename(__filename);
 TestLogger.logMessage(scriptName, ">>> starting ...");
 
-
-const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestUtils.getUUID()}`;
+const TestSpecName = scriptName;
+// const TestSpecId: string = TestUtils.getUUID();
+const ApplicationDomainName = `${TestConfig.getAppId()}/services/${TestSpecName}`;
 let ApplicationDomainId: string | undefined;
-
+let ApplicationDomainIdList: Array<string> = [];
+const recordApplicationDomainId = (applicationDomainId: string) => {
+  ApplicationDomainId = applicationDomainId;
+  ApplicationDomainIdList.push(applicationDomainId);
+}
 describe(`${scriptName}`, () => {
     
     beforeEach(() => {
       TestContext.newItId();
+    });
+
+    after(async() => {
+      // delete all application domains
+      for(const applicationDomainId of ApplicationDomainIdList) {
+        try {
+          await EpSdkApplicationDomainsService.deleteById({ applicationDomainId: applicationDomainId });
+        } catch(e) {
+          // ignore
+        }
+      }
     });
 
     it(`${scriptName}: should create application domain`, async () => {
@@ -37,9 +53,32 @@ describe(`${scriptName}`, () => {
             name: ApplicationDomainName,
           }
         });
-        ApplicationDomainId = applicationDomainResponse.data.id;
+        recordApplicationDomainId(applicationDomainResponse.data.id);
         // // DEBUG
         // expect(false, `ApplicationDomainId=${ApplicationDomainId}`).to.be.true;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should list all application domains`, async () => {
+      try {
+        const applicationDomainsResponse: ApplicationDomainsResponse = await EpSdkApplicationDomainsService.listAll({ pageSize: 5 });
+        const message = `applicationDomainsResponse=\n${JSON.stringify(applicationDomainsResponse, null, 2)}`;
+        expect(applicationDomainsResponse.meta.pagination.count, TestLogger.createApiTestFailMessage(message)).to.be.greaterThanOrEqual(1);
+        expect(applicationDomainsResponse.data, TestLogger.createApiTestFailMessage(message)).to.not.be.undefined;
+        expect(applicationDomainsResponse.data.length, TestLogger.createApiTestFailMessage(message)).to.be.greaterThanOrEqual(1);
+        const found = applicationDomainsResponse.data.find( (x) => {
+          return x.id === ApplicationDomainId;
+        });
+        expect(found, TestLogger.createApiTestFailMessage(message)).to.not.be.undefined;
+        const firstCount = applicationDomainsResponse.meta.pagination.count;
+        const secondApplicationDomainsResponse: ApplicationDomainsResponse = await EpSdkApplicationDomainsService.listAll({ });
+        expect(secondApplicationDomainsResponse.meta.pagination.count, TestLogger.createApiTestFailMessage(`secondApplicationDomainsResponse=\n${JSON.stringify(secondApplicationDomainsResponse, null, 2)}`)).to.equal(firstCount);
+        // // DEBUG
+        // expect(false, TestLogger.createApiTestFailMessage(message)).to.be.true;
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
@@ -88,7 +127,7 @@ describe(`${scriptName}`, () => {
             name: ApplicationDomainName,
           }
         });
-        ApplicationDomainId = applicationDomainResponse.data.id;
+        recordApplicationDomainId(applicationDomainResponse.data.id);
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
         expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
