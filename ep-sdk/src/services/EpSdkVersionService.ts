@@ -11,25 +11,35 @@ export class EpSdkVersionService extends EpSdkService {
     const funcName = 'getLatestEpObjectVersionFromList';
     const logName = `${EpSdkVersionService.name}.${funcName}()`;
 
-    let latestEpObjectVersion: any | undefined = undefined;
-    let latestEpObjectVersionString: string = '0.0.0';
-    for (const epObjectVersion of epObjectVersionList) {
-      /* istanbul ignore next */
-      if(epObjectVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObjectVersion.version === undefined', {
-        epObjectVersion: epObjectVersion
-      });
-      const newEpObjectVersionString: string = epObjectVersion.version;
-      if (EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
-        newVersionString: newEpObjectVersionString,
-        oldVersionString: latestEpObjectVersionString,
-      })) {
-        latestEpObjectVersionString = newEpObjectVersionString;
-        latestEpObjectVersion = epObjectVersion;
-      }
-    }
-    return latestEpObjectVersion;
+    if(epObjectVersionList.length === 0) return undefined;
+    // sort the list
+    const sortedList = this.sortEpObjectVersionListByVersion({ epObjectVersionList: epObjectVersionList });
+    // get the latest
+    return sortedList[0];
+
+    // let latestEpObjectVersion: any | undefined = undefined;
+    // let latestEpObjectVersionString: string = '0.0.0';
+    // for (const epObjectVersion of epObjectVersionList) {
+    //   /* istanbul ignore next */
+    //   if(epObjectVersion.version === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'epObjectVersion.version === undefined', {
+    //     epObjectVersion: epObjectVersion
+    //   });
+    //   const newEpObjectVersionString: string = epObjectVersion.version;
+    //   if (EpSdkSemVerUtils.is_NewVersion_GreaterThan_OldVersion({
+    //     newVersionString: newEpObjectVersionString,
+    //     oldVersionString: latestEpObjectVersionString,
+    //   })) {
+    //     latestEpObjectVersionString = newEpObjectVersionString;
+    //     latestEpObjectVersion = epObjectVersion;
+    //   }
+    // }
+    // return latestEpObjectVersion;
   }
 
+  /**
+   * Returns sorted list by version in semVer format. 
+   * Sorts descending, i.e. latest version is the first element in the returned list.
+   */
   public sortEpObjectVersionListByVersion = ({ epObjectVersionList }: {
     epObjectVersionList: Array<any>;
   }): any | undefined => {
