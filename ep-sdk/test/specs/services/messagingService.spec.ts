@@ -413,6 +413,57 @@ describe(`${scriptName}`, () => {
     //   }
     // });
 
+    let TotalMessagingServices: number | undefined = undefined;
+
+    it(`${scriptName}: should get list of all messaging services`, async () => {
+      const PageSize = 1;
+      try {
+        const messagingServiceList: Array<MessagingService> = await EpSdkMessagingService.listAll({
+          pageSize: PageSize
+        });
+        expect(messagingServiceList.length).to.be.greaterThan(1);
+        TotalMessagingServices = messagingServiceList.length;
+        // // DEBUG
+        // expect(false, `messagingServiceList=\n${JSON.stringify(messagingServiceList, null, 2)}`).to.be.true;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get list of all messaging services by idList=[]`, async () => {
+      try {
+        const messagingServiceList: Array<MessagingService> = await EpSdkMessagingService.listAll({
+          idList: []
+        });
+        expect(messagingServiceList.length).to.equal(TotalMessagingServices);
+        // // DEBUG
+        // expect(false, `messagingServiceList=\n${JSON.stringify(messagingServiceList, null, 2)}`).to.be.true;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
+    it(`${scriptName}: should get list of all messaging services by idList`, async () => {
+      const PageSize = 1;
+      try {
+        const messagingServiceList: Array<MessagingService> = await EpSdkMessagingService.listAll({
+          pageSize: PageSize,
+          idList: [MessagingServiceId]
+        });
+        expect(messagingServiceList.length).to.equal(1);
+        // // DEBUG
+        // expect(false, `messagingServiceList=\n${JSON.stringify(messagingServiceList, null, 2)}`).to.be.true;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+    
     it(`${scriptName}: should get messaging service`, async () => {
       try {
         const messagingService: MessagingService = await EpSdkMessagingService.getById({ messagingServiceId: MessagingServiceId });
