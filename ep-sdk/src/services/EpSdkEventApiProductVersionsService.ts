@@ -59,7 +59,6 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
   }): Promise<EventApiProductVersion | undefined> => {
     // const funcName = 'getLatestVersionObjectForEventApiProductId';
     // const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
-
     // get all versions for selected stateId & filters
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
       eventApiProductId: eventApiProductId,
