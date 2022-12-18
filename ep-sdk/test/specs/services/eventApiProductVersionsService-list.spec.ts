@@ -16,6 +16,7 @@ import {
   EventApiProductVersion,
   SolaceClassOfServicePolicy,
   Plan,
+  MessagingService,
 } from '@solace-labs/ep-openapi-node';
 import { 
   EpSdkError,
@@ -30,6 +31,7 @@ import {
   EpSdkEventApiProductVersion,
   EpSdkServiceError,
   EpSdkStatesService,
+  EpSdkMessagingService,
 } from '../../../src';
 
 const scriptName: string = path.basename(__filename);
@@ -46,6 +48,10 @@ const getApplicationDomainNameList = (): Array<string> => {
   return list;
 }
 let ApplicationDomainIdList: Array<string> = [];
+
+let MessagingServiceList: Array<MessagingService> = [];
+const MessagingServiceId = "14p394d5c0i";
+let TheMessagingService: MessagingService | undefined = undefined;
 
 const EventApiProductName = `${TestConfig.getAppId()}-eap-${TestSpecId}`;
 const EventApiProductShared = true;
@@ -134,6 +140,21 @@ describe(`${scriptName}`, () => {
       });      
     });
 
+    it(`${scriptName}: should get all messaging services`, async () => {
+      try {
+        MessagingServiceList = await EpSdkMessagingService.listAll({});
+        expect(MessagingServiceList.length, `MessagingServiceList = ${JSON.stringify(MessagingServiceList, null, 2)}`).to.be.greaterThan(0);
+        TheMessagingService = MessagingServiceList.find( (x) => {
+          return x.id === MessagingServiceId;
+        });
+        expect(TheMessagingService).not.to.be.undefined;
+      } catch(e) {
+        if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
+        expect(e instanceof EpSdkError, TestLogger.createNotEpSdkErrorMessage(e)).to.be.true;
+        expect(false, TestLogger.createEpSdkTestFailMessage('failed', e)).to.be.true;
+      }
+    });
+
     it(`${scriptName}: should create eventApiProduct & two versions in every application domain`, async () => {
       try {
         for(const applicationDomainId of ApplicationDomainIdList) {
@@ -156,6 +177,23 @@ describe(`${scriptName}`, () => {
               plans: [EventApiProductVersionPlan_1],
             }
           });
+          // API spec only allows capital letters, but implementation requires lowercase letters
+          const _supportedProtocols: any = {
+            supportedProtocols: ['amqp', 'mqtt']
+          }
+          const _x = await EventApiProductsService.associateGatewayMessagingServiceToEapVersion({
+            eventApiProductVersionId: x.data.id,
+            requestBody: {
+              messagingServiceId: TheMessagingService.id,
+              ..._supportedProtocols
+            }
+          });
+          // DEBUG
+          // const _finalX = await EventApiProductsService.getEventApiProductVersion({
+          //   versionId: x.data.id,
+          //   include: 'what'
+          // })
+          // expect(false, `_finalX=${JSON.stringify(_finalX, null, 2)}`).to.be.true;
           // create version 2 in Draft
           const y = await EventApiProductsService.createEventApiProductVersion({
             requestBody: {
@@ -164,6 +202,13 @@ describe(`${scriptName}`, () => {
               version: EventApiProductVersionString_2,
             }
           });
+          // const _y = await EventApiProductsService.associateGatewayMessagingServiceToEapVersion({
+          //   eventApiProductVersionId: y.data.id,
+          //   requestBody: {
+          //     messagingServiceId: TheMessagingService.id,
+          //     ..._supportedProtocols
+          //   }
+          // });
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -249,7 +294,7 @@ describe(`${scriptName}`, () => {
       }
     });
 
-    it(`${scriptName}: should catch error for  invalid sort field when paging & sort of latest event api product versions by eventApiProduct field`, async () => {
+    it(`${scriptName}: should catch error for invalid sort field when paging & sort of latest event api product versions by eventApiProduct field`, async () => {
       const PageSize = 1;
       let nextPage: number | undefined | null = 1;
       const sortFieldName = 'unknown-field';
@@ -388,7 +433,10 @@ describe(`${scriptName}`, () => {
           expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.stateId, message).to.equal(EpSdkStatesService.draftId);
           expect(latest_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.version, message).to.equal(EventApiProductVersionString_2);
           expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_1);    
-          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_2);    
+          expect(JSON.stringify(latest_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_2);
+          // latest does not have messaging services
+          expect(latest_EpSdkEventApiProductAndVersionResponse.messagingServices, 'latest_EpSdkEventApiProductAndVersionResponse.messagingServices').to.be.undefined;
+          
           // get the version 1 for each event api product
           const version1_EpSdkEventApiProductAndVersionResponse: EpSdkEventApiProductAndVersionResponse = await EpSdkEventApiProductVersionsService.getObjectAndVersionForEventApiProductId({ 
             eventApiProductId: eventApiProduct.id,
@@ -400,6 +448,9 @@ describe(`${scriptName}`, () => {
           expect(version1_EpSdkEventApiProductAndVersionResponse.eventApiProductVersion.version, message).to.equal(EventApiProductVersionString_1);
           expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_1);    
           expect(JSON.stringify(version1_EpSdkEventApiProductAndVersionResponse.meta.versionStringList), message).to.include(EventApiProductVersionString_2);    
+          // version 1 has 1 messaging service
+          expect(version1_EpSdkEventApiProductAndVersionResponse.messagingServices, 'version1_EpSdkEventApiProductAndVersionResponse.messagingServices').not.to.be.undefined;
+          expect(version1_EpSdkEventApiProductAndVersionResponse.messagingServices.length, 'version1_EpSdkEventApiProductAndVersionResponse.messagingServices.length').to.equal(1);
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -433,7 +484,7 @@ describe(`${scriptName}`, () => {
             withAtLeastOnePlan: true,
             withAtLeastOneAMessagingService: true,
           });
-          expect(eventApiProductVersionList_BothFilters.length, `length mismatch, eventApiProductVersionList_BothFilters=${JSON.stringify(eventApiProductVersionList_BothFilters, null, 2)}`).to.equal(0);
+          expect(eventApiProductVersionList_BothFilters.length, `length mismatch, eventApiProductVersionList_BothFilters=${JSON.stringify(eventApiProductVersionList_BothFilters, null, 2)}`).to.equal(1);
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;
@@ -467,7 +518,7 @@ describe(`${scriptName}`, () => {
             withAtLeastOnePlan: false,
             withAtLeastOneAMessagingService: true,
           });
-          expect(eventApiProductVersionList_MessagingServiceFilter.length, `length mismatch, eventApiProductVersionList_MessagingServiceFilter=${JSON.stringify(eventApiProductVersionList_MessagingServiceFilter, null, 2)}`).to.equal(0);
+          expect(eventApiProductVersionList_MessagingServiceFilter.length, `length mismatch, eventApiProductVersionList_MessagingServiceFilter=${JSON.stringify(eventApiProductVersionList_MessagingServiceFilter, null, 2)}`).to.equal(1);
         }
       } catch(e) {
         if(e instanceof ApiError) expect(false, TestLogger.createApiTestFailMessage('failed')).to.be.true;

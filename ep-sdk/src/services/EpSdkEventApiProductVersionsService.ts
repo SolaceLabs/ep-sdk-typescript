@@ -7,6 +7,8 @@ import {
   EventApiProductVersion,
   Pagination,
   EventApiProductResponse,
+  MessagingService,
+  SolaceMessagingService,
 } from '@solace-labs/ep-openapi-node';
 import { EpSdkApiContentError, EpSdkServiceError } from "../utils";
 import { EpApiHelpers } from "../internal-utils";
@@ -18,6 +20,7 @@ import {
 } from "../types";
 import { EpSdkVersionService } from "./EpSdkVersionService";
 import EpSdkEventApiProductsService from './EpSdkEventApiProductsService';
+import EpSdkMessagingService from './EpSdkMessagingService';
 
 
 export type EpSdkEventApiProduct = Required<Pick<EventApiProduct, "applicationDomainId" | "id" | "name">> & Omit<EventApiProduct, "applicationDomainId" | "id" | "name">;
@@ -27,6 +30,7 @@ export type EpSdkEventApiProductVersionList = Array<EpSdkEventApiProductVersion>
 export type EpSdkEventApiProductAndVersion = {
   eventApiProduct: EpSdkEventApiProduct;
   eventApiProductVersion: EpSdkEventApiProductVersion;
+  messagingServices?: Array<MessagingService>;
 }
 export type EpSdkEventApiProductAndVersionList = Array<EpSdkEventApiProductAndVersion>;
 export type EpSdkEventApiProductAndVersionListResponse = {
@@ -59,7 +63,6 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
   }): Promise<EventApiProductVersion | undefined> => {
     // const funcName = 'getLatestVersionObjectForEventApiProductId';
     // const logName = `${EpSdkEventApiProductVersionsService.name}.${funcName}()`;
-
     // get all versions for selected stateId & filters
     const eventApiProductVersionList: Array<EventApiProductVersion> = await this.getVersionsForEventApiProductId({
       eventApiProductId: eventApiProductId,
@@ -332,6 +335,18 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
       });
     }
     if (eventApiProductVersion === undefined) return undefined;
+    // get all messaging services for the version
+    let messagingServiceList: Array<MessagingService> | undefined = undefined;
+    if(eventApiProductVersion.solaceMessagingServices && eventApiProductVersion.solaceMessagingServices.length > 0) {
+      const idList: Array<string> = eventApiProductVersion.solaceMessagingServices.map( (solaceMessagingService: SolaceMessagingService) => {
+        /* istanbul ignore next */
+        if(solaceMessagingService.messagingServiceId === undefined) throw new EpSdkApiContentError(logName, this.constructor.name, 'solaceMessagingService.messagingServiceId === undefined', {
+          solaceMessagingService: solaceMessagingService
+        });
+        return solaceMessagingService.messagingServiceId;
+      });
+      messagingServiceList = await EpSdkMessagingService.listAll({ idList: idList });
+    }
     // create a list of all versions
     const versionStringList: Array<string> = eventApiProductVersionList.map((eventApiProductVersion: EventApiProductVersion) => {
       /* istanbul ignore next */
@@ -343,6 +358,7 @@ export class EpSdkEventApiProductVersionsService extends EpSdkVersionService {
     return {
       eventApiProduct: eventApiProductResponse.data as EpSdkEventApiProduct,
       eventApiProductVersion: eventApiProductVersion as EpSdkEventApiProductVersion,
+      messagingServices: messagingServiceList,
       meta: {
         versionStringList: versionStringList
       }
