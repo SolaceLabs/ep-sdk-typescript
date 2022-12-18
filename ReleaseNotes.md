@@ -2,6 +2,14 @@
 
 Solace Event Portal SDK.
 
+## Version 0.29.0-alpha
+
+**New Features:**
+- **EpSdkVersionService**
+  - method: `sortEpObjectVersionListByVersion()` - sorts object vesion list by version number, descending
+- **EpSdkMessagingService**
+  - method: `listAll()` - returns list of all messaging services (no paging)
+
 ## Version 0.28.0-alpha
 
 **New Features:**
